@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 10:38:22 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 14:33:04 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 17:08:07 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	gc_print_fcts(t_collector *gc)
 	i = -1;
 	printf(GREEN BOLD "GC_PRINT_FCTS\n" RESET);
 	while (gc->additional_fcts[++i])
-		printf(BLUE "\t- %p\n" RESET, gc->additional_fcts[i]);
+		printf(BLUE "\t-[%d] %p\n" RESET,i, gc->additional_fcts[i]);
 }
 
 void	gc_print(t_collector *gc)

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 14:35:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 18:59:40 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static t_refs	*get_last(t_refs *refs)
 {
 	t_refs	*tmp;
 
+	if (!refs)
+		return (NULL);
 	tmp = refs;
 	while (tmp)
 	{
@@ -37,7 +39,7 @@ static t_refs	*get_last(t_refs *refs)
 			return (tmp);
 		tmp = tmp->next;
 	}
-	return (NULL);
+	return (tmp);
 }
 
 /*Ajoute une nouvelle référence au collecteur
@@ -68,40 +70,41 @@ int	gc_add_ref(t_collector *gc, void *ref, size_t layer)
 	return (0);
 }
 
-void	test(void *ptr)
+void	*test(void **ptr)
 {
-	ptr = NULL;
-	(void)ptr;
+	*ptr = NULL;
+	return (*ptr);
 }
-void	test2(void *ptr)
+void	*test2(void **ptr)
 {
-	ptr = NULL;
-	(void)ptr;
+	*ptr = NULL;
+	return (*ptr);
 }
 int	main(int argc, char **argv)
 {
-	t_collector *collecor;
+	t_collector *gc;
 
 	if (argc != 6)
 		return (1);
 	(void)argv;
-	collecor = gc_init(2);
-	gc_init_fcts(collecor, 2);
-	if (!collecor || !collecor->ref_layers)
+	gc = gc_init(2);
+	gc_init_fcts(gc, 2);
+	if (!gc || !gc->ref_layers)
 		return (1);
-	char *test_c1 = (char *)gc_malloc(collecor, sizeof(char), 0);
+	char *test_c1 = (char *)gc_malloc(gc, sizeof(char), 0);
 	*test_c1 = 'L';
-	gc_add_ref(collecor, test_c1, 1);
-	int *d_test = (int *)gc_malloc(collecor, sizeof(int), 1);
+	int *d_test = (int *)gc_malloc(gc, sizeof(int), 1);
 	*d_test = 5;
-	t_collector *c_test = (t_collector *)gc_malloc(collecor,
+	t_collector *c_test = (t_collector *)gc_malloc(gc,
 		sizeof(t_collector), 1);
-	gc_add_ref(collecor, c_test, 1);
-	gc_add_fct(collecor, &test);
-	gc_add_fct(collecor, &test2);
-	gc_print(collecor);
-	gc_flush_fcts(collecor);
-	gc_print_fcts(collecor);
-	gc_flush(collecor);
+	gc_add_ref(gc, c_test, 1);
+	gc_add_fct(gc, test);
+	gc_add_fct(gc, test2);
+	gc_print(gc);
+	gc_fct_on_layer(gc, 1, 0);
+	gc_print_layers(gc);
+	gc_flush_fcts(gc);
+	gc_print(gc);
+	gc_flush(gc);
 	return (0);
 }

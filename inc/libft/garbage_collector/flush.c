@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:28:12 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 14:40:39 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 18:25:19 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static int	clear_collector(t_collector *gc)
 
 /*Libère l'adresse contenue dans l'élément ref
 	- Ne libère pas l'élément.
+	- Ne modifie pas l'ordre dans le collecteur.
 	- Renvoie 0 si succès et EINVAL si l'adresse est déjà libérée.*/
 int	free_ref(t_refs *ref)
 {
@@ -54,7 +55,8 @@ int	gc_flush(t_collector *gc)
 		while (tmp)
 		{
 			tmp2 = tmp->next;
-			free_ref(tmp);
+			if (tmp->reference)
+				free_ref(tmp);
 			free(tmp);
 			tmp = tmp2;
 		}
@@ -82,7 +84,8 @@ int	gc_flush_layer(t_collector *gc, size_t layer)
 	while (tmp)
 	{
 		tmp2 = tmp->next;
-		free_ref(tmp);
+		if (tmp->reference)
+			free_ref(tmp);
 		free(tmp);
 		tmp = tmp2;
 	}
@@ -97,7 +100,7 @@ int	gc_flush_fcts(t_collector *gc)
 
 	if (!gc || !gc->additional_fcts)
 		return (EINVAL);
-	size = ft_arrlen(gc->additional_fcts);
+	size = ft_arrlen((void **)gc->additional_fcts);
 	while (size--)
 		gc->additional_fcts[size] = NULL;
 	return (0);
