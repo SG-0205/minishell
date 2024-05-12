@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:28:12 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/11 22:29:42 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 11:06:33 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,12 @@ static int	clear_collector(t_collector *gc)
 	if (gc->additional_fcts)
 		ft_arrfree((void **)gc->additional_fcts);
 	if (gc->ref_layers)
-		ft_arrfree((void **)gc->ref_layers), free(gc->ref_layers);
+		free(gc->ref_layers);
 	return (0);
 }
 
-static int	free_ref(t_refs *ref)
+/**/
+int	free_ref(t_refs *ref)
 {
 	if (!ref)
 		return (EINVAL);
@@ -33,7 +34,11 @@ static int	free_ref(t_refs *ref)
 	return (0);
 }
 
-/*Fait free() sur toutes les adresses et renvoie 0 en cas de succes.*/
+/*Libère toutes les références avec free()
+	- Libère tous les pointeurs en premier.
+	- Libère les éléments du collecteur.
+	- Libère la structure du collecteur.
+	- Renvoie 0 si tout à été libéré correctement.*/
 int	gc_flush(t_collector *gc)
 {
 	t_refs	*tmp;
@@ -52,9 +57,12 @@ int	gc_flush(t_collector *gc)
 			tmp = tmp2;
 		}
 	}
-	clear_collector(gc);
-	free(gc);
-	return (0);
+	if (clear_collector(gc) == 0)
+		free(gc);
+	if (!gc)
+		return (0);
+	else
+		return (1);
 }
 
 int	gc_flush_layer(t_collector *gc, size_t layer)

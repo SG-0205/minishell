@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:30:23 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/11 22:31:08 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 09:38:13 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,22 @@
 t_collector	*gc_init(int nb_layers)
 {
 	t_collector	*new;
+	int			i;
 
 	if (nb_layers > __INT_MAX__ || nb_layers < 1)
 		return (NULL);
 	new = (t_collector *)malloc(sizeof(t_collector));
+	if (!new)
+		return (NULL);
 	new->nb_layers = nb_layers;
 	new->ref_layers = (t_refs **)malloc(sizeof(t_refs) * (nb_layers + 1));
+	if (!new->ref_layers)
+		return (NULL);
+	i = -1;
 	new->additional_fcts = NULL;
 	new->ref_layers[nb_layers] = NULL;
+	while (++i < nb_layers)
+		new->ref_layers[i] = NULL;
 	new->nb_refs = 0;
 	return (new);
 }
