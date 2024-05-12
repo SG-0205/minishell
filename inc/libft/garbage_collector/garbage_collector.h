@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 10:45:08 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 14:33:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct data
 	t_refs	**ref_layers;
 	void	**additional_fcts;
 	size_t	nb_layers;
+	size_t	nb_fcts;
 	size_t	nb_refs;
 }			t_collector;
 
@@ -38,8 +39,13 @@ int			gc_add_ref(t_collector *gc, void *ref, size_t layer);
 t_refs		*search_ref(void *ref, t_refs *refs);
 t_refs		*gc_search(void *ref, t_collector *gc);
 int			free_ref(t_refs *ref);
+int			gc_free(t_collector *gc, void *ptr);
+int			gc_init_fcts(t_collector *gc, size_t nb_fcts);
+int			gc_add_fct(t_collector *gc, void (*f)(void *));
+int			gc_flush_fcts(t_collector *gc);
 
 //DEBUG
 void		gc_print_layers(t_collector *gc);
-
+void		gc_print_fcts(t_collector *gc);
+void		gc_print(t_collector *gc);
 #endif

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:30:23 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 09:38:13 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 13:16:20 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ t_collector	*gc_init(int nb_layers)
 	while (++i < nb_layers)
 		new->ref_layers[i] = NULL;
 	new->nb_refs = 0;
+	new->nb_fcts = 0;
 	return (new);
 }

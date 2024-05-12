@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 10:38:22 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 10:55:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 14:33:04 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	gc_print_layers(t_collector *gc)
 		return ;
 	i = -1;
 	nb_layers = (int)gc->nb_layers;
-	printf(GREEN BOLD "GC_PRINT\n" RESET);
+	printf(GREEN BOLD "GC_PRINT_LAYERS\n" RESET);
 	while (++i < nb_layers)
 	{
 		printf(YELLOW "\t[%d]:\n" RESET, i);
@@ -31,4 +31,24 @@ void	gc_print_layers(t_collector *gc)
 		while(tmp)
 			printf("\t\t- %p\n", tmp->reference), tmp = tmp->next;
 	}
+}
+
+void	gc_print_fcts(t_collector *gc)
+{
+	int	i;
+
+	i = -1;
+	printf(GREEN BOLD "GC_PRINT_FCTS\n" RESET);
+	while (gc->additional_fcts[++i])
+		printf(BLUE "\t- %p\n" RESET, gc->additional_fcts[i]);
+}
+
+void	gc_print(t_collector *gc)
+{
+	if (!gc)
+		return ;
+	if (gc->ref_layers)
+		gc_print_layers(gc);
+	if (gc->additional_fcts)
+		gc_print_fcts(gc);
 }

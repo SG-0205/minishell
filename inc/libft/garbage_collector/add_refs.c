@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gc_add_refs.c                                         :+:      :+:    :+:   */
+/*   add_refs.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/11 16:03:22 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 10:08:33 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/05/12 14:35:14 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "garbage_collector.h"
 #include <stdio.h>
@@ -62,29 +63,45 @@ int	gc_add_ref(t_collector *gc, void *ref, size_t layer)
 	else
 	{
 		get_last(gc->ref_layers[layer])->next = new_ref(ref);
-		gc->nb_refs ++;
+		gc->nb_refs++;
 	}
 	return (0);
 }
 
+void	test(void *ptr)
+{
+	ptr = NULL;
+	(void)ptr;
+}
+void	test2(void *ptr)
+{
+	ptr = NULL;
+	(void)ptr;
+}
 int	main(int argc, char **argv)
 {
-	t_collector	*collecor;
+	t_collector *collecor;
 
 	if (argc != 6)
 		return (1);
 	(void)argv;
 	collecor = gc_init(2);
+	gc_init_fcts(collecor, 2);
 	if (!collecor || !collecor->ref_layers)
 		return (1);
-	char	*test_c1 = (char *)gc_malloc(collecor, sizeof(char), 0);
+	char *test_c1 = (char *)gc_malloc(collecor, sizeof(char), 0);
 	*test_c1 = 'L';
 	gc_add_ref(collecor, test_c1, 1);
-	int	*d_test = (int *)gc_malloc(collecor, sizeof(int), 1);
+	int *d_test = (int *)gc_malloc(collecor, sizeof(int), 1);
 	*d_test = 5;
-	t_collector	*c_test = (t_collector *)gc_malloc(collecor, sizeof(t_collector), 1);
+	t_collector *c_test = (t_collector *)gc_malloc(collecor,
+		sizeof(t_collector), 1);
 	gc_add_ref(collecor, c_test, 1);
-	gc_print_layers(collecor);
+	gc_add_fct(collecor, &test);
+	gc_add_fct(collecor, &test2);
+	gc_print(collecor);
+	gc_flush_fcts(collecor);
+	gc_print_fcts(collecor);
 	gc_flush(collecor);
 	return (0);
 }

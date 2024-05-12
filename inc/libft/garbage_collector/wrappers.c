@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:34:04 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 10:35:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 13:01:16 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,26 @@ void	*gc_malloc(t_collector *gc, size_t size, size_t layer)
 	return (alloc);
 }
 
-// void	*gc_free(t_collector *gc, void *ptr)
-// {
-	
-// }
+/*Libère l'adresse *ptr et tente de l'enlever du collecteur.
+	- Renvoie 0 si *ptr est libéré.
+	- Renvoie 1 si *ptr est libéré et retiré du collecteur.
+	- renvoie -1 si une des opérations free() échoue.*/
+int	gc_free(t_collector *gc, void *ptr)
+{
+	t_refs	*tmp;
+
+	if (!gc || !ptr)
+		return (-1);
+	tmp = gc_search(ptr, gc);
+	if (tmp)
+	{
+		(free_ref(tmp), free(tmp));
+		return (1);
+	}
+	else if (!tmp && ptr)
+	{
+		free(ptr);
+		return (0);
+	}
+	return (-1);
+}

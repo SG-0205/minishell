@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:28:12 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 11:06:33 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/12 14:40:39 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@ static int	clear_collector(t_collector *gc)
 	if (!gc)
 		return (1);
 	if (gc->additional_fcts)
-		ft_arrfree((void **)gc->additional_fcts);
+		free(gc->additional_fcts);
 	if (gc->ref_layers)
 		free(gc->ref_layers);
 	return (0);
 }
 
-/**/
+/*Libère l'adresse contenue dans l'élément ref
+	- Ne libère pas l'élément.
+	- Renvoie 0 si succès et EINVAL si l'adresse est déjà libérée.*/
 int	free_ref(t_refs *ref)
 {
 	if (!ref)
@@ -65,6 +67,10 @@ int	gc_flush(t_collector *gc)
 		return (1);
 }
 
+/*Libère les addresses contenues dans la couche [layer]
+	- Utilise free() sur toutes les références de la liste
+	- Libère aussi chaque élément de la liste
+	- Ne libère pas le tableau contenant les couches*/
 int	gc_flush_layer(t_collector *gc, size_t layer)
 {
 	t_refs	*tmp;
@@ -80,5 +86,19 @@ int	gc_flush_layer(t_collector *gc, size_t layer)
 		free(tmp);
 		tmp = tmp2;
 	}
+	return (0);
+}
+
+/*Remets tous les pointeurs sur les fonctions additionnelles à NULL.
+	- Ne libère pas le tableau des pointeurs sur fonction*/
+int	gc_flush_fcts(t_collector *gc)
+{
+	size_t	size;
+
+	if (!gc || !gc->additional_fcts)
+		return (EINVAL);
+	size = ft_arrlen(gc->additional_fcts);
+	while (size--)
+		gc->additional_fcts[size] = NULL;
 	return (0);
 }
