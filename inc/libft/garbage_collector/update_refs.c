@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 16:41:34 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 19:08:21 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/05/13 14:56:19 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,17 +78,29 @@ void	*gc_replace_ref(t_collector *gc, void *new_ref, void *old_ref)
 	- Trouve la référence [ref] à déplacer dans le collecteur.
 	- Ajoute l'élément contenant [ref] à la fin de la couche [layer].
 	- S'assure du lien entre chaque élément des différentes couches
-	- Renvoie 1 en cas de succès*/
+	- Renvoie 0 en cas de succès*/
 int	gc_switch_layer(t_collector *gc, void *ref, size_t layer)
 {
 	t_refs	*tmp;
-	
+	t_refs	*prev;
+	t_refs	*next;
 
 	if (!gc || !ref || layer >= gc->nb_layers)
 		return (1);
+	else if (get_layer(gc, ref) == gc->ref_layers[layer])
+		return (1);
 	tmp = gc_search(ref, gc);
-	if (tmp)
-	{
-		//CONTINUER LE SWITCH
-	}
+	if (!tmp)
+		return (1);
+	prev = get_side_ref(tmp, get_layer(gc, ref), PREV);
+	next = get_side_ref(tmp, get_layer(gc, ref), NEXT);
+	if (prev && next)
+		prev->next = next;
+	else if (!prev && next)
+		gc->ref_layers[layer] = next;
+	else if (prev && !next)
+		prev->next = NULL;
+	gc_get_last(gc->ref_layers[layer])->next = tmp;
+	gc_get_last(gc->ref_layers[layer])->next = NULL;
+	return (0);
 }
