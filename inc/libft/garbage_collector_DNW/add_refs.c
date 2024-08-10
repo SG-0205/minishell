@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/13 15:07:03 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/10 13:27:58 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static t_refs	*new_ref(void *reference)
 	if (!reference)
 		return (NULL);
 	new = (t_refs *)malloc(sizeof(t_refs));
+	if (!new)
+		return (NULL);
 	new->reference = reference;
 	new->next = NULL;
 	return (new);
@@ -79,7 +81,6 @@ int	main(int argc, char **argv)
 		return (1);
 	(void)argv;
 	gc = gc_init(2);
-	gc_init_fcts(gc, 2);
 	if (!gc || !gc->ref_layers)
 		return (1);
 	char *test_c1 = (char *)gc_malloc(gc, sizeof(char), 0);
@@ -97,5 +98,6 @@ int	main(int argc, char **argv)
 	gc_print_layers(gc);
 	gc_print(gc);
 	gc_flush(gc);
+	gc_print(gc);
 	return (0);
 }

@@ -6,51 +6,11 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 16:41:34 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/13 14:56:19 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/10 13:16:33 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "garbage_collector.h"
-
-/*Applique la fonction désignée par [fct_id] sur toute la couche [layer].
-	- Ne modifie pas l'ordre des éléments du collecteur.
-	- Applique la fonction sur chaque adresse contenue dans chaque élément
-	- Renvoie 0 si tout se déroule normalement*/
-int	gc_fct_on_layer(t_collector *gc, size_t layer, size_t fct_id)
-{
-	t_refs	*tmp;
-
-	if (!gc || layer >= gc->nb_layers || fct_id >= gc->nb_fcts
-		|| !gc->ref_layers[layer])
-		return (1);
-	tmp = gc->ref_layers[layer];
-	while (tmp)
-	{
-		if (gc_do_fct(gc, fct_id, tmp->reference) != 0)
-			return (1);
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
-/*Applique la fonction désignée par [fct_id].
-	- Ne modifie pas l'ordre des éléments du collecteur.
-	- Applique la fonction sur chaque adresse enregistrée dans le collecteur
-	- S'arrête et renvoie 1 si l'application ne s'est pas passée comme prévu
-	- Dans ce cas, utiliser gc_print() identifier l'adresse responsable.
-	- Renvoie 0 en cas de succès*/
-int	gc_fct_all_refs(t_collector *gc, size_t fct_id)
-{
-	int	layers;
-
-	if (!gc || fct_id >= gc->nb_fcts || !gc->ref_layers)
-		return (1);
-	layers = -1;
-	while (gc->ref_layers[++layers])
-		if (gc_fct_on_layer(gc, layers, fct_id) != 0)
-			return (1);
-	return (0);
-}
 
 /*Remplace [old_ref] par [new_ref] dans le collecteur
 	- Ne crée pas de nouvel élément dans le collecteur.
