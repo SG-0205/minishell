@@ -1,0 +1,7 @@
+{
+   <TEST>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:readline_internal_teardown
+   fun:readline
+}

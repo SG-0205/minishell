@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 14:19:44 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 23:02:01 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 21:59:00 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,16 @@ t_bool	new_sig_handler(struct sigaction new, t_sighdlrid sig_type)
 		if (sigaction(SIGINT, &new, NULL) == -1)
 			return (FALSE);
 	}
+	return (TRUE);
 }
 
 t_bool	signal_handlers_setup(t_mshell *data)
 {
 	if (!data)
 		return (FALSE);
-	data->sighandlers = (struct sigaction *)gc_malloc(
-		data->gc, sizeof(struct sigaction) * SIG_NB, 0);
+	data->sighandlers = (struct sigaction *)gc_malloc(data->gc,
+		sizeof(struct sigaction) * SIG_NB, 0);
 	if (!data->sighandlers)
 		return (FALSE);
-	return (new_sig_handler(data->sighandlers[CTRL_C], CTRL_C));	
+	return (new_sig_handler(data->sighandlers[CTRL_C], CTRL_C));
 }

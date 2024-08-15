@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:28:12 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:54:04 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 21:57:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,12 @@ int	free_ref(t_list *ref)
 	- Renvoie 0 si tout à été libéré correctement.*/
 int	gc_flush(t_collector *gc)
 {
-	t_list	*tmp;
-	t_list	*tmp2;
 	int		i;
 
 	i = -1;
 	if (!gc || !gc->ref_layers)
 		return (1);
-	while (++i < gc->nb_layers)
+	while (++i < (int)gc->nb_layers)
 		gc_flush_layer(gc, i);
 	if (clear_collector(gc) == 0)
 		free(gc);
@@ -63,9 +61,9 @@ int	gc_flush(t_collector *gc)
 	- Utilise free() sur toutes les références de la liste
 	- Libère aussi chaque élément de la liste
 	- Ne libère pas le tableau contenant les couches*/
-int	gc_flush_layer(t_collector *gc, size_t layer)
+void	gc_flush_layer(t_collector *gc, size_t layer)
 {
 	if (!gc || !gc->ref_layers[layer])
-		return (1);
+		return ;
 	ft_lstclear(&gc->ref_layers[layer], free);
 }

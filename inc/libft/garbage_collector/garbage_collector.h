@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:50:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 21:57:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct data
 t_collector				*gc_init(int nb_layers);
 void					*gc_malloc(t_collector *gc, size_t size, size_t layer);
 int						gc_flush(t_collector *gc);
-int						gc_flush_layer(t_collector *gc, size_t layer);
+void					gc_flush_layer(t_collector *gc, size_t layer);
 int						gc_add_ref(t_collector *gc, void *ref, size_t layer);
 t_list					*search_ref(void *ref, t_list *refs);
 t_list					*gc_search(void *ref, t_collector *gc);
