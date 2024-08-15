@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/10 13:27:58 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 23:02:41 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,24 @@
 #include "garbage_collector.h"
 #include <stdio.h>
 
-static t_refs	*new_ref(void *reference)
+static t_list	*new_ref(void *content)
 {
-	t_refs	*new;
+	t_list	*new;
 
-	if (!reference)
+	if (!content)
 		return (NULL);
-	new = (t_refs *)malloc(sizeof(t_refs));
+	new = (t_list *)malloc(sizeof(t_list));
 	if (!new)
 		return (NULL);
-	new->reference = reference;
+	new->content = content;
 	new->next = NULL;
 	return (new);
 }
 
 /*Renvoie le dernier element d'une couche du collecteur.*/
-t_refs	*gc_get_last(t_refs *start)
+t_list	*gc_get_last(t_list *start)
 {
-	t_refs	*tmp;
+	t_list	*tmp;
 
 	if (!start)
 		return (NULL);
@@ -73,31 +73,23 @@ int	gc_add_ref(t_collector *gc, void *ref, size_t layer)
 	return (0);
 }
 
-int	main(int argc, char **argv)
-{
-	t_collector *gc;
+// int	main(int argc, char **argv)
+// {
+// 	t_collector *gc;
 
-	if (argc != 6)
-		return (1);
-	(void)argv;
-	gc = gc_init(2);
-	if (!gc || !gc->ref_layers)
-		return (1);
-	char *test_c1 = (char *)gc_malloc(gc, sizeof(char), 0);
-	*test_c1 = 'L';
-	int *d_test = (int *)gc_malloc(gc, sizeof(int), 1);
-	*d_test = 5;
-	t_collector *c_test = (t_collector *)gc_malloc(gc,
-		sizeof(t_collector), 1);
-	gc_add_ref(gc, c_test, 1);
-	gc_print(gc);
-	gc_switch_layer(gc, c_test, 0);
-	gc_print_layers(gc);
-	gc_switch_layer(gc, c_test, 1);
-	gc_switch_layer(gc, test_c1, 1);
-	gc_print_layers(gc);
-	gc_print(gc);
-	gc_flush(gc);
-	gc_print(gc);
-	return (0);
-}
+// 	if (argc != 6)
+// 		return (1);
+// 	(void)argv;
+// 	gc = gc_init(2);
+// 	if (!gc || !gc->ref_layers)
+// 		return (1);
+// 	char *test_c1 = (char *)gc_malloc(gc, sizeof(char), 0);
+// 	*test_c1 = 'L';
+// 	int *d_test = (int *)gc_malloc(gc, sizeof(int), 0);
+// 	*d_test = 5;
+// 	t_collector *c_test = (t_collector *)gc_malloc(gc,
+// 		sizeof(t_collector), 0);
+// 	gc_print_layers(gc);
+// 	gc_flush(gc);
+// 	return (0);
+// }

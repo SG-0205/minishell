@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:30:23 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/11 14:18:54 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:57:59 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_collector	*gc_init(int nb_layers)
 	if (!new)
 		return (NULL);
 	new->nb_layers = nb_layers;
-	new->ref_layers = (t_refs **)malloc(sizeof(t_refs) * (nb_layers + 1));
+	new->ref_layers = (t_list **)malloc(sizeof(t_list) * (nb_layers + 1));
 	if (!new->ref_layers)
 	{
 		free(new);

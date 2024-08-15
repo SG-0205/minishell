@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 18:34:04 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/05/12 13:01:16 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:50:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	*gc_malloc(t_collector *gc, size_t size, size_t layer)
 	- renvoie -1 si une des opérations free() échoue.*/
 int	gc_free(t_collector *gc, void *ptr)
 {
-	t_refs	*tmp;
+	t_list	*tmp;
 
 	if (!gc || !ptr)
 		return (-1);

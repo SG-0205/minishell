@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:28:12 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/10 13:35:36 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:54:04 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,13 @@ static int	clear_collector(t_collector *gc)
 	- Ne libère pas l'élément.
 	- Ne modifie pas l'ordre dans le collecteur.
 	- Renvoie 0 si succès et EINVAL si l'adresse est déjà libérée.*/
-int	free_ref(t_refs *ref)
+int	free_ref(t_list *ref)
 {
 	if (!ref)
 		return (EINVAL);
-	if (!ref->reference)
+	if (!ref->content)
 		return (EINVAL);
-	free(ref->reference);
+	free(ref->content);
 	return (0);
 }
 
@@ -42,8 +42,8 @@ int	free_ref(t_refs *ref)
 	- Renvoie 0 si tout à été libéré correctement.*/
 int	gc_flush(t_collector *gc)
 {
-	t_refs	*tmp;
-	t_refs	*tmp2;
+	t_list	*tmp;
+	t_list	*tmp2;
 	int		i;
 
 	i = -1;
@@ -65,21 +65,7 @@ int	gc_flush(t_collector *gc)
 	- Ne libère pas le tableau contenant les couches*/
 int	gc_flush_layer(t_collector *gc, size_t layer)
 {
-	t_refs	*tmp;
-	t_refs	*tmp2;
-
-	if (!gc)
+	if (!gc || !gc->ref_layers[layer])
 		return (1);
-	tmp = gc->ref_layers[layer];
-	while (tmp && tmp->next)
-	{
-		tmp2 = tmp->next;
-		if (tmp->reference)
-			free_ref(tmp);
-		free(tmp);
-		tmp = tmp2;
-	}
-	free(gc->ref_layers);
-	return (0);
+	ft_lstclear(&gc->ref_layers[layer], free);
 }
-

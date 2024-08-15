@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 16:41:34 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/10 13:16:33 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/15 22:53:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	- Renvoie l'adresse mise à jour ou NULL en cas de problème.*/
 void	*gc_replace_ref(t_collector *gc, void *new_ref, void *old_ref)
 {
-	t_refs	*tmp;
+	t_list	*tmp;
 
 	if (!gc || !old_ref || !gc->ref_layers
 		|| !*gc->ref_layers)
@@ -27,11 +27,11 @@ void	*gc_replace_ref(t_collector *gc, void *new_ref, void *old_ref)
 	if (tmp)
 	{
 		free_ref(tmp);
-		tmp->reference = new_ref;
+		tmp->content = new_ref;
 	}
 	else
 		return (NULL);
-	return (tmp->reference);
+	return (tmp->content);
 }
 
 /*Déplace l'élément qui contient [ref] vers la couche [layer].
@@ -41,9 +41,9 @@ void	*gc_replace_ref(t_collector *gc, void *new_ref, void *old_ref)
 	- Renvoie 0 en cas de succès*/
 int	gc_switch_layer(t_collector *gc, void *ref, size_t layer)
 {
-	t_refs	*tmp;
-	t_refs	*prev;
-	t_refs	*next;
+	t_list	*tmp;
+	t_list	*prev;
+	t_list	*next;
 
 	if (!gc || !ref || layer >= gc->nb_layers)
 		return (1);
