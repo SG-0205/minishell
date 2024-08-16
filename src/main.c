@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 10:13:16 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 16:45:44 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,60 +27,13 @@ t_bool	empty_line(char *input)
 
 void	print_env(t_mshell *data)
 {
-	int	i;
+	t_envar	*tmp;
 
-	i = -1;
-	while (data->env[++i])
-		printf("ENV[%d] = %s\n", i, data->env[i]);
-}
-
-void	print_path(t_mshell *data)
-{
-	int	i;
-
-	i = -1;
-	while (data->path[++i])
-		printf("PATH[%d] = %s\n", i, data->path[i]);
-}
-
-char	**split_path(t_mshell *data)
-{
-	int	i;
-	int	size;
-
-	i = -1;
 	if (!data || !data->env)
-		return (NULL);
-	data->path = gc_split(gc_strtrim(ft_arrfind(data->env, "PATH="), "PATH=",
-				data->gc, 0), ':', data->gc, 0);
-	if (!data->path)
-		return (NULL);
-	return (NULL);
-}
-
-char	**env_dup(t_mshell *data, char **env)
-{
-	int		i;
-	int		size;
-	char	**new;
-
-	if (!env || !*env || !data)
-		return (NULL);
-	i = -1;
-	size = ft_arrlen((void **)env);
-	new = (char **)gc_malloc(data->gc, sizeof(char *) * (size + 1), 0);
-	if (!new)
-		return (NULL);
-	while (++i < size)
-	{
-		new[i] = (char *)gc_malloc(data->gc, sizeof(char *) * (ft_strlen(env[i])
-				+ 1), 0);
-		if (!new[i])
-			return (NULL);
-		new[i] = ft_strcpy(new[i], env[i]);
-	}
-	new[i] = NULL;
-	return (new);
+		return ;
+	tmp = data->env;
+	while (tmp)
+		(printf("%s = %s\n", tmp->name, tmp->value), tmp = tmp->next);
 }
 
 t_bool	init_data(t_mshell *data, char **env)
@@ -90,11 +43,9 @@ t_bool	init_data(t_mshell *data, char **env)
 	data->gc = gc_init(1);
 	if (!data->gc)
 		return (FALSE);
-	data->env = env_dup(data, env);
-	if (!data->env)
+	if (build_var_list(env, data) == ENV_ERROR)
 		return (FALSE);
-	print_env(data);
-	data->env = split_path(data);
+	// print_env(data);
 	if (signal_handlers_setup(data) == FALSE)
 		return (FALSE);
 	return (TRUE);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 09:11:23 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 10:09:10 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 14:26:02 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ char	**gc_split(char const *s, char c, t_collector *gc, size_t layer)
 	if (!s)
 		return (NULL);
 	array = (char **)gc_malloc(gc, (ft_countwords(s, c) + 1)
-			* sizeof(char *), 0);
+			* sizeof(char *), layer);
 	if (!array)
 		return (NULL);
 	ft_initarray(array, s, c, gc);
