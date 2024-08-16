@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 21:57:22 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 09:53:24 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ int						gc_switch_layer(t_collector *gc,
 void					*gc_replace_ref(t_collector *gc,
 							void *new_ref, void *old_ref);
 t_list					*get_layer(t_collector *gc, void *ref);
+char					**gc_split(char const *s, char c,
+							t_collector *gc, size_t layer);
+char					*gc_strtrim(char const *s, char const *set,
+							t_collector *gc, size_t layer);
 // DEBUG
 void					gc_print_layers(t_collector *gc);
 void					gc_print(t_collector *gc);

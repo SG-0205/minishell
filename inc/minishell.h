@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:56:02 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 08:59:31 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum e_sighandlers_id
 typedef struct s_mshell
 {
 	char				**env;
+	char				**path;
 	struct sigaction	*sighandlers;
 	t_collector			*gc;
 }						t_mshell;

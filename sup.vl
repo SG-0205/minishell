@@ -1,5 +1,0 @@
-{
-   RM READLINE MEMERRORS
-   fun:readline_internal_teardown
-   fun:readline
-}

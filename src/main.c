@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:38:38 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:13:16 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,31 @@ void	print_env(t_mshell *data)
 
 	i = -1;
 	while (data->env[++i])
-		printf("NEW[%d] = %s\n", i, data->env[i]);
+		printf("ENV[%d] = %s\n", i, data->env[i]);
+}
+
+void	print_path(t_mshell *data)
+{
+	int	i;
+
+	i = -1;
+	while (data->path[++i])
+		printf("PATH[%d] = %s\n", i, data->path[i]);
+}
+
+char	**split_path(t_mshell *data)
+{
+	int	i;
+	int	size;
+
+	i = -1;
+	if (!data || !data->env)
+		return (NULL);
+	data->path = gc_split(gc_strtrim(ft_arrfind(data->env, "PATH="), "PATH=",
+				data->gc, 0), ':', data->gc, 0);
+	if (!data->path)
+		return (NULL);
+	return (NULL);
 }
 
 char	**env_dup(t_mshell *data, char **env)
@@ -44,14 +68,13 @@ char	**env_dup(t_mshell *data, char **env)
 		return (NULL);
 	i = -1;
 	size = ft_arrlen((void **)env);
-	printf("ENV_LEN = %d\n", size);
 	new = (char **)gc_malloc(data->gc, sizeof(char *) * (size + 1), 0);
 	if (!new)
 		return (NULL);
 	while (++i < size)
 	{
-		new[i] = (char *)gc_malloc(data->gc, sizeof(char *)
-				* (ft_strlen(env[i]) + 1), 0);
+		new[i] = (char *)gc_malloc(data->gc, sizeof(char *) * (ft_strlen(env[i])
+				+ 1), 0);
 		if (!new[i])
 			return (NULL);
 		new[i] = ft_strcpy(new[i], env[i]);
@@ -71,6 +94,7 @@ t_bool	init_data(t_mshell *data, char **env)
 	if (!data->env)
 		return (FALSE);
 	print_env(data);
+	data->env = split_path(data);
 	if (signal_handlers_setup(data) == FALSE)
 		return (FALSE);
 	return (TRUE);
@@ -109,5 +133,6 @@ int	main(int argc, char **argv, char **env)
 		printf("%s\n", buffer);
 	}
 	clear_data(data);
+	free(buffer);
 	return (0);
 }

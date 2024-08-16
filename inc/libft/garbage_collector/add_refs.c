@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 23:02:41 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 09:31:21 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	gc_add_ref(t_collector *gc, void *ref, size_t layer)
 // 	*d_test = 5;
 // 	t_collector *c_test = (t_collector *)gc_malloc(gc,
 // 		sizeof(t_collector), 0);
+// 	gc_split("123:456:789", ':', gc, 0);
 // 	gc_print_layers(gc);
 // 	gc_flush(gc);
 // 	return (0);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 22:40:57 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/04/16 17:22:13 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/16 09:29:31 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ void				ft_arrdup(void **dst, void **src);
 void				ft_arrfree(void **array);
 char				*ft_arrcmp(char **array, char *str);
 int					ft_arrloc(char **array, char *to_search);
+char				*ft_arrfind(char **array, char *to_find);
 double				ft_sqrt(double n);
 int					ft_powerofi(int nb, int exp);
 
