@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/18 22:47:10 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/18 23:16:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,6 @@ t_bool	empty_line(char *input)
 		if (input[i] != ' ')
 			return (FALSE);
 	return (TRUE);
-}
-
-void	print_env(t_mshell *data)
-{
-	t_envar	*tmp;
-
-	if (!data || !data->env)
-		return ;
-	tmp = data->env;
-	while (tmp)
-		(printf("%s = %s\n", tmp->name, tmp->value), tmp = tmp->next);
 }
 
 t_bool	init_data(t_mshell *data, char **env)

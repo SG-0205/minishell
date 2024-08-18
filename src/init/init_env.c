@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/18 22:17:36 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:50:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 			data->gc, 0);
 	if (!new->value)
 		return (NULL);
-	new->value = ft_strcpy(new->value, &full_var[ft_lentillc(full_var, '=') + 1]);
+	new->value = ft_strcpy(new->value,
+			&full_var[ft_lentillc(full_var, '=') + 1]);
 	return (new);
 }
 
@@ -60,6 +61,6 @@ int	build_var_list(char **env, t_mshell *data)
 	env_len = ft_arrlen((void **)env);
 	data->env = env_cpy(env[0], data);
 	while (++i < env_len)
-		get_last_var(data->env)->next = env_cpy(env[i], data);
+		(get_last_var(data->env)->next = env_cpy(env[i], data));
 	return (ENV_FULL);
 }
