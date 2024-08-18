@@ -1,24 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansions.c                                       :+:      :+:    :+:   */
+/*   gc_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/18 21:43:23 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/18 22:25:52 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/18 22:36:15 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "garbage_collector.h"
 
-// t_bool	check_closure(char *str)
-// {
-// 	int		i;
-// 	t_bool	validate;
+char	*gc_strdup(char *str, t_collector *gc, size_t layer)
+{
+	char	*new;
 
-// 	if (!str)
-// 		return (FALSE);
-// 	i = -1;
-	
-// }
+	if (!str || !gc)
+		return (NULL);
+	new = (char *)gc_malloc(gc, (sizeof(char) * (ft_strlen(str) + 1)), layer);
+	if (!new)
+		return (NULL);
+	new = ft_strcpy(new, str);
+	return (new);
+}

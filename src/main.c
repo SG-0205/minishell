@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 16:45:44 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:47:10 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_bool	init_data(t_mshell *data, char **env)
 		return (FALSE);
 	if (build_var_list(env, data) == ENV_ERROR)
 		return (FALSE);
-	// print_env(data);
 	if (signal_handlers_setup(data) == FALSE)
 		return (FALSE);
 	return (TRUE);
@@ -70,7 +69,6 @@ int	main(int argc, char **argv, char **env)
 	data = (t_mshell *)malloc(sizeof(t_mshell));
 	if (!data || init_data(data, env) == FALSE)
 		return (1);
-	printf("%s\n", env[1]);
 	while (1)
 	{
 		buffer = readline(GREEN ITALIC "Minishell> " RESET);
@@ -83,6 +81,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		printf("%s\n", buffer);
 	}
+	print_env(data);
 	clear_data(data);
 	free(buffer);
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 16:37:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:31:21 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ char		*gc_strtrim(char const *s, char const *set, t_collector *gc,
 char		*gc_strjoin(const char *s1, char const *s2, t_collector *gc,
 				size_t layer);
 char		*gc_strnew(size_t size, t_collector *gc, size_t layer);
+char		*gc_strdup(char *str, t_collector *gc, size_t layer);
 // DEBUG
 void		gc_print_layers(t_collector *gc);
 void		gc_print(t_collector *gc);

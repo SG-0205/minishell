@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 16:43:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/18 22:17:36 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_envar	*get_last_var(t_envar *start)
 	return (tmp);
 }
 
-t_envar	*new_var(char *full_var, t_mshell *data)
+t_envar	*env_cpy(char *full_var, t_mshell *data)
 {
 	t_envar	*new;
 
@@ -50,6 +50,7 @@ int	build_var_list(char **env, t_mshell *data)
 {
 	int	i;
 	int	env_len;
+	t_envar	tmp;
 
 	if (!data)
 		return (ENV_ERROR);
@@ -57,8 +58,8 @@ int	build_var_list(char **env, t_mshell *data)
 		return (ENV_EMPTY);
 	i = 0;
 	env_len = ft_arrlen((void **)env);
-	data->env = new_var(env[0], data);
+	data->env = env_cpy(env[0], data);
 	while (++i < env_len)
-		get_last_var(data->env)->next = new_var(env[i], data);
+		get_last_var(data->env)->next = env_cpy(env[i], data);
 	return (ENV_FULL);
 }
