@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/18 22:44:51 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/19 19:13:34 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,13 @@
 
 # define SIG_NB 3
 # define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;"
-// # define
+# define MANAGED_QUOTES "\'\"`"
+# define SQ_SEP '\x1F'
+# define DQ_SEP '\x1E'
+# define CMD_SEP '\x1D'
+# define VAR_SEP '\x1C'
+# define UNMANAGED_MCHARS "\\;"
+# define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\\x"
 
 typedef struct s_envar	t_envar;
 
@@ -63,6 +69,14 @@ typedef enum e_sighandlers_id
 	CTRL_BS
 }						t_sighdlrid;
 
+typedef struct e_expcheck
+{
+	int					sq_count;
+	int					dq_count;
+	int					cmd_exp_count;
+	char				*to_expand;
+}						t_expand;
+
 typedef struct s_envar
 {
 	char				*name;
@@ -75,6 +89,7 @@ typedef struct s_mshell
 	struct sigaction	*sighandlers;
 	t_collector			*gc;
 	t_envar				*env;
+	char				***cmds;
 }						t_mshell;
 
 void					clean_exit(t_mshell *data);
@@ -83,8 +98,14 @@ void					clean_exit(t_mshell *data);
 t_bool					signal_handlers_setup(t_mshell *data);
 int						build_var_list(char **env, t_mshell *data);
 t_envar					*env_cpy(char *full_var, t_mshell *data);
+
+//VAR MANAGEMENT
 t_envar					*get_last_var(t_envar *start);
 int						update_var(t_mshell *data, char *name,
 							char *new_value);
 
+//STRING EXPANSION
+void					place_separator(t_expand *str, char to_replace);
+void					count_quotes(t_expand *str);
+t_expand				*new_expansion(char *str, t_mshell *data);
 #endif
