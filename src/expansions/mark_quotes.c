@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:49:00 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 10:35:49 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 22:36:55 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,6 @@ char	get_separator(char to_replace)
 		return (SQ_SEP);
 	else if (to_replace == '\"')
 		return (DQ_SEP);
-	else if (to_replace == '$')
-		return (VAR_SEP);
 	else
 		return (0);
 }

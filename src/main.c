@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 15:28:41 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 22:31:29 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,3 +76,6 @@ int	main(int argc, char **argv, char **env)
 	free(buffer);
 	return (0);
 }
+
+
+//RECUPERE INPUT -> DIVISER EN COMMANDES + ARGS -> ETENDRE LES ARGS -> EXECUTION

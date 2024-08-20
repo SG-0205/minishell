@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   mark_vars.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/20 13:51:10 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:04:23 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/20 22:43:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int	cd(char *path, t_mshell *data)
+void	mark_vars(t_expand *str)
 {
-	
+	int	i;
+
+	i = -1;
+	while (str->to_expand[++i])
+	{
+		
+	}
 }

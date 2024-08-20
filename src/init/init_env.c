@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 15:46:20 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 23:12:31 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ static int	default_env(t_mshell *data)
 	return (ENV_FULL);
 }
 
+static int //TODO VARIABLES SHELL
+
 int	build_var_list(char **env, t_mshell *data)
 {
 	int	i;
@@ -77,6 +79,8 @@ int	build_var_list(char **env, t_mshell *data)
 	i = 0;
 	env_len = ft_arrlen((void **)env);
 	data->env = env_cpy(env[0], data);
+	if (!data->env)
+		return (ENV_ERROR);
 	while (++i < env_len)
 		(get_last_var(data->env)->next = env_cpy(env[i], data));
 	update_var(data, "SHLVL", gc_itoa(ft_atoi(search_var(&data->env,
