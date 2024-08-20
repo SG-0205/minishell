@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/19 20:22:45 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:47:05 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,25 +27,51 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 	if (!new->to_expand)
 		return (NULL);
 	count_quotes(new);
-	while (MANAGED_QUOTES[++i] && i < 3)
+	while (MANAGED_QUOTES[++i] && i < 2)
 		place_separator(new, MANAGED_QUOTES[i]);
+	return (new);
 }
 
-int	count_pipes(char *raw_input)
+static t_bool	check_pipe(char *pipe_start)
 {
 	int	i;
-	int	count;
 
 	i = -1;
-	count = 0;
-	while (raw_input[++i])
-		if (raw_input[i] == '|')
-			count ++;
-	return (count);
+	while (pipe_start[++i])
+		if (ft_isalnum(pipe_start[i]) != 0)
+			return (TRUE);
+	return (FALSE);
 }
 
-char	***make_cmds(char *raw_input, t_mshell *data)
+int	count_cmds(char *raw_input)
 {
+	int	i;
 	int	pipe_count;
-	//TODO MALLOC SELON LE NOMBRE DE PIPES ET DE `ls`
+	int	sub_count;
+
+	i = -1;
+	pipe_count = 1;
+	sub_count = 0;
+	while (raw_input[++i])
+		if (raw_input[i] == '|')
+			if (check_pipe(&raw_input[i]) == TRUE)
+				pipe_count ++;
+	i = -1;
+	while (raw_input[++i])
+		if (raw_input[i] == '`')
+			sub_count ++;
+	if (sub_count % 2 != 0)
+		sub_count --;
+	return (pipe_count + (sub_count / 2));
 }
+
+// char	***make_cmds(char *raw_input, t_mshell *data)
+// {
+// 	char	***cmds;
+
+// 	cmds = (char ***)gc_malloc(data->gc, (sizeof(char **)
+// 				* (count_cmds(raw_input) + 1)), 0);
+// 	if (!cmds)
+// 		return (NULL);
+// 	cmds[count_cmds(raw_input)] = NULL;
+// }

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:49:00 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/19 18:49:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 10:35:49 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ void	count_quotes(t_expand *str)
 			str->sq_count += 1;
 		if (str->to_expand[i] == '\"')
 			str->dq_count += 1;
-		if (str->to_expand[i] == '`')
-			str->cmd_exp_count += 1;
 	}
 }
 
@@ -37,10 +35,6 @@ int	get_limiter(t_expand *str, char to_replace)
 	if (to_replace == '\'' && str->sq_count % 2 != 0)
 		return (1);
 	else if (to_replace == '\'' && str->sq_count % 2 == 0)
-		return (0);
-	if (to_replace == '`' && str->cmd_exp_count % 2 != 0)
-		return (1);
-	else if (to_replace == '`' && str->cmd_exp_count % 2 == 0)
 		return (0);
 	if (to_replace == '\"' && str->dq_count % 2 != 0)
 		return (1);
@@ -56,8 +50,6 @@ char	get_separator(char to_replace)
 		return (SQ_SEP);
 	else if (to_replace == '\"')
 		return (DQ_SEP);
-	else if (to_replace == '`')
-		return (CMD_SEP);
 	else if (to_replace == '$')
 		return (VAR_SEP);
 	else
@@ -72,8 +64,6 @@ char	get_count(t_expand *str, char to_replace)
 		return (str->sq_count);
 	else if (to_replace == '\"')
 		return (str->dq_count);
-	else if (to_replace == '`')
-		return (str->cmd_exp_count);
 	else
 		return (0);
 }

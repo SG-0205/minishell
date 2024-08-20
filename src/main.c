@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/18 23:16:45 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/20 15:28:41 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,10 @@ int	main(int argc, char **argv, char **env)
 	data = (t_mshell *)malloc(sizeof(t_mshell));
 	if (!data || init_data(data, env) == FALSE)
 		return (1);
+	builtin_error("cd", "te_st", EACCES, data);
 	while (1)
 	{
-		buffer = readline(GREEN ITALIC "Minishell> " RESET);
+		buffer = readline(GREEN ITALIC "minishell$ " RESET);
 		if (empty_line(buffer) == FALSE)
 			add_history(buffer);
 		if (!buffer)
@@ -68,7 +69,7 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		printf("%s\n", buffer);
+		printf("%s\tNB_CMD = %d\n", buffer, count_cmds(buffer));
 	}
 	print_env(data);
 	clear_data(data);
