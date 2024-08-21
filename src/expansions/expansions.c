@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 12:57:36 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:32:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 	new = (t_expand *)gc_malloc(data->gc, sizeof(t_expand), 0);
 	if (!new)
 		return (NULL);
+	new->cmd_exp_count = 0;
+	new->dq_count = 0;
+	new->sq_count = 0;
+	new->var_count = 0;
 	new->to_expand = gc_strdup(str, data->gc, 0);
 	if (!new->to_expand)
 		return (NULL);

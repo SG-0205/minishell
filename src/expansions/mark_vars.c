@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 13:03:44 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:14:09 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@ static t_envar	**store_vars(t_mshell *data, char **names, t_expand *str)
 	{
 		search_attempt = search_var(&data->env, names[i]);
 		if (!search_attempt)
-			new[i] = search_var(&data->env, "\x1A");
+			new[i] = search_var(&data->env, "\x1A"), printf("EMPTY_VAR INSERTED\n");
 		else
-			new[i] = search_attempt;
+			new[i] = search_attempt, printf("\n%s=%s\n", search_attempt->name, search_attempt->value);
 	}
 	return (new);
 }
