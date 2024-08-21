@@ -6,13 +6,13 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 13:51:10 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:04:23 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 10:30:28 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+// #include "../../inc/minishell.h"
 
-int	cd(char *path, t_mshell *data)
-{
+// int	cd(char *path, t_mshell *data)
+// {
 	
-}
+// }

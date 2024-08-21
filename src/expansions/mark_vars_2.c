@@ -1,29 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   mark_vars_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 23:16:09 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 10:11:18 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/21 13:00:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int	print_env(t_mshell *data)
+char	**fill_var_names(char *to_expand, int var_count,
+	t_mshell *data, char **names)
 {
-	t_envar	*tmp;
+	int	i;
+	int	j;
 
-	if (!data || !data->env)
-		return (1);
-	tmp = data->env;
-	while (tmp)
+	if (!to_expand || !data || !names)
+		return (NULL);
+	i = -1;
+	j = 0;
+	while (to_expand[++i] && var_count > 0)
 	{
-		if (tmp->hidden == FALSE)		
-			printf("%s=%s\n", tmp->name, tmp->value);
-		tmp = tmp->next;
+		if (to_expand[i] == '$'
+			&& validate_var(&to_expand[i]) == TRUE)
+		{
+			names[j] = get_var_name(&to_expand[i], data);
+			if (!names[j])
+				return (NULL);
+			j ++;
+			var_count --;
+		}
 	}
-	return (0);
+	return (names);
 }

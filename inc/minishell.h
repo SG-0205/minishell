@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 23:11:16 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:02:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,14 @@
 # include <limits.h>
 
 # define SIG_NB 3
-# define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;"
+# define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
 # define MANAGED_QUOTES "\'\""
 # define SQ_SEP '\x1F'
 # define DQ_SEP '\x1E'
 # define CMD_SEP '\x1D'
 # define VAR_SEP '\x1C'
 # define UNMANAGED_MCHARS "\\;"
-# define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\\x"
-
-sig_atomic_t	g_last_return;
+# define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
 typedef struct s_envar	t_envar;
 
@@ -50,6 +48,13 @@ typedef enum e_envmod
 	MOD_KO,
 	NO_VAR
 }						t_envmod;
+
+typedef enum e_varcheck
+{
+	VARS_FOUND,
+	VARS_NONE,
+	VARS_ERROR
+}						t_varcheck;
 
 typedef enum e_export_return
 {
@@ -77,6 +82,8 @@ typedef struct e_expcheck
 	int					sq_count;
 	int					dq_count;
 	int					cmd_exp_count;
+	int					var_count;
+	t_envar				**vars_to_insert;
 	char				*to_expand;
 }						t_expand;
 
@@ -85,6 +92,7 @@ typedef struct s_envar
 	char				*name;
 	char				*value;
 	t_envar				*next;
+	t_bool				hidden;
 }						t_envar;
 
 typedef struct s_mshell
@@ -108,7 +116,8 @@ t_envar					*get_last_var(t_envar *start);
 int						update_var(t_mshell *data, char *name,
 							char *new_value);
 int						print_env(t_mshell *data);
-t_envar					*new_var(char *name, char *value, t_mshell *data);
+t_envar					*new_var(char *name, char *value, t_mshell *data,
+							t_bool hide);
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);
@@ -116,6 +125,11 @@ void					count_quotes(t_expand *str);
 int						count_cmds(char *raw_input);
 t_envar					*search_var(t_envar **first_var, char *var_name);
 t_expand				*new_expansion(char *str, t_mshell *data);
+char					*get_var_name(char *var_start, t_mshell *data);
+char					**fill_var_names(char *to_expand, int var_count,
+							t_mshell *data, char **names);
+int						mark_vars(t_expand *str, t_mshell *data);
+t_bool					validate_var(char *var_start);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,

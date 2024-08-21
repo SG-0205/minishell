@@ -6,19 +6,117 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:43:45 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 13:03:44 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	mark_vars(t_expand *str)
+t_bool	validate_var(char *var_start)
 {
 	int	i;
 
-	i = -1;
-	while (str->to_expand[++i])
+	i = 0;
+	if (var_start[i] != '$')
+		return (FALSE);
+	i++;
+	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
+		|| ft_cisar(var_start[i], "123456789 ") != 0
+		|| var_start[i] == '\0')
+		return (FALSE);
+	return (TRUE);
+}
+
+char	*get_var_name(char *var_start, t_mshell *data)
+{
+	int		i;
+	char	*name;
+
+	i = 0;
+	if (var_start[i] != '$')
+		return (FALSE);
+	i++;
+	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
+		|| ft_cisar(var_start[i], "123456789 ") != 0)
+		return (NULL);
+	while (var_start[++i])
 	{
-		
+		if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
+			|| ft_cisar(var_start[i], ECHO_ESCAPE_SEQUENCES)
+			|| var_start[i] == '$' || var_start[i] == ' ')
+			break ;
 	}
+	name = gc_strnew(ft_lentillc(var_start + 1, var_start[i]), data->gc, 0);
+	if (!name)
+		return (NULL);
+	name = ft_strncpy(name, var_start + 1, ft_lentillc(var_start + 1,
+				var_start[i]));
+	return (name);
+}
+
+static t_envar	**store_vars(t_mshell *data, char **names, t_expand *str)
+{
+	t_envar	**new;
+	int		i;
+	t_envar	*search_attempt;
+
+	i = -1;
+	if (!data || !names || !*names)
+		return (NULL);
+	new = (t_envar **)gc_malloc(data->gc, (sizeof(t_envar *)
+				* (str->var_count + 1)), 0);
+	if (!new)
+		return (NULL);
+	while (++i <= str->var_count)
+		new[i] = NULL;
+	i = -1;
+	while (++i < str->var_count && names[i])
+	{
+		search_attempt = search_var(&data->env, names[i]);
+		if (!search_attempt)
+			new[i] = search_var(&data->env, "\x1A");
+		else
+			new[i] = search_attempt;
+	}
+	return (new);
+}
+
+static int	count_vars(char *str, t_mshell *data)
+{
+	int	i;
+	int	var_count;
+
+	i = -1;
+	var_count = 0;
+	if (!str || !data)
+		return (var_count);
+	while (str[++i])
+	{
+		if (str[i] == '$'
+			&& validate_var(&str[i]) == TRUE)
+			var_count ++;
+	}
+	return (var_count);
+}
+
+int	mark_vars(t_expand *str, t_mshell *data)
+{
+	int		var_count;
+	char	**var_names;
+
+	if (!str || !str->to_expand || !data)
+		return (VARS_ERROR);
+	str->var_count = count_vars(str->to_expand, data);
+	if (str->var_count < 1)
+		return (VARS_NONE);
+	var_count = str->var_count;
+	var_names = (char **)gc_malloc(data->gc,
+			(sizeof(char *) * (str->var_count + 1)), 0);
+	if (!var_names)
+		return (VARS_ERROR);
+	fill_var_names(str->to_expand, var_count, data, var_names);
+	str->vars_to_insert = store_vars(data, var_names, str);
+	if (!str->vars_to_insert)
+		return (VARS_ERROR);
+	return (VARS_FOUND);
 }

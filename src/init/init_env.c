@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 23:12:31 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:11:12 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 	if (!new)
 		return (NULL);
 	new->next = NULL;
+	new->hidden = FALSE;
 	new->name = gc_strnew((ft_lentillc(full_var, '=') + 1), data->gc, 0);
 	if (!new->name)
 		return (NULL);
@@ -56,16 +57,24 @@ static int	default_env(t_mshell *data)
 		return (ENV_ERROR);
 	if (!getcwd(pwd, sizeof(pwd)))
 		return (ENV_ERROR);
-	data->env = new_var("PWD", pwd, data);
+	data->env = new_var("PWD", pwd, data, FALSE);
 	if (!data->env)
 		return (ENV_ERROR);
-	data->env->next = new_var("SHLVL", "1", data);
+	data->env->next = new_var("SHLVL", "1", data, FALSE);
 	if (!data->env->next)
 		return (ENV_ERROR);
 	return (ENV_FULL);
 }
 
-static int //TODO VARIABLES SHELL
+static int	create_hidden_vars(t_mshell *data)
+{
+	if (!data || !data->env)
+		return (ENV_ERROR);
+	get_last_var(data->env)->next = new_var("$0", "minishell", data, TRUE);
+	get_last_var(data->env)->next = new_var("$?", "\0", data, TRUE);
+	get_last_var(data->env)->next = new_var("\x1A", "", data, TRUE);
+	return (ENV_FULL);
+}
 
 int	build_var_list(char **env, t_mshell *data)
 {
@@ -85,5 +94,6 @@ int	build_var_list(char **env, t_mshell *data)
 		(get_last_var(data->env)->next = env_cpy(env[i], data));
 	update_var(data, "SHLVL", gc_itoa(ft_atoi(search_var(&data->env,
 			"SHLVL")->value) + 1, data->gc, 0));
+	create_hidden_vars(data);
 	return (ENV_FULL);
 }

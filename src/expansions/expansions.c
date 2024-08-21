@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:41:29 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:57:36 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 	count_quotes(new);
 	while (MANAGED_QUOTES[++i] && i < 2)
 		place_separator(new, MANAGED_QUOTES[i]);
-	mark_vars(new);
+	if (mark_vars(new, data) == VARS_ERROR)
+		return (NULL);
 	return (new);
 }
 

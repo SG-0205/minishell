@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:31:29 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 12:56:48 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	main(int argc, char **argv, char **env)
 {
 	char		*buffer;
 	t_mshell	*data;
+	t_expand	*test;
 
 	if (argc != 1)
 		return (1);
@@ -58,7 +59,6 @@ int	main(int argc, char **argv, char **env)
 	data = (t_mshell *)malloc(sizeof(t_mshell));
 	if (!data || init_data(data, env) == FALSE)
 		return (1);
-	builtin_error("cd", "te_st", EACCES, data);
 	while (1)
 	{
 		buffer = readline(GREEN ITALIC "minishell$ " RESET);
@@ -69,7 +69,8 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		printf("%s\tNB_CMD = %d\n", buffer, count_cmds(buffer));
+		test = new_expansion(buffer, data);
+		printf("VARCOUNT = %d\n", test->var_count);
 	}
 	print_env(data);
 	clear_data(data);
@@ -78,4 +79,4 @@ int	main(int argc, char **argv, char **env)
 }
 
 
-//RECUPERE INPUT -> DIVISER EN COMMANDES + ARGS -> ETENDRE LES ARGS -> EXECUTION
+//RECUPERE INPUT -> DIVISER EN COMMANDES + ARGS -> [REDIRECTIONS INPUT] -> ETENDRE LES ARGS -> EXECUTION -> [REDIRECTIONS OUTPUT]

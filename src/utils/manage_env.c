@@ -6,13 +6,13 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 21:49:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 11:01:50 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/21 10:38:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-t_envar	*new_var(char *name, char *value, t_mshell *data)
+t_envar	*new_var(char *name, char *value, t_mshell *data, t_bool hide)
 {
 	t_envar	*new;
 
@@ -28,6 +28,7 @@ t_envar	*new_var(char *name, char *value, t_mshell *data)
 	if (!new->name)
 		return (NULL);
 	new->next = NULL;
+	new->hidden = hide;
 	return (new);
 }
 
@@ -56,11 +57,11 @@ int	update_var(t_mshell *data, char *name, char *new_value)
 	tmp = search_var(&data->env, name);
 	if (!tmp)
 	{
-		get_last_var(data->env)->next = new_var(name, new_value, data);
+		get_last_var(data->env)->next = new_var(name, new_value, data, FALSE);
 		return (MOD_OK);
 	}
 	if (!new_value)
-		tmp->value = "";
+		tmp->value = "\0";
 	else
 		tmp->value = gc_strdup(new_value, data->gc, 0);
 	if (!tmp->value)
