@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:05:39 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:26:39 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/22 19:50:11 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static t_bool	check_parenthesis(char *start)
 	if (count == 2)
 		return (TRUE);
 	else
-		retrun (FALSE);
+		return (FALSE);
 }
 
 static int	check_dollar_fct(char *raw_input)

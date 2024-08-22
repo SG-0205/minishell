@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 13:14:09 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:34:16 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,10 @@ int	mark_vars(t_expand *str, t_mshell *data)
 			(sizeof(char *) * (str->var_count + 1)), 0);
 	if (!var_names)
 		return (VARS_ERROR);
-	fill_var_names(str->to_expand, var_count, data, var_names);
+	var_names = fill_var_names(str->to_expand, var_count, data, var_names);
 	str->vars_to_insert = store_vars(data, var_names, str);
 	if (!str->vars_to_insert)
 		return (VARS_ERROR);
+	place_var_sep(str, data);
 	return (VARS_FOUND);
 }

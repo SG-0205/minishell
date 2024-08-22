@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 13:02:47 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:35:29 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define SQ_SEP '\x1F'
 # define DQ_SEP '\x1E'
 # define CMD_SEP '\x1D'
-# define VAR_SEP '\x1C'
+# define VAR_SEP 'A'
 # define UNMANAGED_MCHARS "\\;"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
@@ -130,6 +130,7 @@ char					**fill_var_names(char *to_expand, int var_count,
 							t_mshell *data, char **names);
 int						mark_vars(t_expand *str, t_mshell *data);
 t_bool					validate_var(char *var_start);
+void					place_var_sep(t_expand *exp, t_mshell *data);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,

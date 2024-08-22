@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 13:28:51 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:21:39 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		test = new_expansion(buffer, data);
 		if (test)
-			printf("VARCOUNT = %d\n", test->var_count);
+			printf("VARCOUNT = %d\nW\\EXP = %s\n", test->var_count, test->to_expand);
 	}
 	print_env(data);
 	clear_data(data);
