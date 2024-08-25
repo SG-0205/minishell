@@ -6,26 +6,11 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/24 13:58:48 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 12:20:53 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
-
-t_bool	validate_var(char *var_start)
-{
-	int	i;
-
-	i = 0;
-	if (var_start[i] != '$')
-		return (FALSE);
-	i++;
-	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
-		|| ft_cisar(var_start[i], "123456789 ") != 0
-		|| var_start[i] == '\0')
-		return (FALSE);
-	return (TRUE);
-}
 
 char	*get_var_name(char *var_start, t_mshell *data)
 {
@@ -41,9 +26,7 @@ char	*get_var_name(char *var_start, t_mshell *data)
 		return (NULL);
 	while (var_start[++i])
 	{
-		if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
-			|| ft_cisar(var_start[i], ECHO_ESCAPE_SEQUENCES)
-			|| var_start[i] == '$' || var_start[i] == ' ')
+		if (ft_isvarname(var_start[i]) == FALSE)
 			break ;
 	}
 	name = gc_strnew(ft_lentillc(var_start + 1, var_start[i]), data->gc, 0);

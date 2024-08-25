@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/22 20:35:29 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 12:16:26 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ char					**fill_var_names(char *to_expand, int var_count,
 int						mark_vars(t_expand *str, t_mshell *data);
 t_bool					validate_var(char *var_start);
 void					place_var_sep(t_expand *exp, t_mshell *data);
+t_bool					ft_isvarname(char var_char);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,
