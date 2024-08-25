@@ -1,29 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   detect_quoting.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 23:16:09 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:18:18 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/25 13:35:43 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/25 14:58:39 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int	print_env(t_mshell *data)
-{
-	t_envar	*tmp;
-
-	if (!data || !data->env)
-		return (1);
-	tmp = data->env;
-	while (tmp)
-	{
-		if (tmp->hidden == FALSE)
-			printf("%s=%s\n", tmp->name, tmp->value);
-		tmp = tmp->next;
-	}
-	return (0);
-}
+// t_bool	is_quoted(char quote_type, char *ptr_in_str, char *str)

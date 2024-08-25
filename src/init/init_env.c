@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 12:11:12 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 13:17:13 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 		return (NULL);
 	new->name = ft_strncpy(new->name, full_var, ft_lentillc(full_var, '='));
 	new->value = gc_strnew(ft_strlen(&full_var[ft_lentillc(full_var, '=') + 1]),
-			data->gc, 0);
+		data->gc, 0);
 	if (!new->value)
 		return (NULL);
-	new->value = ft_strcpy(new->value,
-			&full_var[ft_lentillc(full_var, '=') + 1]);
+	new->value = ft_strcpy(new->value, &full_var[ft_lentillc(full_var, '=')
+		+ 1]);
 	return (new);
 }
 
@@ -73,6 +73,11 @@ static int	create_hidden_vars(t_mshell *data)
 	get_last_var(data->env)->next = new_var("$0", "minishell", data, TRUE);
 	get_last_var(data->env)->next = new_var("$?", "\0", data, TRUE);
 	get_last_var(data->env)->next = new_var("\x1A", "", data, TRUE);
+	if (!search_var(&data->env, "HOME"))
+		get_last_var(data->env)->next = new_var("~", NULL, data, TRUE);
+	else
+		get_last_var(data->env)->next = new_var("~", search_var(&data->env,
+				"HOME")->value, data, TRUE);
 	return (ENV_FULL);
 }
 
@@ -93,7 +98,7 @@ int	build_var_list(char **env, t_mshell *data)
 	while (++i < env_len)
 		(get_last_var(data->env)->next = env_cpy(env[i], data));
 	update_var(data, "SHLVL", gc_itoa(ft_atoi(search_var(&data->env,
-			"SHLVL")->value) + 1, data->gc, 0));
+					"SHLVL")->value) + 1, data->gc, 0));
 	create_hidden_vars(data);
 	return (ENV_FULL);
 }

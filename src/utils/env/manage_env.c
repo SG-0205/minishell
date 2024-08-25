@@ -6,11 +6,30 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 21:49:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/21 10:38:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 15:18:36 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
+
+int	var_list_position(t_envar **first_var, t_envar *var)
+{
+	t_envar	*tmp;
+	int		position;
+
+	if (!var || !first_var || !*first_var)
+		return (-1);
+	tmp = *first_var;
+	position = 0;
+	while (tmp)
+	{
+		if (tmp == var)
+			return (position);
+		position ++;
+		tmp = tmp->next;
+	}
+	return (-1);
+}
 
 t_envar	*new_var(char *name, char *value, t_mshell *data, t_bool hide)
 {
@@ -24,7 +43,10 @@ t_envar	*new_var(char *name, char *value, t_mshell *data, t_bool hide)
 	new->name = gc_strdup(name, data->gc, 0);
 	if (!new->name)
 		return (NULL);
-	new->value = gc_strdup(value, data->gc, 0);
+	if (!value)
+		new->value = NULL;
+	else
+		new->value = gc_strdup(value, data->gc, 0);
 	if (!new->name)
 		return (NULL);
 	new->next = NULL;
@@ -67,4 +89,16 @@ int	update_var(t_mshell *data, char *name, char *new_value)
 	if (!tmp->value)
 		return (MOD_KO);
 	return (MOD_OK);
+}
+
+t_envar	*dup_var(t_envar *var, t_mshell *data)
+{
+	t_envar	*dup;
+
+	if (!data || !data->gc || !var)
+		return (NULL);
+	dup = new_var(var->name, var->value, data, var->hidden);
+	if (!dup)
+		return (NULL);
+	return (dup);
 }

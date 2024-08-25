@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 12:16:26 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 15:27:41 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,21 @@
 # define SIG_NB 3
 # define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
 # define MANAGED_QUOTES "\'\""
-# define SQ_SEP '\x1F'
-# define DQ_SEP '\x1E'
-# define CMD_SEP '\x1D'
-# define VAR_SEP 'A'
+# define SQ_SEP "\x1F"
+# define DQ_SEP "\x1E"
+# define CMD_SEP "\x1D"
+# define VAR_SEP "A"
 # define UNMANAGED_MCHARS "\\;"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
 typedef struct s_envar	t_envar;
+
+typedef enum e_envsplit
+{
+	PUBLIC_VARS,
+	HIDDEN_VARS,
+	SPLIT_END
+}						t_envsplit;
 
 typedef enum e_envmod
 {
@@ -118,6 +125,12 @@ int						update_var(t_mshell *data, char *name,
 int						print_env(t_mshell *data);
 t_envar					*new_var(char *name, char *value, t_mshell *data,
 							t_bool hide);
+t_envar					*dup_var(t_envar *var, t_mshell *data);
+char					**env_list_to_array(t_mshell *data,
+							t_bool hidden);
+int						env_size(t_envar **env_start, t_bool count_hidden);
+int						var_list_position(t_envar **first_var, t_envar *var);
+
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);

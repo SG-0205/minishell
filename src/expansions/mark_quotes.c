@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mark_input.c                                       :+:      :+:    :+:   */
+/*   mark_quotes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:49:00 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/20 22:36:55 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 13:34:15 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ int	get_limiter(t_expand *str, char to_replace)
 char	get_separator(char to_replace)
 {
 	if (to_replace == '\'')
-		return (SQ_SEP);
+		return (*SQ_SEP);
 	else if (to_replace == '\"')
-		return (DQ_SEP);
+		return (*DQ_SEP);
 	else
 		return (0);
 }

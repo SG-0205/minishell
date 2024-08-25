@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 12:51:50 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 13:33:59 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ static void	cpy_and_sep_var(char *vars_marked, char *to_expand, int var_count)
 		if (to_expand[i] == '$'
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
-			vars_marked[j] = VAR_SEP;
+			vars_marked[j] = *VAR_SEP;
 			j++;
 			i++;
 			while (ft_isvarname(to_expand[i]) == TRUE)
 				cpy_var_name(&vars_marked[j], &to_expand[i], &i, &j);
-			vars_marked[j] = VAR_SEP;
+			vars_marked[j] = *VAR_SEP;
 			j++;
 		}
 		else

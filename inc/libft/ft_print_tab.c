@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_print_tab.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/18 23:16:09 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:18:18 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/25 14:49:22 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/25 15:02:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "libft.h"
 
-int	print_env(t_mshell *data)
+void	ft_print_tab(char **tab)
 {
-	t_envar	*tmp;
+	int	size;
+	int	i;
 
-	if (!data || !data->env)
-		return (1);
-	tmp = data->env;
-	while (tmp)
+	if (!tab || !*tab)
+		return ;
+	i = -1;
+	size = ft_arrlen((void **)tab);
+	while (++i < size)
 	{
-		if (tmp->hidden == FALSE)
-			printf("%s=%s\n", tmp->name, tmp->value);
-		tmp = tmp->next;
+		ft_putstr(tab[i]);
+		ft_putchar('\n');
 	}
-	return (0);
 }
