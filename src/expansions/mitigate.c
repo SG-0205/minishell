@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 16:18:35 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 17:21:37 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 17:25:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,5 @@ void	separator_mitigation(t_expand *exp, t_mshell *data)
 }
 
 //TODO REMPLACER LES SEPARATEURS EN TROP SELON LES QUOTES
-//		UTILISER UN BOOL POUR LES VARIABLES (1/2 = )
+//		UTILISER UN BOOL POUR LES VARIABLES (1/2 = $ | 2/2 = *exp->to_expand)
+//		LE RESTE DES SEPARATEURS EST SYMETRIQUE DANS LA NOUVELLE CHAINE
