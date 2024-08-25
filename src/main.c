@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:41:55 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 17:18:37 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **env)
 {
 	char		*buffer;
 	t_mshell	*data;
-	// t_expand	*test;
+	t_expand	*test;
 
 	if (argc != 1)
 		return (1);
@@ -69,7 +69,9 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		// test = new_expansion(buffer, data);
+		test = new_expansion(buffer, data);
+		if (test)
+			printf(YELLOW "EXPANDED:\t%s\n", test->to_expand);
 		env_list_to_array(data, FALSE);
 	}
 	print_env(data);

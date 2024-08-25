@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 13:33:59 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 17:22:12 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	place_var_sep(t_expand *exp, t_mshell *data)
 	if (!vars_marked)
 		return ;
 	cpy_and_sep_var(vars_marked, exp->to_expand, exp->var_count);
-	exp->to_expand = gc_strdup(vars_marked, data->gc, 0);
+	exp->expanded = gc_strdup(vars_marked, data->gc, 0);
 	if (!exp->to_expand)
 		return ;
 }
@@ -94,3 +94,4 @@ void	place_var_sep(t_expand *exp, t_mshell *data)
 
 //TODO VERIFIER CONDITIONS DE DELIMITATION DES VARIABLES , SAVOIR QUE FAIRE DE &
 //& SERA CONSIDERE COMME EOV - 24/08
+//	^	TOUT CHAR NON ALNUM + _ = EOV - 25/08

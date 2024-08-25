@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 13:25:55 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 17:22:36 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ static t_expand	*new_empty_exp_object(t_mshell *data)
 	new->var_count = 0;
 	new->to_expand = NULL;
 	new->vars_to_insert = NULL;
+	new->expanded = NULL;
 	return (new);
 }
 

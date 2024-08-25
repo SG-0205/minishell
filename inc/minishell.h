@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:27:41 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/25 17:22:02 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct e_expcheck
 	int					var_count;
 	t_envar				**vars_to_insert;
 	char				*to_expand;
+	char				*expanded;
 }						t_expand;
 
 typedef struct s_envar
@@ -145,6 +146,7 @@ int						mark_vars(t_expand *str, t_mshell *data);
 t_bool					validate_var(char *var_start);
 void					place_var_sep(t_expand *exp, t_mshell *data);
 t_bool					ft_isvarname(char var_char);
+t_bool					is_quoted(char quote_type, char *ptr_in_str, char *str);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,
