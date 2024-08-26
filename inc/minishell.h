@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 15:43:44 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 16:03:17 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,4 +155,5 @@ void					str_shrink(char *str);
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,
 							int errnum, t_mshell *data);
+char					*extend_relative_path(char *path, t_mshell *data);
 #endif

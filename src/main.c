@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 15:06:47 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 17:47:09 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	main(int argc, char **argv, char **env)
 {
 	char		*buffer;
 	t_mshell	*data;
-	t_expand	*test;
+	// t_expand	*test;
 
 	if (argc != 1)
 		return (1);
@@ -69,11 +69,12 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		test = new_expansion(buffer, data);
-		if (test)
-			printf(YELLOW "RAW:\t%s\n\nEXPANDED:\t%s\n", test->to_expand, test->expanded);
-		gc_flush_layer(data->gc, 1);
-		printf("%s\n", call_data_object()->env->name);
+		// test = new_expansion(buffer, data);
+		// if (test)
+		// 	printf(YELLOW "RAW:\t%s\n\nEXPANDED:\t%s\n", test->to_expand, test->expanded);
+		// gc_flush_layer(data->gc, 1);
+		printf("\nDUPVAR:\t%s\n", dup_var_value(data, "PWD"));
+		printf("\n\nPATH:\t%s\nMOD_PATH:\t%s\n", buffer, extend_relative_path(buffer, data));
 		// env_list_to_array(data, FALSE);
 	}
 	print_env(data);
