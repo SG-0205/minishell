@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 18:49:00 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 13:34:15 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:44:24 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ void	count_quotes(t_expand *str)
 	int	i;
 
 	i = -1;
-	if (!str || !str->to_expand)
+	if (!str || !str->expanded)
 		return ;
-	while (str->to_expand[++i])
+	while (str->expanded[++i])
 	{
-		if (str->to_expand[i] == '\'')
+		if (str->expanded[i] == '\'')
 			str->sq_count += 1;
-		if (str->to_expand[i] == '\"')
+		if (str->expanded[i] == '\"')
 			str->dq_count += 1;
 	}
 }
@@ -73,17 +73,18 @@ void	place_separator(t_expand *str, char to_replace)
 	char	sep;
 	int		count;
 
-	if (!str || !str->to_expand)
+	if (!str || !str->expanded)
 		return ;
 	sep = get_separator(to_replace);
 	limit = get_limiter(str, to_replace);
 	count = get_count(str, to_replace);
+	printf(BOLD "SEP:\t%c\nLIMIT:\t%d\nCOUNT:\t%d\n\n", sep, limit, count);
 	i = -1;
-	while (str->to_expand[++i] && count > limit)
+	while (str->expanded[++i] && count > limit)
 	{
-		if (str->to_expand[i] == to_replace)
+		if (str->expanded[i] == to_replace)
 		{
-			str->to_expand[i] = sep;
+			str->expanded[i] = sep;
 			count --;
 		}
 	}

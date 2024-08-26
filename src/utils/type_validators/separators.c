@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   separators.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/20 13:51:10 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 15:02:44 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/26 11:08:18 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/26 11:15:36 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
-int	cd(char *path, t_mshell *data)
+t_bool	is_sep(char c)
 {
-	if (!path || !data || !data->env)
-		return (-5);
-	// if (access())
-	return (0);
+	if (c == *DQ_SEP || c == *SQ_SEP || c == *VAR_SEP || c == *CMD_SEP)
+		return (TRUE);
+	else
+		return (FALSE);
 }

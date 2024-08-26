@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   str_manipulation.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/20 13:51:10 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 15:02:44 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/08/26 13:35:23 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/08/26 13:37:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
-int	cd(char *path, t_mshell *data)
+void	str_shrink(char *str)
 {
-	if (!path || !data || !data->env)
-		return (-5);
-	// if (access())
-	return (0);
+	int	i;
+
+	i = -1;
+	while (str[++i + 1])
+		str[i] = str[i + 1];
+	str[i] = 0;
 }

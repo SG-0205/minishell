@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 17:18:37 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:06:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_bool	init_data(t_mshell *data, char **env)
 {
 	if (!data)
 		return (FALSE);
-	data->gc = gc_init(1);
+	data->gc = gc_init(2);
 	if (!data->gc)
 		return (FALSE);
 	if (build_var_list(env, data) == ENV_ERROR)
@@ -71,8 +71,10 @@ int	main(int argc, char **argv, char **env)
 		}
 		test = new_expansion(buffer, data);
 		if (test)
-			printf(YELLOW "EXPANDED:\t%s\n", test->to_expand);
-		env_list_to_array(data, FALSE);
+			printf(YELLOW "RAW:\t%s\n\nEXPANDED:\t%s\n", test->to_expand, test->expanded);
+		gc_flush_layer(data->gc, 1);
+		printf("%s\n", call_data_object()->env->name);
+		// env_list_to_array(data, FALSE);
 	}
 	print_env(data);
 	clear_data(data);

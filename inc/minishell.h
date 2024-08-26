@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 17:22:02 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 15:43:44 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@
 # define SIG_NB 3
 # define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
 # define MANAGED_QUOTES "\'\""
-# define SQ_SEP "\x1F"
-# define DQ_SEP "\x1E"
-# define CMD_SEP "\x1D"
+# define SQ_SEP "\x1A"
+# define DQ_SEP "\x1B"
+# define CMD_SEP "\x1C"
 # define VAR_SEP "A"
 # define UNMANAGED_MCHARS "\\;"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
@@ -131,7 +131,8 @@ char					**env_list_to_array(t_mshell *data,
 							t_bool hidden);
 int						env_size(t_envar **env_start, t_bool count_hidden);
 int						var_list_position(t_envar **first_var, t_envar *var);
-
+void					reinit_pwd(t_mshell *data);
+char					*dup_var_value(t_mshell *data, char *var_name);
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);
@@ -146,7 +147,10 @@ int						mark_vars(t_expand *str, t_mshell *data);
 t_bool					validate_var(char *var_start);
 void					place_var_sep(t_expand *exp, t_mshell *data);
 t_bool					ft_isvarname(char var_char);
+t_bool					is_sep(char c);
 t_bool					is_quoted(char quote_type, char *ptr_in_str, char *str);
+void					separator_mitigation(t_expand *exp);
+void					str_shrink(char *str);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,

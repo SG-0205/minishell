@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 17:22:12 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 14:09:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ char	**fill_var_names(char *to_expand, int var_count,
 	while (to_expand[++i] && var_count > 0)
 	{
 		if (to_expand[i] == '$'
+			&& is_quoted(*SQ_SEP, &to_expand[i], to_expand) == FALSE
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
 			names[j] = get_var_name(&to_expand[i], data);
@@ -54,6 +55,7 @@ static void	cpy_and_sep_var(char *vars_marked, char *to_expand, int var_count)
 	while (to_expand[i] && j < (int)ft_strlen(to_expand) + var_count)
 	{
 		if (to_expand[i] == '$'
+			&& is_quoted(*SQ_SEP, &to_expand[i], to_expand) == FALSE
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
 			vars_marked[j] = *VAR_SEP;
@@ -61,8 +63,7 @@ static void	cpy_and_sep_var(char *vars_marked, char *to_expand, int var_count)
 			i++;
 			while (ft_isvarname(to_expand[i]) == TRUE)
 				cpy_var_name(&vars_marked[j], &to_expand[i], &i, &j);
-			vars_marked[j] = *VAR_SEP;
-			j++;
+			vars_marked[j++] = *VAR_SEP;
 		}
 		else
 		{
@@ -77,15 +78,15 @@ void	place_var_sep(t_expand *exp, t_mshell *data)
 {
 	char	*vars_marked;
 
-	if (!exp || !exp->to_expand || exp->var_count < 1)
+	if (!exp || !exp->expanded || !exp->to_expand || exp->var_count < 1)
 		return ;
 	vars_marked = (char *)gc_strnew((sizeof(char)
-				* (ft_strlen(exp->to_expand) + exp->var_count)), data->gc, 0);
+				* (ft_strlen(exp->to_expand) + exp->var_count)), data->gc, 1);
 	if (!vars_marked)
 		return ;
-	cpy_and_sep_var(vars_marked, exp->to_expand, exp->var_count);
-	exp->expanded = gc_strdup(vars_marked, data->gc, 0);
-	if (!exp->to_expand)
+	cpy_and_sep_var(vars_marked, exp->expanded, exp->var_count);
+	exp->expanded = gc_strdup(vars_marked, data->gc, 1);
+	if (!exp->expanded)
 		return ;
 }
 

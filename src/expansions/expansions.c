@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 17:22:36 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 13:26:48 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static t_expand	*new_empty_exp_object(t_mshell *data)
 {
 	t_expand	*new;
 
-	new = (t_expand *)gc_malloc(data->gc, sizeof(t_expand), 0);
+	new = (t_expand *)gc_malloc(data->gc, sizeof(t_expand), 1);
 	if (!new)
 		return (NULL);
 	new->cmd_exp_count = 0;
@@ -40,7 +40,10 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 	new = new_empty_exp_object(data);
 	if (!new)
 		return (NULL);
-	new->to_expand = gc_strdup(str, data->gc, 0);
+	new->to_expand = gc_strdup(str, data->gc, 1);
+	if (!new->to_expand)
+		return (NULL);
+	new->expanded = gc_strdup(new->to_expand, data->gc, 1);
 	if (!new->to_expand)
 		return (NULL);
 	count_quotes(new);
@@ -48,6 +51,7 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 		place_separator(new, MANAGED_QUOTES[i]);
 	if (mark_vars(new, data) == VARS_ERROR)
 		return (NULL);
+	separator_mitigation(new);
 	return (new);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 16:18:33 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:55:59 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*get_var_name(char *var_start, t_mshell *data)
 		if (ft_isvarname(var_start[i]) == FALSE)
 			break ;
 	}
-	name = gc_strnew(ft_lentillc(var_start + 1, var_start[i]), data->gc, 0);
+	name = gc_strnew(ft_lentillc(var_start + 1, var_start[i]), data->gc, 1);
 	if (!name)
 		return (NULL);
 	name = ft_strncpy(name, var_start + 1, ft_lentillc(var_start + 1,
@@ -47,7 +47,7 @@ static t_envar	**store_vars(t_mshell *data, char **names, t_expand *str)
 	if (!data || !names || !*names)
 		return (NULL);
 	new = (t_envar **)gc_malloc(data->gc, (sizeof(t_envar *)
-				* (str->var_count + 1)), 0);
+				* (str->var_count + 1)), 1);
 	if (!new)
 		return (NULL);
 	while (++i <= str->var_count)
@@ -87,17 +87,17 @@ int	mark_vars(t_expand *str, t_mshell *data)
 	int		var_count;
 	char	**var_names;
 
-	if (!str || !str->to_expand || !data)
+	if (!str || !str->expanded || !data)
 		return (VARS_ERROR);
-	str->var_count = count_vars(str->to_expand, data);
+	str->var_count = count_vars(str->expanded, data);
 	if (str->var_count < 1)
 		return (VARS_NONE);
 	var_count = str->var_count;
 	var_names = (char **)gc_malloc(data->gc,
-			(sizeof(char *) * (str->var_count + 1)), 0);
+			(sizeof(char *) * (str->var_count + 1)), 1);
 	if (!var_names)
 		return (VARS_ERROR);
-	var_names = fill_var_names(str->to_expand, var_count, data, var_names);
+	var_names = fill_var_names(str->expanded, var_count, data, var_names);
 	str->vars_to_insert = store_vars(data, var_names, str);
 	if (!str->vars_to_insert)
 		return (VARS_ERROR);
