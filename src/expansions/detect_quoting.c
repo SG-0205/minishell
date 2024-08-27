@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:35:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 16:18:58 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/27 16:28:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ t_bool	first_quoting(char quote_type, char *ptr_in_str, char *str)
 	if (!str || !ptr_in_str || str == ptr_in_str)
 		return (FALSE);
 	i = -1;
-	//TODO VERIFIER CROISEMENT DES QUOTES
+	if (is_quoted(*DQ_SEP, ptr_in_str, str) == FALSE
+		|| is_quoted(*SQ_SEP, ptr_in_str, str) == FALSE)
+	return (FALSE);
 	setup_tabs(sq_loc, dq_loc, quoted);
 	while (str[++i])
 	{
@@ -72,3 +74,5 @@ t_bool	first_quoting(char quote_type, char *ptr_in_str, char *str)
 		}
 	}
 }
+
+//UTILISER MATHS SUR LES POINTEURS POUR VERIFIER LA PREMIERE QUOTES OUVERTE
