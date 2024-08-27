@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 14:09:46 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:25:16 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void	place_var_sep(t_expand *exp, t_mshell *data)
 		return ;
 	cpy_and_sep_var(vars_marked, exp->expanded, exp->var_count);
 	exp->expanded = gc_strdup(vars_marked, data->gc, 1);
+	print_exp(exp, "PLACE_VAR_SEP");
 	if (!exp->expanded)
 		return ;
 }

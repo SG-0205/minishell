@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 16:03:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:40:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,17 @@
 
 # define SIG_NB 3
 # define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
+# define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
 # define MANAGED_QUOTES "\'\""
 # define SQ_SEP "\x1A"
-# define DQ_SEP "\x1B"
+# define DQ_SEP "\x1F"
 # define CMD_SEP "\x1C"
-# define VAR_SEP "A"
+# define VAR_SEP "\x1D"
 # define UNMANAGED_MCHARS "\\;"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
 typedef struct s_envar	t_envar;
+typedef struct e_cmd	t_cmd;
 
 typedef enum e_envsplit
 {
@@ -95,6 +97,19 @@ typedef struct e_expcheck
 	char				*expanded;
 }						t_expand;
 
+typedef struct e_cmd
+{
+	int					*pipe_fds;
+	int					input_fd;
+	int					output_fd;
+	char				*path;
+	char				**args;
+	char				**env;
+	t_bool				append_out;
+	t_bool				is_redirected;
+}						t_cmd;
+
+
 typedef struct s_envar
 {
 	char				*name;
@@ -148,6 +163,9 @@ t_bool					validate_var(char *var_start);
 void					place_var_sep(t_expand *exp, t_mshell *data);
 t_bool					ft_isvarname(char var_char);
 t_bool					is_sep(char c);
+t_bool					is_path(char *path_start);
+t_bool					is_path_char(char c);
+t_bool					is_relative_path(char *path, t_mshell *data);
 t_bool					is_quoted(char quote_type, char *ptr_in_str, char *str);
 void					separator_mitigation(t_expand *exp);
 void					str_shrink(char *str);
@@ -156,4 +174,6 @@ void					str_shrink(char *str);
 int						builtin_error(char *builtin_name, char *args,
 							int errnum, t_mshell *data);
 char					*extend_relative_path(char *path, t_mshell *data);
+
+int						print_exp(t_expand *exp, char *location);
 #endif

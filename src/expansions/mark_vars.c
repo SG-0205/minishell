@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 12:55:59 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:22:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static int	count_vars(char *str, t_mshell *data)
 		return (var_count);
 	while (str[++i])
 	{
-		if (str[i] == '$'
+		if (str[i] == '$' && is_quoted(*SQ_SEP, &str[i], str) == FALSE
 			&& validate_var(&str[i]) == TRUE)
 			var_count ++;
 	}
@@ -93,6 +93,7 @@ int	mark_vars(t_expand *str, t_mshell *data)
 	if (str->var_count < 1)
 		return (VARS_NONE);
 	var_count = str->var_count;
+	print_exp(str, "MARK_VARS");
 	var_names = (char **)gc_malloc(data->gc,
 			(sizeof(char *) * (str->var_count + 1)), 1);
 	if (!var_names)

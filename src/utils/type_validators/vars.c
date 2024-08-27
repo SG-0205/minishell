@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 12:05:27 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 13:32:01 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/27 15:55:49 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,18 @@ t_bool	validate_var(char *var_start)
 		return (FALSE);
 	i++;
 	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
-		|| ft_cisar(var_start[i], "123456789 ") != 0
+		|| ft_cisar(var_start[i], "123456789 \'\"") != 0
 		|| var_start[i] == '\0')
 		return (FALSE);
 	return (TRUE);
+}
+
+t_bool	is_parameter(char *var_start)
+{
+	int	i;
+
+	i = 1;
+	if (validate_var(var_start) == FALSE)
+		return (FALSE);
+	if ()
 }
