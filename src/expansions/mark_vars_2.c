@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 15:25:16 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 14:44:52 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ char	**fill_var_names(char *to_expand, int var_count,
 	while (to_expand[++i] && var_count > 0)
 	{
 		if (to_expand[i] == '$'
-			&& is_quoted(*SQ_SEP, &to_expand[i], to_expand) == FALSE
+			&& (first_quoting(&to_expand[i], to_expand) == *DQ_SEP 
+				|| first_quoting(&to_expand[i], to_expand) == 0)
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
 			names[j] = get_var_name(&to_expand[i], data);
@@ -55,11 +56,14 @@ static void	cpy_and_sep_var(char *vars_marked, char *to_expand, int var_count)
 	while (to_expand[i] && j < (int)ft_strlen(to_expand) + var_count)
 	{
 		if (to_expand[i] == '$'
-			&& is_quoted(*SQ_SEP, &to_expand[i], to_expand) == FALSE
+			&& (first_quoting(&to_expand[i], to_expand) == *DQ_SEP
+				|| first_quoting(&to_expand[i], to_expand) == 0)
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
-			vars_marked[j] = *VAR_SEP;
-			j++;
+			if (first_quoting(&to_expand[i], to_expand) == *DQ_SEP)
+				printf(BOLD"\nFQ_OK\n"RESET);
+			vars_marked[j++] = *VAR_SEP;
+			// j++;
 			i++;
 			while (ft_isvarname(to_expand[i]) == TRUE)
 				cpy_var_name(&vars_marked[j], &to_expand[i], &i, &j);

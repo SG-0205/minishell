@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 15:40:22 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:59:52 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@
 # define SIG_NB 3
 # define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
 # define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
+# define ARG_SEPARATORS " \t\r"
 # define MANAGED_QUOTES "\'\""
-# define SQ_SEP "\x1A"
-# define DQ_SEP "\x1F"
+# define ARG_SEP "\x1A"
+# define SQ_SEP "*"
+# define DQ_SEP "|"
 # define CMD_SEP "\x1C"
-# define VAR_SEP "\x1D"
+# define VAR_SEP "\v"
 # define UNMANAGED_MCHARS "\\;"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
@@ -166,9 +168,13 @@ t_bool					is_sep(char c);
 t_bool					is_path(char *path_start);
 t_bool					is_path_char(char c);
 t_bool					is_relative_path(char *path, t_mshell *data);
-t_bool					is_quoted(char quote_type, char *ptr_in_str, char *str);
+t_bool					is_quoted(char *ptr_in_str, char *str, t_bool check_both);
+t_bool					is_quoted_by(char quote_type, char *ptr_in_str, char *str);
 void					separator_mitigation(t_expand *exp);
 void					str_shrink(char *str);
+char					first_quoting(char *ptr_in_str, char *str);
+char					ret_quoting(char *ptr_in_str, char *str);
+char					**initial_split(char *input, t_mshell *data);
 
 //BUILTINS
 int						builtin_error(char *builtin_name, char *args,

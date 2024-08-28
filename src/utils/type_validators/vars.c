@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 12:05:27 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 15:55:49 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 14:09:43 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ t_bool	validate_var(char *var_start)
 	return (TRUE);
 }
 
-t_bool	is_parameter(char *var_start)
-{
-	int	i;
+// t_bool	is_parameter(char *var_start)
+// {
+// 	int	i;
 
-	i = 1;
-	if (validate_var(var_start) == FALSE)
-		return (FALSE);
-	if ()
-}
+// 	i = 1;
+// 	if (validate_var(var_start) == FALSE)
+// 		return (FALSE);
+// 	if ()
+// }

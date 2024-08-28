@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 17:13:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 14:59:32 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:44:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ t_expand	*new_expansion(char *str, t_mshell *data)
 	while (MANAGED_QUOTES[++i] && i < 2)
 		place_separator(new, MANAGED_QUOTES[i]);
 	print_exp(new, "AFTER SEPS");
-	if (mark_vars(new, data) == VARS_ERROR)
-		return (NULL);
-	print_exp(new, "AFTER VARS");
-	separator_mitigation(new);
+	// if (mark_vars(new, data) == VARS_ERROR)
+	// 	return (NULL);
+	// print_exp(new, "AFTER VARS");
+	// separator_mitigation(new);
 	return (new);
 }
 

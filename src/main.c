@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 14:58:21 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 16:47:51 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ int	main(int argc, char **argv, char **env)
 {
 	char		*buffer;
 	t_mshell	*data;
-	t_expand	*test;
+	// t_expand	*test;
+	char		**test2;
 
 	if (argc != 1)
 		return (1);
@@ -69,8 +70,14 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		test = new_expansion(buffer, data);
-		print_exp(test, "MAIN");
+		test2 = initial_split(buffer, data);
+		if (!test2 || !*test2)
+			printf("KO\n");
+		else
+			for (int i = 0; test2[i]; i++)
+				printf("ARGS[%d]:\t%s\n", i, test2[i]);
+		// test = new_expansion(buffer, data);
+		// print_exp(test, "MAIN");
 		// gc_flush_layer(data->gc, 1);
 		// printf("%s is a path = %d\n", buffer, is_path(buffer));
 		// printf("%s is a r_path = %d\n", buffer, is_relative_path(buffer, data));

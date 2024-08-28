@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 16:18:35 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 13:48:12 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 15:33:49 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ static void	handle_sq_quoted_vars(t_expand *exp)
 	while (exp->expanded[++i])
 	{
 		if (var_start == FALSE
-			&& is_quoted(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
+			&& is_quoted_by(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
 			&& exp->expanded[i] == *VAR_SEP)
 		{
 			exp->expanded[i] = '$';
 			var_start = TRUE;
 		}
 		else if (var_start == TRUE
-			&& is_quoted(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
+			&& is_quoted_by(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
 			&& exp->expanded[i] == *VAR_SEP)
 			str_shrink(&exp->expanded[i]);
 	}
@@ -59,15 +59,15 @@ static void	revert_all_seps_from_sq(t_expand *exp)
 	while (exp->expanded[++i] && exp->expanded[i + 1])
 	{
 		if (is_sep(exp->expanded[i]) == TRUE
-			&& is_quoted(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
+			&& is_quoted_by(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
 			&& exp->expanded[i] == *DQ_SEP)
 			exp->expanded[i] = separator_reversion(*DQ_SEP);
 		else if (is_sep(exp->expanded[i]) == TRUE
-			&& is_quoted(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
+			&& is_quoted_by(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
 			&& exp->expanded[i] == *SQ_SEP)
 			exp->expanded[i] = separator_reversion(*SQ_SEP);
 		else if (is_sep(exp->expanded[i]) == TRUE
-			&& is_quoted(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
+			&& is_quoted_by(*SQ_SEP, &exp->expanded[i], exp->expanded) == TRUE
 			&& exp->expanded[i] == *CMD_SEP)
 			exp->expanded[i] = separator_reversion(*CMD_SEP);
 	}
@@ -81,7 +81,7 @@ void	separator_mitigation(t_expand *exp)
 	printf(CYAN "B4 MITIGATION:\t%s\n" RESET, exp->expanded);
 	if (exp->sq_count > 1)
 		revert_all_seps_from_sq(exp);
-	printf(CYAN "B4 MITIGATION:\t%s\n" RESET, exp->expanded);
+	printf(CYAN "AFTER MITIGATION:\t%s\n" RESET, exp->expanded);
 }
 
 //TODO REMPLACER LES SEPARATEURS EN TROP SELON LES QUOTES

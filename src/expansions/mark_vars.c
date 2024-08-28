@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 15:22:47 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 18:32:58 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*get_var_name(char *var_start, t_mshell *data)
 
 	i = 0;
 	if (var_start[i] != '$')
-		return (FALSE);
+		return (NULL);
 	i++;
 	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
 		|| ft_cisar(var_start[i], "123456789 ") != 0)
@@ -75,7 +75,7 @@ static int	count_vars(char *str, t_mshell *data)
 		return (var_count);
 	while (str[++i])
 	{
-		if (str[i] == '$' && is_quoted(*SQ_SEP, &str[i], str) == FALSE
+		if (str[i] == '$' && is_quoted_by(*SQ_SEP, &str[i], str) == FALSE
 			&& validate_var(&str[i]) == TRUE)
 			var_count ++;
 	}
