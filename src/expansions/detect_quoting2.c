@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:11:08 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 18:18:18 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:09:17 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 char	ret_quoting(char *ptr_in_str, char *str)
 {
 	if (is_quoted_by('\"', ptr_in_str, str) == TRUE)
-		return (*DQ_SEP);
+		return ('\"');
 	else if (is_quoted_by('\'', ptr_in_str, str) == TRUE)
-		return (*SQ_SEP);
+		return ('\'');
 	else
 		return (0);
 }

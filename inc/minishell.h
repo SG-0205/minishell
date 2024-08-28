@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 16:59:52 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:02:07 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # include <limits.h>
 
 # define SIG_NB 3
-# define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/?><,.:;\0"
+# define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/><,.:;\0" //NOTE EXPORT AJOUTER ?
 # define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
 # define ARG_SEPARATORS " \t\r"
 # define MANAGED_QUOTES "\'\""

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:35:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 17:19:25 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 23:10:04 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ t_bool	is_quoted_by(char quote_type, char *ptr_in_str, char *str)
 	int		i;
 	t_bool	quoted;
 
-	if (!ptr_in_str || !str || ptr_in_str == str)
+	if (!ptr_in_str || !str)
 		return (FALSE);
 	i = -1;
 	quoted = FALSE;
@@ -87,7 +87,7 @@ char	first_quoting(char *ptr_in_str, char *str)
 	t_bool	quoted[3];
 	int		i;
 
-	if (!str || !ptr_in_str || str == ptr_in_str)
+	if (!str || !ptr_in_str)
 		return (FALSE);
 	i = -1;
 	if (!(is_quoted_by('\"', ptr_in_str, str) == TRUE && is_quoted_by('\'',

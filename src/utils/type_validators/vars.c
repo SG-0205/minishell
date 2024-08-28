@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 12:05:27 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 14:09:43 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/28 22:39:06 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_bool	ft_isvarname(char var_char)
 {
-	if (var_char != '_' && ft_isalnum(var_char) == 0)
+	if ((var_char != '_' && ft_isalnum(var_char) == 0) && var_char != 0)
 		return (FALSE);
 	return (TRUE);
 }
