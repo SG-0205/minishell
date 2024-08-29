@@ -6,19 +6,19 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/29 10:41:01 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/29 11:41:07 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-// static t_bool	is_escaped(char *c, char *str)
+// t_bool	is_escaped(char *c, char *str)
 // {
 // 	if (!c || !c - 1 || !str)
 // 		return (FALSE);
 // }
 
-static char	*args_separation(char *input)
+char	*args_separation(char *input)
 {
 	int	i;
 
@@ -35,7 +35,7 @@ static char	*args_separation(char *input)
 	return (input);
 }
 
-static int	ft_lentillptr(char *c, char *str)
+int	ft_lentillptr(char *c, char *str)
 {
 	int	i;
 
@@ -48,7 +48,7 @@ static int	ft_lentillptr(char *c, char *str)
 	return (ft_lentillc(str, *c));
 }
 
-static char	*extract_and_paste_value(char *var_start,
+char	*extract_and_paste_value(char *var_start,
 	char *var_end, t_mshell *data, char *arg)
 {
 	char	*new_arg;
@@ -77,7 +77,7 @@ static char	*extract_and_paste_value(char *var_start,
 	return (gc_strdup(new_arg, data->gc, 1));
 }
 
-static char	*insert_potential_vars(char *arg, t_mshell *data)
+char	*insert_potential_vars(char *arg, t_mshell *data)
 {
 	int		i;
 	int		j;
@@ -108,27 +108,17 @@ static char	*insert_potential_vars(char *arg, t_mshell *data)
 //PROBLEME SI ON FAIT DES TRUCS BIZARRES '"'"$TEST''''
 //		Peut etre qu'en placant des separateurs?
 //		Refaire first_quoting en partant du ptr et en faisant gauche/droite?
+//		CHIANT DE OUF
+//		Lire arg -> si ' ou " : remplacer par separateur -> resplit/substr -> interpreter -> 
 
-static char	*treat_consecutive_quoting(char *arg, t_mshell *data)
-{
-	int	i;
-
-	if (!arg || !data)
-		return (NULL);
-	while (arg[++i])
-	{
-		//////////////////////TOFUCKINGDO
-	}
-}
-
-static char	**expand_all_args(char **args, t_mshell *data)
+char	**expand_all_args(char **args, t_mshell *data)
 {
 	int		i;
 
 	i = -1;
 	while (args[++i])
 	{
-		args[i] = treat_consecutive_quoting(args[i], data)
+		// args[i] = treat_consecutive_quoting(args[i], data);
 		args[i] = insert_potential_vars(args[i], data);
 	}
 	return (args);
