@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 23:18:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/29 10:41:01 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,43 +48,55 @@ static int	ft_lentillptr(char *c, char *str)
 	return (ft_lentillc(str, *c));
 }
 
+static char	*extract_and_paste_value(char *var_start,
+	char *var_end, t_mshell *data, char *arg)
+{
+	char	*new_arg;
+	char	*arg_value;
+	char	*arg_end;
+	char	*var_name;
+
+	if (!var_start || !data)
+		return (NULL);
+	arg_end = NULL;
+	if (*var_end)
+		arg_end = gc_strdup(var_end, data->gc, 1);
+	var_name = gc_strnew(ft_lentillptr(var_end, var_start + 1), data->gc, 1);
+	var_name = ft_strncpy(var_name, var_start + 1,
+			ft_lentillptr(var_end, var_start + 1));
+	if (!dup_var_value(data, var_name))
+		arg_value = dup_var_value(data, "\x1A");
+	else
+		arg_value = dup_var_value(data, var_name);
+	new_arg = gc_strnew((ft_strlen(arg) - (ft_lentillptr(var_end, var_start +1))
+				+ ft_strlen(arg_value) + ft_strlen(var_end)), data->gc, 1);
+	new_arg = ft_strncpy(new_arg, arg, ft_lentillptr(var_start, arg));
+	new_arg = gc_strjoin(new_arg, arg_value, data->gc, 1);
+	if (arg_end)
+		new_arg = gc_strjoin(new_arg, arg_end, data->gc, 1);
+	return (gc_strdup(new_arg, data->gc, 1));
+}
+
 static char	*insert_potential_vars(char *arg, t_mshell *data)
 {
 	int		i;
 	int		j;
-	char	*end_of_arg;
-	char	*new_arg;
-	char	*arg_value;
-	char	*var_name;
 
 	i = 0;
 	if (!arg || !data)
 		return (NULL);
 	while (arg[i])
 	{
-		if (arg[i] == '$' && validate_var(&arg[i]) == TRUE)
+		if (arg[i] == '$' && validate_var(&arg[i]) == TRUE
+			&& (first_quoting(&arg[i], arg) == '\"'
+				|| first_quoting(&arg[i], arg) == 0))
 		{
+			printf("\nFQ[%c] = %c\n", arg[i], first_quoting(&arg[i], arg));
 			j = i;
 			j++;
 			while (arg[j] && ft_isvarname(arg[j]) == TRUE)
 				j ++;
-			//DUP FIN D'ARG -> CPY VALUE -> JOIN FIN D'ARG
-			printf("J = %d\n", j);
-			if (arg[j] != 0)
-				end_of_arg = gc_strdup(&arg[j], data->gc, 1);
-			printf("\nLEN=%d\n",ft_lentillptr(&arg[j], &arg[i + 1]));
-			var_name = gc_strnew(ft_lentillptr(&arg[j], &arg[i + 1]), data->gc, 1);
-			printf("VARNAME = %s\n", var_name);
-			var_name = ft_strncpy(var_name, &arg[i + 1], ft_lentillptr(&arg[j], &arg[i + 1]));
-			printf("VARNAME = %s\n", var_name);
-			arg_value = dup_var_value(data, var_name);
-			printf("\n\n%s\n", arg_value);
-			new_arg = gc_strnew(((i - (i - j)) + ft_strlen(arg_value)), data->gc, 1);
-			new_arg = ft_strncpy(new_arg, arg, ft_lentillptr(&arg[i], arg));
-			new_arg = gc_strjoin(new_arg, arg_value, data->gc, 1);
-			if (arg[j] != 0)
-				new_arg = gc_strjoin(new_arg, end_of_arg, data->gc, 1);
-			arg = gc_strdup(new_arg, data->gc, 1);
+			arg = extract_and_paste_value(&arg[i], &arg[j], data, arg);
 			i = 0;
 		}
 		i ++;
@@ -92,22 +104,32 @@ static char	*insert_potential_vars(char *arg, t_mshell *data)
 	return (arg);
 }
 //MARCHE +++++
-//FONCTIONNE AVEC ET SANS QUOTE, S'OCCUPER DES "FAUSSES" VAR && SPLIT LA FCT
+//FONCTIONNE AVEC ET SANS QUOTE, S'OCCUPER DES "FAUSSES" VAR && SPLIT LA FCT <- EMPTY VARS OK
+//PROBLEME SI ON FAIT DES TRUCS BIZARRES '"'"$TEST''''
+//		Peut etre qu'en placant des separateurs?
+//		Refaire first_quoting en partant du ptr et en faisant gauche/droite?
+
+static char	*treat_consecutive_quoting(char *arg, t_mshell *data)
+{
+	int	i;
+
+	if (!arg || !data)
+		return (NULL);
+	while (arg[++i])
+	{
+		//////////////////////TOFUCKINGDO
+	}
+}
 
 static char	**expand_all_args(char **args, t_mshell *data)
 {
 	int		i;
-	char	f_q;
 
 	i = -1;
 	while (args[++i])
 	{
-		f_q = first_quoting(&args[i][ft_strlen(args[i]) / 2], args[i]);
-		printf("\nARGS[%d] F_Q:<%c>\t", i, f_q);
-		if (f_q == '\'')
-			continue ;
-		else if (f_q == '\"' || f_q == 0)
-			args[i] = insert_potential_vars(args[i], data);
+		args[i] = treat_consecutive_quoting(args[i], data)
+		args[i] = insert_potential_vars(args[i], data);
 	}
 	return (args);
 }
