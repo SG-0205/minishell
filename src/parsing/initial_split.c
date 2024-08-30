@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/29 11:41:07 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/30 14:46:09 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,29 +77,74 @@ char	*extract_and_paste_value(char *var_start,
 	return (gc_strdup(new_arg, data->gc, 1));
 }
 
-char	*insert_potential_vars(char *arg, t_mshell *data)
+int	get_quoted_len(char *q_start, char *str)
+{
+	int		i;
+	t_bool	quoting;
+	int		count;
+
+	if (!q_start || !str || *q_start != '\"')
+		return (0);
+	i = -1;
+	quoting = ERROR;
+	count = 0;
+	while (q_start[++i] && quoting != FALSE)
+	{
+		if (q_start[i] == '\"' && quoting == ERROR)
+			quoting = TRUE;
+		else if (q_start[i] == '\"' && quoting == TRUE)
+			quoting = FALSE;
+		else if (quoting == TRUE && q_start[i] != '\"')
+			count ++;
+	}
+	return (count);
+}
+
+char	*read_dq(char *dq_start, char *str, t_mshell *data)
 {
 	int		i;
 	int		j;
+	int		quoted_size;
+	char	*new;
 
-	i = 0;
+	if (!dq_start || !str || !data || *dq_start != '\"')
+		return (NULL);
+	i = -1;
+	j = 0;
+	quoted_size = get_quoted_len(dq_start, str);
+	if (quoted_size < 1)
+		return (NULL);
+	new = gc_strnew(quoted_size, data->gc, 1);
+	if (!new)
+		return (NULL);
+	while (dq_start[++i] && j < quoted_size)
+		if (dq_start[i] != '\"')
+			new[j++] = dq_start[i];
+	return (new);
+}
+
+//RECURSION? 
+
+static char	*read_quoting(char *arg, t_mshell *data)
+{
+	int		i;
+	char	*new_arg;
+	// int		j;
+
+	i = -1;
 	if (!arg || !data)
 		return (NULL);
-	while (arg[i])
+	printf("\n\n%s\n\n", arg);
+	new_arg = gc_strnew(1, data->gc, 1); //Essayer de lire l'input non unqoted, opex sur i
+	while (arg[++i])
 	{
-		if (arg[i] == '$' && validate_var(&arg[i]) == TRUE
-			&& (first_quoting(&arg[i], arg) == '\"'
-				|| first_quoting(&arg[i], arg) == 0))
+		// j = i;
+		printf("\n%c\n", arg[i]);
+		if (arg[i] == '\"')
 		{
-			printf("\nFQ[%c] = %c\n", arg[i], first_quoting(&arg[i], arg));
-			j = i;
-			j++;
-			while (arg[j] && ft_isvarname(arg[j]) == TRUE)
-				j ++;
-			arg = extract_and_paste_value(&arg[i], &arg[j], data, arg);
-			i = 0;
+			arg = read_dq(&arg[i], arg, data);
+			i += ft_strlen;
 		}
-		i ++;
 	}
 	return (arg);
 }
@@ -110,6 +155,18 @@ char	*insert_potential_vars(char *arg, t_mshell *data)
 //		Refaire first_quoting en partant du ptr et en faisant gauche/droite?
 //		CHIANT DE OUF
 //		Lire arg -> si ' ou " : remplacer par separateur -> resplit/substr -> interpreter -> 
+//		// if (arg[i] == '$' && validate_var(&arg[i]) == TRUE
+		// 	&& (first_quoting(&arg[i], arg) == '\"'
+		// 		|| first_quoting(&arg[i], arg) == 0))
+		// {
+		// 	printf("\nFQ[%c] = %c\n", arg[i], first_quoting(&arg[i], arg));
+		// 	j = i;
+		// 	j++;
+		// 	while (arg[j] && ft_isvarname(arg[j]) == TRUE)
+		// 		j ++;
+		// 	arg = extract_and_paste_value(&arg[i], &arg[j], data, arg);
+		// 	i = 0;
+		// }
 
 char	**expand_all_args(char **args, t_mshell *data)
 {
@@ -117,10 +174,7 @@ char	**expand_all_args(char **args, t_mshell *data)
 
 	i = -1;
 	while (args[++i])
-	{
-		// args[i] = treat_consecutive_quoting(args[i], data);
-		args[i] = insert_potential_vars(args[i], data);
-	}
+		args[i] = read_quoting(args[i], data);
 	return (args);
 }
 
@@ -132,7 +186,12 @@ char	**initial_split(char *input, t_mshell *data)
 		return (NULL);
 	args_separation(input);
 	args = gc_split(input, *ARG_SEP, data->gc, 0);
-	expand_all_args(args, data);
+	for (int i = 0; args[i]; i++)
+		for (int j = 0; args[i][j]; j++)
+			printf("\n%c\t%p\n", args[i][j], &args[i][j]);
+	if (!args || !*args)
+		return (NULL);
+	args = expand_all_args(args, data);
 	if (!args || !*args)
 		return (NULL);
 	return (args);

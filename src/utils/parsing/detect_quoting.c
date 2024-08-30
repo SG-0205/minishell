@@ -6,11 +6,11 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:35:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 23:10:04 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:39:32 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 t_bool	is_quoted_by(char quote_type, char *ptr_in_str, char *str)
 {

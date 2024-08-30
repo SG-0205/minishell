@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 23:02:07 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:39:08 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,9 @@ t_bool					is_quoted(char *ptr_in_str, char *str, t_bool check_both);
 t_bool					is_quoted_by(char quote_type, char *ptr_in_str, char *str);
 void					separator_mitigation(t_expand *exp);
 void					str_shrink(char *str);
+char					*str_insert(char *str, char *where_to_insert,
+							char *to_insert, t_mshell *data);
+int						ft_lentillptr(char *c, char *str);
 char					first_quoting(char *ptr_in_str, char *str);
 char					ret_quoting(char *ptr_in_str, char *str);
 char					**initial_split(char *input, t_mshell *data);

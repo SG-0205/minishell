@@ -6,11 +6,11 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 14:11:08 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 23:09:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/08/30 11:39:37 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+#include "../../../inc/minishell.h"
 
 char	ret_quoting(char *ptr_in_str, char *str)
 {
@@ -42,3 +42,4 @@ t_bool	is_quoted(char *ptr_in_str, char *str, t_bool check_both)
 	}
 	return (FALSE);
 }
+
