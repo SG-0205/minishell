@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 22:57:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/13 18:57:40 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ static int	default_env(t_mshell *data)
 	data->env->next = new_var("SHLVL", "1", data, FALSE);
 	if (!data->env->next)
 		return (ENV_ERROR);
+	data->env->next->next = new_var("OLDPWD", " ", data, TRUE);
 	return (ENV_FULL);
 }
 
@@ -71,7 +72,7 @@ static int	create_hidden_vars(t_mshell *data)
 	if (!data || !data->env)
 		return (ENV_ERROR);
 	get_last_var(data->env)->next = new_var("$0", "minishell", data, TRUE);
-	get_last_var(data->env)->next = new_var("$?", "\0", data, TRUE);
+	get_last_var(data->env)->next = new_var("$?", "0", data, TRUE);
 	get_last_var(data->env)->next = new_var("\x1A", "\x1F", data, TRUE);
 	if (!search_var(&data->env, "HOME"))
 		get_last_var(data->env)->next = new_var("~", NULL, data, TRUE);

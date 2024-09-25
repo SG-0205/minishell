@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 16:44:56 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:32:33 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,7 @@ char		*gc_strjoinsep(const char *s1, char const *s2,
 // DEBUG
 void		gc_print_layers(t_collector *gc);
 void		gc_print(t_collector *gc);
+
+size_t		last_layer(t_collector *gc);
 
 #endif

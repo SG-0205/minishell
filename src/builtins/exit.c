@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   reinit_pwd.c                                       :+:      :+:    :+:   */
+/*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/26 15:26:21 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/05 15:38:44 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/09/13 18:56:46 by sgoldenb          #+#    #+#             */
+/*   Updated: 2024/09/13 20:58:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-void	reinit_pwd(t_mshell *data)
+int	exit_b(char **args, t_mshell *data)
 {
-	char	pwd[4096];
+	int	exit_code;
 
-	if (!data || !data->env)
-		return ;
-	if (!getcwd(pwd, sizeof(pwd)))
-		return ;
-	update_var(data, "PWD", pwd);
-}
-
-char	*get_pwd(t_mshell *data)
-{
-	if (!data)
-		return (NULL);
-	if (!search_var(&data->env, "PWD"))
-		reinit_pwd(data);
-	return (dup_var_value(data, "PWD"));
+	if (!data || !args)
+		return (-1);
+	if (ft_arrlen((void **)args) > 1)
+	{
+		printf("exit\n");
+		return (builtin_error("exit", NULL, EINVAL, data));
+	}
+	if (!*args)
+		exit_code = ft_atoi(search_var(&data->env, "$?")->value);
+	else
+		exit_code = ft_atoi(*args);
+	printf("exit");
+	clear_data(data);
+	exit(exit_code);
 }

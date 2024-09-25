@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gc_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: estegana <estegana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 09:11:23 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 12:06:41 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/02 15:29:56 by estegana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static void	ft_initarray(char **array, const char *s, char c, t_collector *gc)
 		}
 		j ++;
 	}
+	
 }
 
 static void	ft_fillarray(char **array, const char *s, char c)

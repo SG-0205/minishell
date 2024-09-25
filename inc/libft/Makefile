@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+         #
+#    By: estegana <estegana@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/08 18:19:26 by sgoldenb          #+#    #+#              #
-#    Updated: 2024/08/25 14:53:23 by sgoldenb         ###   ########.fr        #
+#    Updated: 2024/09/04 19:07:57 by estegana         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,25 +24,41 @@ SRCPRINTF =	ft_printf.c\
 		ft_putchar_f.c\
 		ft_putnbr_base_f.c\
 		ft_putstr_f.c\
-		ft_putunsigned.c\
-		
+		ft_putunsigned.c
+SRCGARB = garbage_collector/add_refs.c \
+	garbage_collector/debug_fcts.c \
+	garbage_collector/flush.c \
+	garbage_collector/gc_itoa.c \
+	garbage_collector/gc_split.c \
+	garbage_collector/gc_strdup.c \
+	garbage_collector/gc_strjoin.c \
+	garbage_collector/gc_strjoinsep.c \
+	garbage_collector/gc_strnew.c \
+	garbage_collector/gc_strtrim.c \
+	garbage_collector/ms_collect.c \
+	garbage_collector/search_refs.c \
+	garbage_collector/update_refs.c \
+	garbage_collector/utils.c\
+	garbage_collector/wrappers.c \
+
 OBJ = $(SRC:.c=.o)
 OBJBONUS = $(SRCBONUS:.c=.o)
 OBJGNL = $(SRCGNL:.c=.o)
 OBJPRINTF = $(SRCPRINTF:.c=.o)
+OBJGARB = $(SRCGARB:.c=.o)
 
 
 
-$(NAME): $(OBJ)
-	${AR} $@ $(OBJ)
+$(NAME): $(OBJ) ${OBJBONUS} ${OBJGNL} ${OBJPRINTF} $(OBJGARB)
+	${AR} $@ $(OBJ) ${OBJBONUS} ${OBJGNL} ${OBJPRINTF} $(OBJGARB)
 
 clean:
-	$(RM) $(OBJ) ${OBJBONUS} ${OBJGNL} ${OBJPRINTF} 
+	$(RM) $(OBJ) ${OBJBONUS} ${OBJGNL} ${OBJPRINTF} $(OBJGARB)
 
 fclean: clean
 		$(RM) $(NAME)
 
-re: fclean  all 
+re: fclean  all
 
 bonus:	${OBJBONUS}
 		${AR} ${NAME} ${OBJBONUS}
@@ -53,6 +69,9 @@ gnl:	${OBJGNL}
 printf:	${OBJPRINTF}
 		${AR} ${NAME} ${OBJPRINTF}
 
-all: $(NAME) bonus gnl printf
+garb :$(OBJGARB)
+		${AR} ${NAME} $(OBJGARB)
+
+all: $(NAME) bonus gnl printf garb
 
 .PHONY: clean fclean re bonus gnl all printf
