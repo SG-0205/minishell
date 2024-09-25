@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 17:25:53 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 19:46:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,11 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
-		printf("|%s|\n", mark_redirections(buffer, data));
+		// printf("|%s|\n", mark_redirections(buffer, data));
+		// splitted = split_redirections(mark_redirections(buffer, data), data);
+		// for (int i = 0; splitted[i]; i++)
+		// 	printf("[%d]\t%s\n", i, splitted[i]);
+		printf("----BEGIN HEREDOC CONTENT----\n> %s <\n----END HEREDOC CONTENT----\n", extract_content(heredoc_fd(buffer, data), data));
 		gc_flush_layer(data->gc, 1);
 	}
 	print_env(data, PUBLIC_VARS);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 13:23:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 14:36:46 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 19:44:51 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,4 @@ int	get_cmd_id(char *parsed, char *red_start)
 			pipe_count ++;
 	}
 	return (pipe_count);
-}
-
-t_redirs	*new_redir_list(char *parsed_redirs, t_mshell *data)
-{
-	t_redirs	*start;
-	int			i;
-
-	if (!parsed_redirs || !data)
-		return (NULL);
-	i = -1;
-	while (parsed_redirs)
 }

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 15:08:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 15:26:27 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:01:02 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,87 @@ t_bool	check_bad_limiter(char *limiter, t_mshell *data)
 	return (TRUE);
 }
 
-void	*bad_eof(int ernum, t_mshell *data)
+void	*bad_eof(int ernum, t_mshell *data, int fd)
 {
+	
 	syntax_error("syntax error near unexpected token `newline\'", ernum, data);
+	(void)fd;
 	//build error str;
 	return (NULL);
 }
 
-char	*heredoc(char *limiter, t_mshell *data)
+char	*rm_limiter_quoting(char *limiter)
+{
+	int	i;
+
+	if (!limiter)
+		return (NULL);
+	i = -1;
+	while (limiter[++i])
+		if ((limiter[i] == '\'' || limiter[i] == '\"')
+			&& is_quoted_by('\'', &limiter[i], limiter) == FALSE
+			&& is_quoted_by('\"', &limiter[i], limiter) == FALSE)
+		{
+			str_shrink(&limiter[i]);
+		}
+	return (limiter);
+}
+
+t_hd_l_type	get_hd_output_type(char *limiter)
+{
+	t_hd_l_type	type;
+	int			i;
+
+	limiter = quote_closure_control(limiter);
+	printf("[%s] LIMITER @ TYPE1\n", limiter);
+	if (*limiter == '-')
+		type = UNTAB;
+	else
+		type = NORMAL;
+	i = -1;
+	while (limiter[++i])
+	{
+		if (limiter[i] == '\'' && type == UNTAB)
+			type = UNTAB_SQ;
+		else if (limiter[i] == '\'' && type == NORMAL)
+			type = SQ;
+	}
+	limiter = rm_limiter_quoting(limiter);
+	printf("[%s] LIMITER @ TYPE2\n", limiter);
+	limiter = revert_unclosed(limiter);
+	return (type);
+}
+
+char	*rm_tabulations(char *final)
+{
+	int	i;
+
+	if (!final)
+		return (NULL);
+	i = -1;
+	while (final[++i])
+		if (final[i] == '\t')
+			str_shrink(&final[i]);
+	return (final);
+}
+
+char	*curate_output(t_hd_l_type type, char *final, t_mshell *data)
+{
+	if (!final || !data)
+		return (NULL);
+	if (type == SQ)
+		return (final);
+	else if (type == NORMAL)
+		return (read_quoting(final, data));
+	else if (type == UNTAB)
+		return (read_quoting(rm_tabulations(final), data));
+	else if (type == UNTAB_SQ)
+		return (rm_tabulations(final));
+	else
+		return (NULL);
+}
+
+char	*heredoc(char *limiter, t_hd_l_type type, int fd, t_mshell *data)
 {
 	char	*rl_buff;
 	char	*line_buff;
@@ -52,7 +125,7 @@ char	*heredoc(char *limiter, t_mshell *data)
 	{
 		rl_buff = readline("> ");
 		if (!rl_buff)
-			return (bad_eof(129, data));
+			return (bad_eof(129, data, fd));
 		gc_add_ref(data->gc, rl_buff, 1);
 		if (ft_strcmp(rl_buff, limiter) == 0)
 			break ;
@@ -61,26 +134,26 @@ char	*heredoc(char *limiter, t_mshell *data)
 		final = gc_strjoin(final, line_buff, data->gc, 1);
 	}
 	final[ft_strlen(final) - 1] = 0;
-	return (read_quoting(final, data));
+	return (curate_output(type, final, data));
 }
 
-char	**create_heredocs(char **args, t_mshell *data)
+int	heredoc_fd(char *raw_limiter, t_mshell *data)
 {
-	int	i;
-	int	h_count;
+	char		*content;
+	int			fd;
+	t_hd_l_type	type;
 
-	if (!args || !*args || !data)
-		return (NULL);
-	i = -1;
-	h_count = 0;
-	while (args[++i])
-		if (read_redirection_type(args[i]) == HEREDOC)
-			h_count ++;
-	i = -1;
-	if (h_count == 0)
-		return (args);
-	else if (h_count < 2)
-		args[locate_redirection(args, HEREDOC)]
-			= heredoc(args[locate_redirection(args, HEREDOC)], data);
-	return (args);
+	if (!raw_limiter || !data)
+		return (-2);
+	fd = open(HEREDOC_PATH, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	if (fd < 0)
+		return (fd);
+	printf("[%s] RAW_LIMITER\n", raw_limiter);
+	printf("[%d] FD\n", fd);
+	type = get_hd_output_type(raw_limiter);
+	printf("[%d] TYPE\n", type);
+	content = heredoc(raw_limiter, type, fd, data);
+	printf("[%s] CONTENT\n", content);
+	write(fd, content, ft_strlen(content));
+	return (fd);
 }

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 17:25:49 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 19:52:18 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,14 @@
 # define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
 # define ARG_SEPARATORS " \t\r"
 # define MANAGED_QUOTES "\'\""
+# define HEREDOC_PATH "heredocMS"
 # define ARG_SEP "\x1A"
 # define SQ_SEP "*"
 # define DQ_SEP "\x1D"
 # define CMD_SEP "\x1C"
 # define VAR_SEP "\v"
 # define RED_SEP "\\"
-# define ERR_R "."
+# define R_S_SEP "."
 # define UNMANAGED_MCHARS "\\"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 
@@ -64,6 +65,14 @@ typedef struct s_file_check
 	t_bool				is_file;
 
 }						t_f_check;
+
+typedef enum e_heredoc_limit
+{
+	SQ,
+	NORMAL,
+	UNTAB,
+	UNTAB_SQ,
+}						t_hd_l_type;
 
 typedef enum e_redirection_type
 {
@@ -221,7 +230,15 @@ t_redir_type			read_redirection_type(char *arg);
 char					*mark_redirections(char *input, t_mshell *data);
 int						locate_redirection(char **args,
 							t_redir_type redir_type);
-char					*heredoc(char *limiter, t_mshell *data);
+char					*heredoc(char *limiter, t_hd_l_type type,
+							int fd, t_mshell *data);
+int						heredoc_fd(char *raw_limiter, t_mshell *data);
+char					**split_redirections(char *input, t_mshell *data);
+t_redirs				*extract_redirections(char *input, t_mshell *data);
+t_bool					has_redir(char *input);
+t_redirs				*new_redirection(int *fd, int *cmd_id,
+								t_redir_type *type, t_mshell *data);
+t_redirs				*get_last_redir(t_redirs **start);
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);
@@ -261,6 +278,7 @@ int						insert_var(char *var_start, char *arg, t_mshell *data, char *n_arg);
 int						try_insert_value(char *var_start, char *container, t_mshell *data);
 int						ft_lentillptr(char *c, char *str);
 char					*args_separation(char *input);
+char					*revert_unclosed(char *input);
 
 
 //BUILTINS

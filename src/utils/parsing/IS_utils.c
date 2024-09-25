@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 12:23:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 16:36:43 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 20:03:42 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ char	*revert_unclosed(char *input)
 		if (input[i] == *DQ_SEP)
 			input[i] = '\"';
 		else if (input[i] == *SQ_SEP)
-			input[i] = '\"';
+			input[i] = '\'';
 	return (input);
 }
 

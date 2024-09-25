@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/24 17:19:31 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/25 18:04:59 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,21 +63,6 @@ char	*get_hd_limiter(char *hd_start, t_mshell *data)
 	return (limiter);
 }
 
-//Renvoyer le i de get_hd_limiter avec strlen du nom!!t
-
-int	read_heredoc(char *red_start, t_mshell *data, char *new)
-{
-	char	*new_heredoc;
-	
-	if (!red_start || !data || !new)
-		return (0);
-	new_heredoc = heredoc(get_hd_limiter(red_start, data), data);
-	if (!new_heredoc)
-		return (0);
-	new = ft_strncat(new, new_heredoc, ft_strlen(new_heredoc));
-	return (skip_limiter_name(red_start));
-}
-
 int	cpy_redir(char *red_start, char *new)
 {
 	int	i;
@@ -88,7 +73,7 @@ int	cpy_redir(char *red_start, char *new)
 	new = ft_strncat(new, RED_SEP, 1);
 	while (red_start[++i] && ft_cisar(red_start[i], "<>") == 1)
 		new = ft_strncat(new, &red_start[i], 1);
-	new = ft_strncat(new, ERR_R, 1);
+	new = ft_strncat(new, R_S_SEP, 1);
 	while (red_start[i] && ft_cisar(red_start[i], " ") == 1)
 		i ++;
 	return (i);
