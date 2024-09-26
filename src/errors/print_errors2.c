@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:15:41 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 19:30:38 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,21 @@ int	error_full_len(char **args)
 	return (len);
 }
 
+static char	*simple_quoting(char *token, t_mshell *data)
+{
+	char	*new;
+
+	if (!token)
+		return (NULL);
+	new = gc_strnew(ft_strlen(token) + 2, data->gc, 1);
+	if (!new)
+		return (NULL);
+	new = ft_strcat(new, "`\0");
+	new = ft_strcat(new, token);
+	new = ft_strcat(new, "\'\0");
+	return (new);
+}
+
 int	bad_eof(char *limiter, int l_count, t_mshell *data)
 {
 	char	*error_msg;
@@ -36,8 +51,8 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	l_itoa = gc_itoa(l_count, data->gc, 1);
 	if (!l_itoa)
 		return (258);
-	update_var(data, "$?", gc_itoa(258, data->gc, 1));
-	limiter = quote_e_args(limiter, TRUE, data);
+	update_var(data, "$?", gc_itoa(1, data->gc, 1));
+	limiter = simple_quoting(limiter, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", limiter,
 				l_itoa, "warning: here-document at line  \0",
 				"delimited by end-of-file (wanted )\n\0", NULL}), data->gc, 1);
@@ -60,9 +75,9 @@ int	syntax_error(char *faulty_token, t_mshell *data)
 	if (!faulty_token)
 		faulty_token = gc_strdup("newline", data->gc, 1);
 	update_var(data, "$?", gc_itoa(258, data->gc, 1));
-	faulty_token = quote_e_args(faulty_token, TRUE, data);
+	faulty_token = simple_quoting(faulty_token, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: ",
-				"syntax error near unexpected token \n\0", faulty_token}),
+				"syntax error near unexpected token \n\0", faulty_token, NULL}),
 				data->gc, 1);
 	error_msg = ft_strcat(error_msg,
 		"minishell: syntax error near unexpected token \0");

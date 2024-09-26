@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 10:30:13 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:22:20 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 17:11:29 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int	try_open(char *path, t_redir_type type, t_mshell *data)
 		fd = open(complete_path, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
 	else if (type == INPUT)
 		fd = open(complete_path, O_RDONLY, S_IRUSR);
-	if (fd < 0)
+	if (type != HEREDOC && fd < 0)
 		mshell_error(path, errno, data);
 	return (fd);
 }
@@ -145,22 +145,25 @@ char	*next_operator(char *red_token, char *ref, t_mshell *data)
 {
 	int	i;
 
-	if (!red_token || !ref)
+	if (!red_token || !ref || !data)
 		return (NULL);
 	i = -1;
+	printf("REF = %s\tTOKEN = %s\n", ref, red_token);
 	while (ref[++i])
 	{
 		if (ft_strncmp(red_token, &ref[i], ft_strlen(red_token)) == 0)
 		{
+			printf("OK\n");
 			i += ft_strlen(red_token);
-			while (ref[++i])
+			while (ref[i])
 			{
 				if (ft_cisar(ref[i], "<>|") == 1
 					&& is_quoted_by('\'', &ref[i], ref) == FALSE
 					&& is_quoted_by('\"', &ref[i], ref) == FALSE)
 					return (gc_strndup(&ref[i], ft_strblen(&ref[i],
 						is_not_operator), data->gc, 1));
-			}
+				i ++;
+			} 
 		}
 	}
 	return (NULL);
@@ -176,8 +179,10 @@ t_bool	check_red_syntax(char **red_tokens, char *ref, t_mshell *data)
 	i = -1;
 	while (red_tokens[++i])
 	{
-		if (*red_tokens[i] && !red_tokens[i][ft_lentillc(red_tokens[i], *R_S_SEP)])
+		printf("TOKEN[%d] %s\n", i, red_tokens[i]);
+		if (*red_tokens[i] && !gc_split(red_tokens[i], *R_S_SEP, data->gc, 1)[1])
 		{
+			printf("OK\n");
 			syntax_error(next_operator(red_tokens[i], ref, data), data);
 			return (FALSE);
 		}

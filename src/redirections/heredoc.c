@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 15:08:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:33:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 19:38:15 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ t_hd_l_type	get_hd_output_type(char *limiter)
 	int			i;
 
 	limiter = quote_closure_control(limiter);
-	printf("[%s] LIMITER @ TYPE1\n", limiter);
 	if (*limiter == '-')
 		type = UNTAB;
 	else
@@ -77,7 +76,6 @@ t_hd_l_type	get_hd_output_type(char *limiter)
 			type = SQ;
 	}
 	limiter = rm_limiter_quoting(limiter);
-	printf("[%s] LIMITER @ TYPE2\n", limiter);
 	limiter = revert_unclosed(limiter);
 	return (type);
 }
@@ -120,14 +118,13 @@ char	*heredoc(char *limiter, t_hd_l_type type, t_mshell *data)
 
 	if (check_bad_limiter(limiter, data) == FALSE)
 		return (NULL);
-	printf("LIMITER = |%s - %d|\n", limiter, *limiter);
 	final = gc_strnew(1, data->gc, 1);
 	line_count = 1;
 	while (line_count ++)
 	{
 		rl_buff = readline("> ");
 		if (!rl_buff)
-			return (bad_eof_hd(limiter, line_count, data));
+			break ;
 		gc_add_ref(data->gc, rl_buff, 1);
 		if (ft_strcmp(rl_buff, limiter) == 0)
 			break ;
@@ -135,6 +132,8 @@ char	*heredoc(char *limiter, t_hd_l_type type, t_mshell *data)
 		line_buff = ft_strcat(line_buff, gc_strjoin(rl_buff, "\n", data->gc, 1));
 		final = gc_strjoin(final, line_buff, data->gc, 1);
 	}
+	if (!rl_buff)
+		bad_eof_hd(limiter, line_count, data);
 	final[ft_strlen(final) - 1] = 0;
 	return (curate_output(type, final, data));
 }
@@ -153,12 +152,8 @@ int	heredoc_fd(char *raw_limiter, t_mshell *data)
 		O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd < 0)
 		return (fd);
-	printf("[%s] RAW_LIMITER\n", raw_limiter);
-	printf("[%d] FD\n", fd);
 	type = get_hd_output_type(raw_limiter);
-	printf("[%d] TYPE\n", type);
 	content = heredoc(raw_limiter, type, data);
-	printf("[%s] CONTENT\n", content);
 	if (!content)
 		return (-3);
 	write(fd, content, ft_strlen(content));
