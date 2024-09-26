@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 15:34:15 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 16:35:00 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,35 @@ int	print_exp(t_expand *exp, char *location)
 			print_envar(exp->vars_to_insert[i]);
 	}
 	printf("EXPANDED:\t%s\n\n", exp->expanded);
+	return (0);
+}
+
+int	print_redirection_list(t_redirs *redirs)
+{
+	t_redirs	*tmp;
+	int			i;
+	
+	if (redirs)
+		printf(YELLOW "PRINT_REDIRECTIONS @%p\n---------\n" RESET, redirs);
+	else
+		return (printf(RED BOLD "NO_DATA\n" RESET));
+	tmp = redirs;
+	i = 0;
+	while (tmp)
+	{
+		printf(GREEN "[%d]\t" RESET, i);
+		printf(CYAN "FD = %d\t" RESET, tmp->fd);
+		printf(RED "CMD_ID = %d\t" RESET, tmp->cmd_id);
+		if (tmp->type == HEREDOC)
+			printf(MAGENTA "HEREDOC\n" RESET);
+		else if (tmp->type == INPUT)
+			printf(MAGENTA "INPUT\n" RESET);
+		else if (tmp->type == OUTPUT)
+			printf(MAGENTA "OUTPUT\n" RESET);
+		else if (tmp->type == APPEND)
+			printf(MAGENTA "APPEND\n\n" RESET);
+		tmp = tmp->next;
+		i ++;
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 22:40:57 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 14:52:48 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 15:17:11 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ void				ft_lstadd_back(t_list **lst, t_list *new);
 void				ft_lstclear(t_list **lst, void (*del)(void *));
 
 int					ft_cisar(char c, const char *array);
+int					ft_strblen(char *str, int (*validation)(char));
 
 // PRINTF
 

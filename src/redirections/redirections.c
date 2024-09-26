@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 10:30:13 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 19:43:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 16:22:20 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,25 +104,69 @@ int	r_id_by_reference(char *r_token, char *ref)
 				return (id - 1);
 		}
 	}
-	return (-1);
+	return (id);
 }
 
 int	try_open(char *path, t_redir_type type, t_mshell *data)
 {
 	char	*complete_path;
+	int		fd;
 
 	if (!path || !data || type < 0)
 		return (-2);
+	fd = -5;
+	if (is_relative_path(path, data) == TRUE)
+		complete_path = extend_path(path, data);
+	else
+		complete_path = path;
 	if (type == HEREDOC)
-		return (heredoc_fd(path, data));
-	complete_path = extend_path(path, data);
-	if (!complete_path)
-		return (-3);
+		fd = heredoc_fd(complete_path, data);
+	else if (type == APPEND)
+		fd = open(complete_path, O_CREAT | O_APPEND | O_WRONLY,
+			S_IRUSR | S_IWUSR);
+	else if (type == OUTPUT)
+		fd = open(complete_path, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+	else if (type == INPUT)
+		fd = open(complete_path, O_RDONLY, S_IRUSR);
+	if (fd < 0)
+		mshell_error(path, errno, data);
+	return (fd);
+}
+
+int	is_not_operator(char c)
+{
+	if (ft_cisar(c, "<>|") == 1)
+		return (0);
 	else
 		return (1);
 }
 
-t_bool	check_red_syntax(char **red_tokens, char *ref)
+char	*next_operator(char *red_token, char *ref, t_mshell *data)
+{
+	int	i;
+
+	if (!red_token || !ref)
+		return (NULL);
+	i = -1;
+	while (ref[++i])
+	{
+		if (ft_strncmp(red_token, &ref[i], ft_strlen(red_token)) == 0)
+		{
+			i += ft_strlen(red_token);
+			while (ref[++i])
+			{
+				if (ft_cisar(ref[i], "<>|") == 1
+					&& is_quoted_by('\'', &ref[i], ref) == FALSE
+					&& is_quoted_by('\"', &ref[i], ref) == FALSE)
+					return (gc_strndup(&ref[i], ft_strblen(&ref[i],
+						is_not_operator), data->gc, 1));
+			}
+		}
+	}
+	return (NULL);
+}
+
+t_bool	check_red_syntax(char **red_tokens, char *ref, t_mshell *data)
 {
 	int	i;
 	// int	j;
@@ -134,7 +178,8 @@ t_bool	check_red_syntax(char **red_tokens, char *ref)
 	{
 		if (*red_tokens[i] && !red_tokens[i][ft_lentillc(red_tokens[i], *R_S_SEP)])
 		{
-			;
+			syntax_error(next_operator(red_tokens[i], ref, data), data);
+			return (FALSE);
 		}
 	}
 	return (TRUE);
@@ -156,6 +201,8 @@ t_redirs	*create_r_node(t_redirs *start, char *r_token,
 	cmd_id = r_id_by_reference(r_token, ref);
 	type = read_redirection_type(split[0]);
 	fd = try_open(split[1], type, data);
+	if (fd < 0)
+		return (NULL);
 	if (!start)
 		return (new_redirection(&fd, &cmd_id, &type, data));
 	get_last_redir(&start)->next = new_redirection(&fd, &cmd_id, &type, data);
@@ -195,9 +242,11 @@ t_redirs	*extract_redirections(char *input, t_mshell *data)
 	redir_tokens = split_redirections(input, data);
 	if (!redir_tokens)
 		return (NULL);
-	if (check_red_syntax(redir_tokens, input) == FALSE)
+	if (check_red_syntax(redir_tokens, input, data) == FALSE)
 		return (NULL);
 	list = build_red_list(redir_tokens, input, data);
+	if (!list)
+		return (NULL);
 	input = rm_redirections(input);
 	return (list);	
 }

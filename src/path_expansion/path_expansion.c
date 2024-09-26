@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:45:45 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/06 09:04:37 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 15:35:14 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ char	*build_path_from_list(t_pn *list, char *container)
 	}
 	return (container);
 }
-
-//TODO REGLER LE PROBLEME DE LA LISTE VIDE, IMPLEMENTATION DE SIZE POUR UN IF???
 
 char	*convert_path(char **splitted, t_mshell *data)
 {

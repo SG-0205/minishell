@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 19:52:18 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 16:12:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,7 @@ typedef struct s_mshell
 }						t_mshell;
 
 void					clean_exit(t_mshell *data);
+int						print_redirection_list(t_redirs *redirs);
 
 // INIT
 t_bool					signal_handlers_setup(t_mshell *data);
@@ -230,8 +231,8 @@ t_redir_type			read_redirection_type(char *arg);
 char					*mark_redirections(char *input, t_mshell *data);
 int						locate_redirection(char **args,
 							t_redir_type redir_type);
-char					*heredoc(char *limiter, t_hd_l_type type,
-							int fd, t_mshell *data);
+char					*heredoc(char *limiter,
+							t_hd_l_type type, t_mshell *data);
 int						heredoc_fd(char *raw_limiter, t_mshell *data);
 char					**split_redirections(char *input, t_mshell *data);
 t_redirs				*extract_redirections(char *input, t_mshell *data);
@@ -286,8 +287,8 @@ int						builtin_error(char *builtin_name, char *args,
 							int errnum, t_mshell *data);
 int						custom_b_error(char *builtin_name, char *args,
 							char *custom_msg, t_mshell *data);
-int						syntax_error(char *error_message,
-							int errnum, t_mshell *data);
+int						syntax_error(char *faulty_token, t_mshell *data);
+int						bad_eof(char *limiter, int l_count, t_mshell *data);
 char					*extend_relative_path(char *path, t_mshell *data);
 int						export(t_mshell *data, char **args);
 int						cd(char **path, t_mshell *data);
@@ -296,6 +297,9 @@ int						print_exp(t_expand *exp, char *location);
 int						exit_b(char **args, t_mshell *data);
 int						pwd(char **args, t_mshell *data);
 int						echo_b(char **args, t_mshell *data);
+int						error_full_len(char **args);
+int						mshell_error(char *faulty_arg, int errnum, t_mshell *data);
+char					*quote_e_args(char *args, t_bool enforce, t_mshell *data);
 
 //EXEC
 int	ft_exec(void);

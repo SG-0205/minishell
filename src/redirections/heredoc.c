@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 15:08:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 20:01:02 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 16:33:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_bool	check_bad_limiter(char *limiter, t_mshell *data)
 
 	if (*limiter == 0)
 	{
-		syntax_error("syntax error near unexpected token `newline\'", 129, data);
+		syntax_error((void *)limiter, data);
 		return (FALSE);
 	}
 	i = -1;
@@ -31,12 +31,12 @@ t_bool	check_bad_limiter(char *limiter, t_mshell *data)
 	return (TRUE);
 }
 
-void	*bad_eof(int ernum, t_mshell *data, int fd)
+void	*bad_eof_hd(char *limiter, int l_count, t_mshell *data)
 {
-	
-	syntax_error("syntax error near unexpected token `newline\'", ernum, data);
-	(void)fd;
-	//build error str;
+
+	if (!data)
+		return (NULL);
+	bad_eof(limiter, l_count, data);
 	return (NULL);
 }
 
@@ -111,21 +111,23 @@ char	*curate_output(t_hd_l_type type, char *final, t_mshell *data)
 		return (NULL);
 }
 
-char	*heredoc(char *limiter, t_hd_l_type type, int fd, t_mshell *data)
+char	*heredoc(char *limiter, t_hd_l_type type, t_mshell *data)
 {
 	char	*rl_buff;
 	char	*line_buff;
 	char	*final;
+	int		line_count;
 
 	if (check_bad_limiter(limiter, data) == FALSE)
 		return (NULL);
 	printf("LIMITER = |%s - %d|\n", limiter, *limiter);
 	final = gc_strnew(1, data->gc, 1);
-	while (1)
+	line_count = 1;
+	while (line_count ++)
 	{
 		rl_buff = readline("> ");
 		if (!rl_buff)
-			return (bad_eof(129, data, fd));
+			return (bad_eof_hd(limiter, line_count, data));
 		gc_add_ref(data->gc, rl_buff, 1);
 		if (ft_strcmp(rl_buff, limiter) == 0)
 			break ;
@@ -140,20 +142,26 @@ char	*heredoc(char *limiter, t_hd_l_type type, int fd, t_mshell *data)
 int	heredoc_fd(char *raw_limiter, t_mshell *data)
 {
 	char		*content;
+	static int	hd_count;
 	int			fd;
 	t_hd_l_type	type;
 
 	if (!raw_limiter || !data)
 		return (-2);
-	fd = open(HEREDOC_PATH, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	fd = open(gc_strjoin(HEREDOC_PATH, gc_itoa(hd_count, data->gc, 1),
+			data->gc, 1),
+		O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd < 0)
 		return (fd);
 	printf("[%s] RAW_LIMITER\n", raw_limiter);
 	printf("[%d] FD\n", fd);
 	type = get_hd_output_type(raw_limiter);
 	printf("[%d] TYPE\n", type);
-	content = heredoc(raw_limiter, type, fd, data);
+	content = heredoc(raw_limiter, type, data);
 	printf("[%s] CONTENT\n", content);
+	if (!content)
+		return (-3);
 	write(fd, content, ft_strlen(content));
+	hd_count ++;
 	return (fd);
 }

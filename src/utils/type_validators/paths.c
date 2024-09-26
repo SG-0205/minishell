@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 12:17:26 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/27 13:51:02 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 15:33:20 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_bool	is_relative_path(char *path, t_mshell *data)
 	i = -1;
 	if (!path || !data)
 		return (ERROR);
-	if (*path != '/')
+	if (*path == '/')
 		return (FALSE);
 	splitted_path = gc_split(path, '/', data->gc, 1);
 	if (!splitted_path || !*splitted_path)

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 19:46:45 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 16:09:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	parse(char *input, t_mshell *data)
 		return (-1);
 	parse->input = input;
 	parse->redirections = extract_redirections(input, data);
+	print_redirection_list(parse->redirections);
 	parse->args = initial_split(input, data);
 	return (0);
 }
@@ -98,6 +99,7 @@ int	main(int argc, char **argv, char **env)
 	// char		**splitted;
 	// t_expand	*test;
 	// char		*test2;
+	// int			test_fd;
 
 	if (argc != 1)
 		return (1);
@@ -117,11 +119,14 @@ int	main(int argc, char **argv, char **env)
 			printf("EOF\n");
 			break ;
 		}
+		parse(buffer, data);
 		// printf("|%s|\n", mark_redirections(buffer, data));
 		// splitted = split_redirections(mark_redirections(buffer, data), data);
 		// for (int i = 0; splitted[i]; i++)
 		// 	printf("[%d]\t%s\n", i, splitted[i]);
-		printf("----BEGIN HEREDOC CONTENT----\n> %s <\n----END HEREDOC CONTENT----\n", extract_content(heredoc_fd(buffer, data), data));
+		// heredoc_fd(buffer, data);
+		// test2 = extract_content(open(HEREDOC_PATH, O_RDONLY), data);
+		// printf("----BEGIN HEREDOC CONTENT----\n> %s <\n----END HEREDOC CONTENT----\n", test2);
 		gc_flush_layer(data->gc, 1);
 	}
 	print_env(data, PUBLIC_VARS);
