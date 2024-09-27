@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:04:21 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:18:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:28:23 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*quote_e_args(char *args, t_bool enforce, t_mshell *data)
 		return (NULL);
 	if (enable_arg_quoting(args) == FALSE && enforce == FALSE)
 		return (gc_strjoin(args, ": \0", data->gc, 1));
-	new_arg = gc_strnew(ft_strlen(args) + 2, data->gc, 1);
+	new_arg = gc_strnew(ft_strlen(args) + 4, data->gc, 1);
 	new_arg = ft_strcat(new_arg, "`\0");
 	new_arg = ft_strcat(new_arg, args);
 	new_arg = ft_strcat(new_arg, "\'\0");
@@ -48,7 +48,7 @@ int	builtin_error(char *builtin_name, char *args, int errnum, t_mshell *data)
 	if (!builtin_name || !args || !data)
 		return (errnum);
 	update_var(data, "$?", gc_itoa(errnum, data->gc, 1));
-	args = quote_e_args(args, FALSE, data);
+	args = quote_e_args(read_quoting(args, data), FALSE, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", args,
 				strerror(errnum), builtin_name, NULL}) + 1, data->gc, 1);
 	if (!error_msg)
@@ -69,7 +69,7 @@ int	mshell_error(char *faulty_arg, int errnum, t_mshell *data)
 	if (!faulty_arg || !data)
 		return (errnum);
 	update_var(data, "$?", gc_itoa(errnum, data->gc, 1));
-	faulty_arg = quote_e_args(faulty_arg, FALSE, data);
+	faulty_arg = quote_e_args(read_quoting(faulty_arg, data), FALSE, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0",
 				faulty_arg, strerror(errnum), NULL}) + 1, data->gc, 1);
 	if (!error_msg)

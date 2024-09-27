@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:35:00 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:22:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	print_exp(t_expand *exp, char *location)
 	return (0);
 }
 
-int	print_redirection_list(t_redirs *redirs)
+int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 {
 	t_redirs	*tmp;
 	int			i;
@@ -69,7 +69,8 @@ int	print_redirection_list(t_redirs *redirs)
 		else if (tmp->type == OUTPUT)
 			printf(MAGENTA "OUTPUT\n" RESET);
 		else if (tmp->type == APPEND)
-			printf(MAGENTA "APPEND\n\n" RESET);
+			printf(MAGENTA "APPEND\n" RESET);
+		printf(BOLD "----CONTENT----\n[%s]\n\n", extract_content(tmp->fd, data));
 		tmp = tmp->next;
 		i ++;
 	}

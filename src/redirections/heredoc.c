@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 15:08:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 19:38:15 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 16:22:05 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,19 @@ char	*curate_output(t_hd_l_type type, char *final, t_mshell *data)
 		return (NULL);
 }
 
+static void	rm_nl(char *final)
+{
+	int	i;
+
+	if (!final)
+		return ;
+	i = 0;
+	while (final[i + 1])
+		i++;
+	if (final[i] == '\n')
+		final[i] = 0;
+}
+
 char	*heredoc(char *limiter, t_hd_l_type type, t_mshell *data)
 {
 	char	*rl_buff;
@@ -134,7 +147,7 @@ char	*heredoc(char *limiter, t_hd_l_type type, t_mshell *data)
 	}
 	if (!rl_buff)
 		bad_eof_hd(limiter, line_count, data);
-	final[ft_strlen(final) - 1] = 0;
+	rm_nl(final);
 	return (curate_output(type, final, data));
 }
 
@@ -142,21 +155,23 @@ int	heredoc_fd(char *raw_limiter, t_mshell *data)
 {
 	char		*content;
 	static int	hd_count;
-	int			fd;
+	int			fd_w;
 	t_hd_l_type	type;
 
 	if (!raw_limiter || !data)
 		return (-2);
-	fd = open(gc_strjoin(HEREDOC_PATH, gc_itoa(hd_count, data->gc, 1),
+	fd_w = open(gc_strjoin(HEREDOC_PATH, gc_itoa(hd_count, data->gc, 1),
 			data->gc, 1),
 		O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (fd < 0)
-		return (fd);
+	if (fd_w < 0)
+		return (fd_w);
 	type = get_hd_output_type(raw_limiter);
 	content = heredoc(raw_limiter, type, data);
 	if (!content)
 		return (-3);
-	write(fd, content, ft_strlen(content));
+	write(fd_w, content, ft_strlen(content));
+	close(fd_w);
 	hd_count ++;
-	return (fd);
+	return (open(gc_strjoin(HEREDOC_PATH, gc_itoa(hd_count, data->gc, 1),
+			data->gc, 1), O_RDONLY));
 }

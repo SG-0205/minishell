@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:09:46 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:33:15 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ int	parse(char *input, t_mshell *data)
 		return (-1);
 	parse->input = input;
 	parse->redirections = extract_redirections(input, data);
-	print_redirection_list(parse->redirections);
+	print_redirection_list(parse->redirections, data);
 	parse->args = initial_split(input, data);
 	return (0);
 }
@@ -129,7 +129,7 @@ int	main(int argc, char **argv, char **env)
 		// printf("----BEGIN HEREDOC CONTENT----\n> %s <\n----END HEREDOC CONTENT----\n", test2);
 		gc_flush_layer(data->gc, 1);
 	}
-	print_env(data, PUBLIC_VARS);
+	// print_env(data, PUBLIC_VARS);
 	clear_data(data);
 	return (0);
 }

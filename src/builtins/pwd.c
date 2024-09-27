@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 21:06:31 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/14 21:19:20 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 13:31:58 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	pwd(char **args, t_mshell *data)
 		return (builtin_error("pwd", NULL, ENODATA, data));
 	if (!getcwd(cwd, sizeof(cwd)))
 		return (builtin_error("pwd", NULL, errno, data));
-	pwd_checks = f_access_check(cwd);
+	pwd_checks = f_access_check(cwd, NULL);
 	if (pwd_checks.exists == FALSE)
 		return (builtin_error("pwd", NULL, ENOENT, data));
 	if (pwd_checks.exec == FALSE)

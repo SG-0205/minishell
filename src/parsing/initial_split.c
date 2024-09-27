@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 18:04:59 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 14:16:10 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	read_redirection(char *red_start, t_mshell *data, char *new, char *str)
 	i = cpy_redir(red_start, new);
 	while (red_start[i])
 	{
-		if (ft_cisar(red_start[i], "<> \t") == 1
+		if (ft_cisar(red_start[i], "<>| \t") == 1
 			&& (is_quoted_by('\'', &red_start[i], str) == FALSE
 				&& is_quoted_by('\'', &red_start[i], str) == FALSE))
 			break ;

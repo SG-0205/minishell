@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 16:12:46 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:46:26 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ typedef struct e_cmd			t_cmd;
 typedef struct e_path_node		t_pn;
 typedef struct e_path_stack		t_p_stack;
 typedef struct s_redirections	t_redirs;
+typedef struct s_file_check		t_f_check;
 
 typedef struct s_file_check
 {
@@ -63,7 +64,8 @@ typedef struct s_file_check
 	t_bool				exists;
 	t_bool				is_dir;
 	t_bool				is_file;
-
+	struct stat			path_stats;
+	struct stat			fd_stats;
 }						t_f_check;
 
 typedef enum e_heredoc_limit
@@ -188,7 +190,7 @@ typedef struct s_mshell
 }						t_mshell;
 
 void					clean_exit(t_mshell *data);
-int						print_redirection_list(t_redirs *redirs);
+int						print_redirection_list(t_redirs *redirs, t_mshell *data);
 
 // INIT
 t_bool					signal_handlers_setup(t_mshell *data);
@@ -225,7 +227,7 @@ t_bool					is_path_char(char c);
 
 //REDIRECTIONS
 char					*extract_content(int fd, t_mshell *data);
-t_f_check				f_access_check(char *f_path);
+t_f_check				f_access_check(char *f_path, int *fd);
 t_bool					is_a_redirection(char *arg);
 t_redir_type			read_redirection_type(char *arg);
 char					*mark_redirections(char *input, t_mshell *data);

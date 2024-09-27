@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 22:25:52 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 14:57:22 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 13:22:43 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ char	*gc_strndup(char *str, int n, t_collector *gc, size_t layer)
 
 	if (!str || !gc)
 		return (NULL);
-	new = (char *)gc_malloc(gc, (sizeof(char) * (ft_strlen(str) + 1)), layer);
+	new = gc_strnew(ft_strlen(str), gc, layer);
 	if (!new)
 		return (NULL);
 	new = ft_strncpy(new, str, n);

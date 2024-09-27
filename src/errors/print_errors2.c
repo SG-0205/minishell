@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 19:30:38 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/27 15:29:01 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	if (!l_itoa)
 		return (258);
 	update_var(data, "$?", gc_itoa(1, data->gc, 1));
-	limiter = simple_quoting(limiter, data);
+	limiter = simple_quoting(read_quoting(limiter, data), data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", limiter,
 				l_itoa, "warning: here-document at line  \0",
 				"delimited by end-of-file (wanted )\n\0", NULL}), data->gc, 1);
