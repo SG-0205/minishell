@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/13 18:57:40 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/30 13:30:56 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 
 	if (!data || !full_var)
 		return (NULL);
-	printf("%s\n", full_var);
+	// printf("%s\n", full_var);
 	new = (t_envar *)gc_malloc(data->gc, sizeof(t_envar), 0);
 	if (!new)
 		return (NULL);

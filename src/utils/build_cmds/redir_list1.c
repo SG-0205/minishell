@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 13:23:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 19:44:51 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/30 17:27:18 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,18 @@ t_redirs	*new_redirection(int *fd, int *cmd_id,
 	return (new);
 }
 
+t_redirs	*dup_redirection(t_redirs **elem_addr, t_mshell *data)
+{
+	t_redirs	*new;
+	t_redirs	*elem;
+
+	if (!elem_addr || !*elem_addr)
+		return (NULL);
+	elem = *elem_addr;
+	new = new_redirection(&elem->fd, &elem->cmd_id, &elem->type, data);
+	return (new);
+}
+
 t_redirs	*get_last_redir(t_redirs **start)
 {
 	t_redirs	*tmp;
@@ -37,6 +49,45 @@ t_redirs	*get_last_redir(t_redirs **start)
 		return (NULL);
 	tmp = *start;
 	while (tmp->next)
+		tmp = tmp->next;
+	return (tmp);
+}
+
+t_redirs	*filter_redirs_by_type(t_redirs **origin, t_redir_type type,
+	t_mshell *data)
+{
+	t_redirs	*sub_list;
+	t_redirs	*tmp;
+	int			cpy;
+
+	if (!origin || !*origin || type != INPUT || type != OUTPUT)
+		return (NULL);
+	sub_list = NULL;
+	tmp = *origin;
+	while (tmp)
+	{
+		cpy = 0;
+		if (type == INPUT && (tmp->type == INPUT || tmp->type == HEREDOC))
+			cpy = 1;
+		else if (type == OUTPUT && (tmp->type == OUTPUT || tmp->type == APPEND))
+			cpy = 1;
+		if (cpy == 1 && !sub_list)
+			sub_list = dup_redirection(&tmp, data);
+		else if (cpy == 1)
+			get_last_redir(&sub_list)->next = dup_redirection(&tmp, data);
+		tmp = tmp->next;
+	}
+	return (sub_list);
+}
+
+t_redirs	*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id)
+{
+	t_redirs	*tmp;
+
+	if (!start || !*start || cmd_id < 0)
+		return (NULL);
+	tmp = *start;
+	while (tmp->next && tmp->next->cmd_id <= cmd_id)
 		tmp = tmp->next;
 	return (tmp);
 }

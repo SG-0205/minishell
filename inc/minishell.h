@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 15:46:26 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/30 15:38:53 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,10 +162,10 @@ typedef struct e_path_node
 
 typedef struct e_cmd
 {
+	char				*path_to_cmd;
 	int					*pipe_fds;
 	int					input_fd;
 	int					output_fd;
-	char				*path;
 	char				**args;
 	char				**env;
 	t_bool				append_out;
@@ -237,11 +237,15 @@ char					*heredoc(char *limiter,
 							t_hd_l_type type, t_mshell *data);
 int						heredoc_fd(char *raw_limiter, t_mshell *data);
 char					**split_redirections(char *input, t_mshell *data);
-t_redirs				*extract_redirections(char *input, t_mshell *data);
+t_redirs				*extract_redirections(t_parse *parse, t_mshell *data);
 t_bool					has_redir(char *input);
 t_redirs				*new_redirection(int *fd, int *cmd_id,
 								t_redir_type *type, t_mshell *data);
 t_redirs				*get_last_redir(t_redirs **start);
+t_redirs				*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id);
+t_redirs				*filter_redirs_by_type(t_redirs **origin,
+							t_redir_type type, t_mshell *data);
+t_redirs				*dup_redirection(t_redirs **elem_addr, t_mshell *data);
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);

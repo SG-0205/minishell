@@ -313,6 +313,6 @@ int	main(int argc, char **argv, char **env)
 {
 	t_cmd	*list;
 
-	list = test_list(env);
+	list = test_list(env);            
 	print_cmds(list);
 }

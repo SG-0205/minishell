@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 15:33:15 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/30 17:23:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,19 +76,42 @@ void	builtins_test(char **expanded_input, t_mshell *data)
 	update_return_code(exit_code, data);
 }
 
+static t_bool	check_bad_pipes(char *input, t_mshell *data)
+{
+	if (!input || !data)
+		return (FALSE);
+	if (*input == '|')
+	{
+		syntax_error("|", data);
+		return (FALSE);
+	}
+	else if (ft_strlen(input) > 1 && input[ft_strlen(input) - 1] == '|')
+	{
+		syntax_error(NULL, data);
+		return (FALSE);
+	}
+	return (TRUE);
+}
+
 int	parse(char *input, t_mshell *data)
 {
 	t_parse	*parse;
 
 	if (!input || !data)
 		return (1);
+	if (check_bad_pipes(input, data) == FALSE)
+		return (1);
 	parse = (t_parse *)gc_malloc(data->gc, sizeof(t_parse), 1);
 	if (!parse)
 		return (-1);
-	parse->input = input;
-	parse->redirections = extract_redirections(input, data);
+	parse->input = gc_strdup(input, data->gc, 1);
+	if (!parse->input)
+		return (1);
+	parse->redirections = extract_redirections(parse, data);
 	print_redirection_list(parse->redirections, data);
-	parse->args = initial_split(input, data);
+	printf("INPUT after REDIRS:%s\n", parse->input);
+	// parse->args = initial_split(parse->input, data);
+	// parse->cmds = build_cmds_list(parse, data);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 10:30:13 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 16:09:21 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/30 13:26:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,24 +240,24 @@ char	**split_redirections(char *input, t_mshell *data)
 	return (redir_tokens);
 }
 
-t_redirs	*extract_redirections(char *input, t_mshell *data)
+t_redirs	*extract_redirections(t_parse *parse, t_mshell *data)
 {
 	t_redirs	*list;
 	char		**redir_tokens;
 
-	if (!input || !data || has_redir(input) == FALSE)
+	if (!parse->input || !data || has_redir(parse->input) == FALSE)
 		return (NULL);
-	input = quote_closure_control(input);
-	input = mark_redirections(input, data);
-	if (!input)
+	parse->input = quote_closure_control(parse->input);
+	parse->input = mark_redirections(parse->input, data);
+	if (!parse->input)
 		return (NULL);
-	redir_tokens = split_redirections(input, data);
+	redir_tokens = split_redirections(parse->input, data);
 	if (!redir_tokens)
 		return (NULL);
-	list = build_red_list(redir_tokens, input, data);
+	list = build_red_list(redir_tokens, parse->input, data);
 	if (!list)
 		return (NULL);
-	input = rm_redirections(input);
-	printf("\nCLEAN_INPUT [%s]\n", input);
+	parse->input = rm_redirections(parse->input);
+	printf("\nCLEAN_INPUT [%s]\n", parse->input);
 	return (list);	
 }
