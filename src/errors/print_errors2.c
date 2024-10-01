@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 15:29:01 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:19:34 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,10 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	char	*l_itoa;
 
 	if (!limiter || !data)
-		return (258);
+		return (1);
 	l_itoa = gc_itoa(l_count, data->gc, 1);
 	if (!l_itoa)
-		return (258);
+		return (1);
 	update_var(data, "$?", gc_itoa(1, data->gc, 1));
 	limiter = simple_quoting(read_quoting(limiter, data), data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", limiter,
@@ -63,7 +63,7 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	error_msg = ft_strcat(error_msg, limiter);
 	error_msg = ft_strcat(error_msg, ")\n\0");
 	write(2, error_msg, ft_strlen(error_msg));
-	return (258);
+	return (1);
 }
 
 int	syntax_error(char *faulty_token, t_mshell *data)
@@ -71,10 +71,10 @@ int	syntax_error(char *faulty_token, t_mshell *data)
 	char	*error_msg;
 
 	if (!data)
-		return (258);
+		return (2);
 	if (!faulty_token)
 		faulty_token = gc_strdup("newline", data->gc, 1);
-	update_var(data, "$?", gc_itoa(258, data->gc, 1));
+	update_var(data, "$?", gc_itoa(2, data->gc, 1));
 	faulty_token = simple_quoting(faulty_token, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: ",
 				"syntax error near unexpected token \n\0", faulty_token, NULL}),
@@ -84,5 +84,5 @@ int	syntax_error(char *faulty_token, t_mshell *data)
 	error_msg = ft_strcat(error_msg, faulty_token);
 	error_msg = ft_strcat(error_msg, "\n\0");
 	write(2, error_msg, ft_strlen(error_msg));
-	return (258);
+	return (2);
 }

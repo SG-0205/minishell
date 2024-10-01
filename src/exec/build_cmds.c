@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:11:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/30 17:21:50 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:46:12 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,47 @@ char	**split_input_by_pipes(char *input, t_mshell *data)
 
 	if (!input || !data)
 		return (NULL);
-	input = mark_pipes(input);
+	input = mark_pipes(input); 
 	cmd_tokens = gc_split(input, *CMD_SEP, data->gc, 1);
 	if (!cmd_tokens)
 		return (NULL);
 	return (cmd_tokens);
+}
+
+t_cmd	*new_cmd_from_tokens(char *tokens, t_parse *parsing, t_mshell *data)
+{
+	int		i;
+	t_cmd	*new_cmd;
+	char	**splitted_cmds;
+
+	if (!tokens || !parsing || !data)
+		return (NULL);
+	splitted_cmds = initial_split(tokens, data);
+	if (!splitted_cmds)
+		return (NULL);
+	//TODO Verifier la commande vide;
+	return 
+}
+
+t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
+	t_mshell *data)
+{
+	int		i;
+	t_cmd	*cmd_list;
+
+	if (!parsing || !tokens || !data)
+		return (NULL);
+	i = -1;
+	cmd_list = NULL;
+	while (tokens[++i])
+	{
+		if (!cmd_list)
+			cmd_list = new_cmd_from_tokens(tokens[i], parsing, data);
+		else
+			last_cmd(&cmd_list)->next = new_cmd_from_tokens(tokens[i],
+				parsing, data);
+	}
+	return (cmd_list);
 }
 
 t_cmd	*build_cmds_list(t_parse *parsing, t_mshell *data)

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/30 15:38:53 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/01 17:35:56 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ typedef struct e_cmd
 	char				**env;
 	t_bool				append_out;
 	t_bool				is_redirected;
+	t_cmd				*next;
 }						t_cmd;
 
 typedef struct s_envar
@@ -246,6 +247,12 @@ t_redirs				*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id);
 t_redirs				*filter_redirs_by_type(t_redirs **origin,
 							t_redir_type type, t_mshell *data);
 t_redirs				*dup_redirection(t_redirs **elem_addr, t_mshell *data);
+
+
+//COMMANDS
+t_cmd					*last_cmd(t_cmd **start);
+t_cmd					*new_empty_cmd(t_mshell *data);
+
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);
