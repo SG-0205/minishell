@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 16:17:24 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:49:00 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ int	parse(char *input, t_mshell *data)
 	if (!parse->cmds)
 		return (1);
 	print_cmd_list(parse->cmds);
+	close_all_fds(&parse->cmds, data);
 	return (0);
 }
 

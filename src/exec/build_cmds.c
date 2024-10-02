@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:11:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 16:23:15 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 17:43:38 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*interpolate_path(char *cmd_name, t_mshell *data)
 	char		*new;
 	t_f_check	checks;
 
-	if (!cmd_name || !data)
+	if (!cmd_name || !data || !*cmd_name)
 		return (NULL);
 	else if (is_relative_path(cmd_name, data) == TRUE)
 		return (convert_rp(cmd_name, data));
@@ -145,14 +145,16 @@ char	**dup_cmd_args(char	**tokens, t_mshell *data)
 
 t_cmd	*select_tokens_and_pass_env(t_cmd *cmd, char **tokens, t_mshell *data)
 {
-	if (!cmd || !tokens || !data)
+	if (!cmd || !data)
 		return (NULL);
-	if (*tokens)
+	if (tokens)
 	{
-		cmd->path_to_cmd = interpolate_path(*tokens, data);
-		if (!cmd->path_to_cmd)
+		if (tokens[0])
+			cmd->path_to_cmd = interpolate_path(*tokens, data);
+		if (tokens[0] && !cmd->path_to_cmd)
 			return (NULL);
-		cmd->args = dup_cmd_args(&tokens[1], data);
+		if (tokens[1])
+			cmd->args = dup_cmd_args(&tokens[1], data);
 	}
 	cmd->env = env_list_to_array(data, FALSE);
 	return (cmd);
@@ -188,6 +190,10 @@ t_cmd	*apply_redirections(t_cmd *cmd, t_parse *parsing,
 		cmd_id, data);
 	cmd->output_fd = apply_redirection(parsing->redirections, OUTPUT,
 		cmd_id, data);
+	if (cmd->input_fd < 2)
+		cmd->input_fd = 0;
+	if (cmd->output_fd < 2)
+		cmd->output_fd = 0;
 	return (cmd);
 }
 
@@ -199,13 +205,11 @@ t_cmd	*new_cmd_from_tokens(char *tokens, t_parse *parsing, t_mshell *data,
 
 	if (!tokens || !parsing || !data)
 		return (NULL);
-	splitted_cmds = initial_split(tokens, data);
-	if (!splitted_cmds)
-		return (NULL);
 	//TODO Verifier la commande vide;
 	new_cmd = new_empty_cmd(data);
 	if (!new_cmd)
 		return (NULL);
+	splitted_cmds = initial_split(tokens, data);
 	printf("NEW EMPTY OK\n");
 	new_cmd = select_tokens_and_pass_env(new_cmd, splitted_cmds, data);
 	if (!new_cmd)
@@ -234,7 +238,8 @@ t_cmd	*link_input_pipes(t_cmd **cmds, t_mshell *data)
 	while (++cmd_id < lst_size && tmp)
 	{
 		if (prev)
-			if (prev->output_fd < 0 && tmp->input_fd < 0)
+			if (prev->output_fd < 2 && tmp->input_fd < 2
+				&& prev->path_to_cmd && prev->is_builtin == 0)
 				tmp->input_fd = prev->pipe_fds[0];
 		prev = tmp;
 		tmp = tmp->next;
@@ -256,9 +261,9 @@ t_cmd	*link_output_pipes(t_cmd **cmds, t_mshell *data)
 	while (++cmd_id < lst_size && tmp)
 	{
 		printf(RESET "LOP\tID[%d] size-1[%d]\n", cmd_id, lst_size - 1);
-		if (tmp->output_fd < 0 && cmd_id < lst_size - 1)
+		if (tmp->output_fd < 2 && cmd_id < lst_size - 1)
 			tmp->output_fd = tmp->pipe_fds[1];
-		else if (tmp->output_fd < 0 && cmd_id == lst_size - 1)
+		else if (tmp->output_fd < 2 && cmd_id == lst_size - 1)
 			tmp->output_fd = 0;
 		tmp = tmp->next;
 	}
@@ -269,7 +274,7 @@ t_cmd	*manage_first_input(t_cmd *first_cmd)
 {
 	if (!first_cmd)
 		return (NULL);
-	if (first_cmd->input_fd < 0)
+	if (first_cmd->input_fd < 2)
 		first_cmd->input_fd = 0;
 	return (first_cmd);
 }
@@ -286,7 +291,7 @@ t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
 	cmd_list = NULL;
 	while (tokens[++i])
 	{
-		printf(GREEN "CMD TOKEN[%d] %s\n", i, tokens[i]);
+		printf(GREEN "CMD TOKEN[%d] |%s|\n", i, tokens[i]);
 		if (!cmd_list)
 			cmd_list = new_cmd_from_tokens(tokens[i], parsing, data, &i);
 		else
@@ -301,19 +306,16 @@ t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
 	return (cmd_list);
 }
 
-static t_f_check	init_checks(t_cmd *cmd)[4]
+static void	init_checks(t_cmd *cmd, t_f_check checks[4])
 {
-	t_f_check	checks[4];
-
-	if (!cmd)
-		return (errored_object());
+	if (!cmd || !checks)
+		return ;
 	if (cmd->input_fd > 2)
-		checks[0] = f_access_check("fd", cmd->input_fd);
+		checks[0] = f_access_check("fd", &cmd->input_fd);
 	if (cmd->output_fd > 2)
-		checks[1] = f_access_check("fd", cmd->output_fd);
-	checks[2] = f_access_check("fd", cmd->pipe_fds[0]);
-	checks[3] = f_access_check("fd", cmd->pipe_fds[1]);
-	return (checks);
+		checks[1] = f_access_check("fd", &cmd->output_fd);
+	checks[2] = f_access_check("fd", &cmd->pipe_fds[0]);
+	checks[3] = f_access_check("fd", &cmd->pipe_fds[1]);
 }
 
 int	close_all_fds(t_cmd **cmds, t_mshell *data)
@@ -326,7 +328,7 @@ int	close_all_fds(t_cmd **cmds, t_mshell *data)
 	tmp = *cmds;
 	while (tmp)
 	{
-		fds_check = init_checks(tmp);
+		init_checks(tmp, fds_check);
 		if (fds_check[FD_IN].exists == TRUE)
 			close(tmp->input_fd);
 		if (fds_check[FD_OUT].exists == TRUE)

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:16:31 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 16:04:56 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 17:10:55 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,9 @@ static void	check_fd_stats(int *fd, t_f_check *obj)
 	if (!obj)
 		return ;
 	if (fstat(*fd, &obj->fd_stats) < 0)
-		obj->exists == FALSE;
+		obj->exists = FALSE;
 	else
 		obj->exists = TRUE;
-	if (obj->fd_stats.)
 	if (obj->fd_stats.st_mode & S_IRUSR)
 		obj->read = TRUE;
 	if (obj->fd_stats.st_mode & S_IWUSR)

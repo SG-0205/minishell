@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 14:16:10 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 17:26:11 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,9 +240,7 @@ char	**initial_split(char *input, t_mshell *data)
 	if (!input || !data)
 		return (NULL);
 	input = quote_closure_control(input);
-	
 	input = args_separation(input);
-	
 	args = gc_split(input, *ARG_SEP, data->gc, 0);
 	if (!args || !*args)
 		return (NULL);
