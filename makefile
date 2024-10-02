@@ -52,7 +52,7 @@ ${EXECNAME}: ${OBJS}
 # test : $(EXECNAME)
 
 test:
-	gcc -Wall -Wextra -Werror -g3 src/main.c src/errors/*.c src/builtins/*.c src/expansions/*.c src/init/*.c src/parsing/*.c src/signals/*.c src/utils/env/*.c inc/libft/*.c inc/libft/garbage_collector/*.c src/utils/type_validators/*.c src/path_expansion/*.c src/utils/parsing/*.c inc/libft/gnl/*.c src/redirections/*.c src/utils/*.c src/utils/build_cmds/*.c -lreadline -o test
+	gcc -Wall -Wextra -Werror -g3 src/main.c src/path_expansion/*.c src/errors/*.c src/exec/*.c src/builtins/*.c src/expansions/*.c src/init/*.c src/parsing/*.c src/signals/*.c src/utils/env/*.c inc/libft/*.c inc/libft/garbage_collector/*.c src/utils/type_validators/*.c src/utils/parsing/*.c inc/libft/gnl/*.c src/redirections/*.c src/utils/*.c src/utils/build_cmds/*.c -lreadline -o test
 
 retest :
 	rm test && make test

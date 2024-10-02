@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/01 17:19:34 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 10:54:48 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	l_itoa = gc_itoa(l_count, data->gc, 1);
 	if (!l_itoa)
 		return (1);
-	update_var(data, "$?", gc_itoa(1, data->gc, 1));
+	update_var(data, "?", gc_itoa(1, data->gc, 1));
 	limiter = simple_quoting(read_quoting(limiter, data), data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", limiter,
 				l_itoa, "warning: here-document at line  \0",
@@ -74,7 +74,7 @@ int	syntax_error(char *faulty_token, t_mshell *data)
 		return (2);
 	if (!faulty_token)
 		faulty_token = gc_strdup("newline", data->gc, 1);
-	update_var(data, "$?", gc_itoa(2, data->gc, 1));
+	update_var(data, "?", gc_itoa(2, data->gc, 1));
 	faulty_token = simple_quoting(faulty_token, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: ",
 				"syntax error near unexpected token \n\0", faulty_token, NULL}),

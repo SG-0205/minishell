@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 16:22:54 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:43:50 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,45 @@ int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 			printf(MAGENTA "OUTPUT\n" RESET);
 		else if (tmp->type == APPEND)
 			printf(MAGENTA "APPEND\n" RESET);
-		printf(BOLD "----CONTENT----\n[%s]\n\n", extract_content(tmp->fd, data));
+		printf(BOLD "----CONTENT----\n[%s]\n\n" RESET, extract_content(tmp->fd, data));
+		lseek(tmp->fd, 0, SEEK_SET);
 		tmp = tmp->next;
 		i ++;
+	}
+	return (0);
+}
+
+int	print_cmd_list(t_cmd *start)
+{
+	t_cmd	*tmp;
+	int		count;
+	int		total;
+
+	if (!start)
+	{
+		printf(BOLD RED "NO CMDS\n" RESET);
+		return (-1);
+	}
+	total = cmd_list_size(&start);
+	tmp = start;
+	count = 0;
+	printf(YELLOW "PRINT_CMDS @%p (%d CMDS)\n---------\n" RESET, start, total);
+	while (tmp && ++count <= total)
+	{
+		printf(GREEN "[%d/%d]\n" RESET, count, total);
+		printf(BOLD "\tPATH: %s\n" RESET, tmp->path_to_cmd);
+		if (tmp->env)
+			printf(GREEN "\t\t[HAS ENV]\n" RESET);
+		else
+			printf("\t\t[NO ENV]\n");
+		printf(BOLD "\tARGS:\n" RESET);
+		for (int i = 0; tmp->args && tmp->args[i]; i++)
+			printf(MAGENTA "\t\t[%d]:%s\n" RESET, i, tmp->args[i]);
+		printf(CYAN "\tINPUT_FD: %d\n" RESET, tmp->input_fd);
+		printf(RED "\tOUTPUT_FD: %d\n" RESET, tmp->output_fd);
+		printf(BOLD "\tPIPES_FD[IN %d / OUT %d]\n" RESET, tmp->pipe_fds[1], tmp->pipe_fds[0]);
+		printf("----------\n\n");
+		tmp = tmp->next;
 	}
 	return (0);
 }

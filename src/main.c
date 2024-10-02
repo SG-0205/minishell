@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/30 17:23:54 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:17:24 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	update_return_code(int exit_code, t_mshell *data)
 {
 	if (!data || !data->env)
 		return ;
-	update_var(data, "$?", gc_itoa(exit_code, data->gc, 1));
+	update_var(data, "?", gc_itoa(exit_code, data->gc, 1));
 }
 
 void	builtins_test(char **expanded_input, t_mshell *data)
@@ -76,11 +76,26 @@ void	builtins_test(char **expanded_input, t_mshell *data)
 	update_return_code(exit_code, data);
 }
 
+static char	first_token(char *input)
+{
+	int	i;
+
+	if (!input)
+		return (0);
+	i = -1;
+	while (input[++i])
+		if (ft_cisar(input[i], ARG_SEPARATORS) == 0
+			&& is_quoted_by('\'', &input[i], input) == FALSE
+			&& is_quoted_by('\"', &input[i], input) == FALSE)
+			return (input[i]);
+	return (0);
+}
+
 static t_bool	check_bad_pipes(char *input, t_mshell *data)
 {
 	if (!input || !data)
 		return (FALSE);
-	if (*input == '|')
+	if (*input == '|' || first_token(input) == '|')
 	{
 		syntax_error("|", data);
 		return (FALSE);
@@ -111,7 +126,10 @@ int	parse(char *input, t_mshell *data)
 	print_redirection_list(parse->redirections, data);
 	printf("INPUT after REDIRS:%s\n", parse->input);
 	// parse->args = initial_split(parse->input, data);
-	// parse->cmds = build_cmds_list(parse, data);
+	parse->cmds = build_cmds_list(parse, data);
+	if (!parse->cmds)
+		return (1);
+	print_cmd_list(parse->cmds);
 	return (0);
 }
 
@@ -143,13 +161,8 @@ int	main(int argc, char **argv, char **env)
 			break ;
 		}
 		parse(buffer, data);
-		// printf("|%s|\n", mark_redirections(buffer, data));
-		// splitted = split_redirections(mark_redirections(buffer, data), data);
-		// for (int i = 0; splitted[i]; i++)
-		// 	printf("[%d]\t%s\n", i, splitted[i]);
-		// heredoc_fd(buffer, data);
-		// test2 = extract_content(open(HEREDOC_PATH, O_RDONLY), data);
-		// printf("----BEGIN HEREDOC CONTENT----\n> %s <\n----END HEREDOC CONTENT----\n", test2);
+		//exec
+		//close_all_fds()
 		gc_flush_layer(data->gc, 1);
 	}
 	// print_env(data, PUBLIC_VARS);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 17:24:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/01 17:34:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:22:53 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,23 @@ t_cmd	*last_cmd(t_cmd **start)
 	return (tmp);
 }
 
+int	cmd_list_size(t_cmd **start)
+{
+	int		size;
+	t_cmd	*tmp;
+
+	if (!start || !*start)
+		return (0);
+	size = 0;
+	tmp =  *start;
+	while (tmp)
+	{
+		size ++;
+		tmp = tmp->next;
+	}
+	return (size);
+}
+
 t_cmd	*new_empty_cmd(t_mshell *data)
 {
 	t_cmd	*new;
@@ -33,14 +50,18 @@ t_cmd	*new_empty_cmd(t_mshell *data)
 	new = (t_cmd *)gc_malloc(data->gc, sizeof(t_cmd), 1);
 	if (!new)
 		return (NULL);
-	new->append_out = FALSE;
 	new->args = NULL;
 	new->env = NULL;
 	new->input_fd = -1;
 	new->output_fd = -1;
-	new->is_redirected = FALSE;
 	new->path_to_cmd = NULL;
-	new->pipe_fds = NULL;
+	new->is_builtin = 0;
 	new->next = NULL;
+	if (pipe(new->pipe_fds) == -1)
+	{
+		mshell_error("pipe error", errno, data);
+		update_var(data, "?", gc_itoa(1, data->gc, 1));
+		return (NULL);
+	}
 	return (new);
 }

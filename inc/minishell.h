@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/01 17:35:56 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:16:35 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ typedef struct s_file_check
 	struct stat			path_stats;
 	struct stat			fd_stats;
 }						t_f_check;
+
+typedef enum e_fd_end_check
+{
+	FD_IN,
+	FD_OUT,
+	PI_READ,
+	PI_WRITE
+}						t_fdchecks;
 
 typedef enum e_heredoc_limit
 {
@@ -163,13 +171,12 @@ typedef struct e_path_node
 typedef struct e_cmd
 {
 	char				*path_to_cmd;
-	int					*pipe_fds;
+	int					pipe_fds[2];
 	int					input_fd;
 	int					output_fd;
 	char				**args;
 	char				**env;
-	t_bool				append_out;
-	t_bool				is_redirected;
+	int					is_builtin;
 	t_cmd				*next;
 }						t_cmd;
 
@@ -192,6 +199,7 @@ typedef struct s_mshell
 
 void					clean_exit(t_mshell *data);
 int						print_redirection_list(t_redirs *redirs, t_mshell *data);
+int						print_cmd_list(t_cmd *start);
 
 // INIT
 t_bool					signal_handlers_setup(t_mshell *data);
@@ -214,6 +222,10 @@ int						var_list_position(t_envar **first_var, t_envar *var);
 void					reinit_pwd(t_mshell *data);
 t_envar					**get_side_vars(t_envar *var, t_mshell *data);
 char					*dup_var_value(t_mshell *data, char *var_name);
+t_envar					**split_env_on_visibility(t_envar **env_start, t_mshell *data);
+char					**env_list_to_array(t_mshell *data, t_bool hidden);
+char					*join_var_name_and_value(t_envar *var, t_mshell *data); 
+int						env_size(t_envar **env_start, t_bool count_hidden);
 
 //PATH MANAGEMENT
 char					*get_pwd(t_mshell *data);
@@ -229,6 +241,7 @@ t_bool					is_path_char(char c);
 //REDIRECTIONS
 char					*extract_content(int fd, t_mshell *data);
 t_f_check				f_access_check(char *f_path, int *fd);
+t_f_check				errored_object(void);
 t_bool					is_a_redirection(char *arg);
 t_redir_type			read_redirection_type(char *arg);
 char					*mark_redirections(char *input, t_mshell *data);
@@ -252,6 +265,9 @@ t_redirs				*dup_redirection(t_redirs **elem_addr, t_mshell *data);
 //COMMANDS
 t_cmd					*last_cmd(t_cmd **start);
 t_cmd					*new_empty_cmd(t_mshell *data);
+int						cmd_list_size(t_cmd **start);
+int						close_all_fds(t_cmd **cmds, t_mshell *data);
+t_cmd					*build_cmds_list(t_parse *parsing, t_mshell *data);
 
 
 //STRING EXPANSION
@@ -311,6 +327,8 @@ int						exit_b(char **args, t_mshell *data);
 int						pwd(char **args, t_mshell *data);
 int						echo_b(char **args, t_mshell *data);
 int						error_full_len(char **args);
+int						custom_shell_error(char *arg, char *custom_msg, int m_errcode,
+							t_mshell *data);
 int						mshell_error(char *faulty_arg, int errnum, t_mshell *data);
 char					*quote_e_args(char *args, t_bool enforce, t_mshell *data);
 

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/13 18:56:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/13 20:58:54 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 10:54:48 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	exit_b(char **args, t_mshell *data)
 		return (builtin_error("exit", NULL, EINVAL, data));
 	}
 	if (!*args)
-		exit_code = ft_atoi(search_var(&data->env, "$?")->value);
+		exit_code = ft_atoi(search_var(&data->env, "?")->value);
 	else
 		exit_code = ft_atoi(*args);
 	printf("exit");

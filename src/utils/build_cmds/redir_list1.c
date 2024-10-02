@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 13:23:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/30 17:27:18 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 13:47:04 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_redirs	*filter_redirs_by_type(t_redirs **origin, t_redir_type type,
 	t_redirs	*tmp;
 	int			cpy;
 
-	if (!origin || !*origin || type != INPUT || type != OUTPUT)
+	if (!origin || !*origin || (type != INPUT && type != OUTPUT))
 		return (NULL);
 	sub_list = NULL;
 	tmp = *origin;
@@ -89,6 +89,8 @@ t_redirs	*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id)
 	tmp = *start;
 	while (tmp->next && tmp->next->cmd_id <= cmd_id)
 		tmp = tmp->next;
+	if (tmp->cmd_id != cmd_id)
+		return (NULL);
 	return (tmp);
 }
 

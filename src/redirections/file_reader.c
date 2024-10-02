@@ -6,13 +6,13 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/06 11:16:31 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 16:00:56 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 16:04:56 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-static t_f_check	errored_object(void)
+t_f_check	errored_object(void)
 {
 	t_f_check	error;
 
@@ -29,12 +29,12 @@ static t_f_check	init_obj(t_f_check *obj)
 {
 	if (!obj)
 		return (errored_object());
-	obj->exec = FALSE;
-	obj->exists = FALSE;
-	obj->read = FALSE;
-	obj->write = FALSE;
-	obj->is_dir = FALSE;
-	obj->is_file = FALSE;
+	obj->exec = ERROR;
+	obj->exists = ERROR;
+	obj->read = ERROR;
+	obj->write = ERROR;
+	obj->is_dir = ERROR;
+	obj->is_file = ERROR;
 	return (*obj);
 }
 
@@ -52,8 +52,13 @@ static void	check_path_stats(char *path, t_f_check *obj)
 
 static void	check_fd_stats(int *fd, t_f_check *obj)
 {
-	if (!obj || fstat(*fd, &obj->fd_stats) < 0)
+	if (!obj)
 		return ;
+	if (fstat(*fd, &obj->fd_stats) < 0)
+		obj->exists == FALSE;
+	else
+		obj->exists = TRUE;
+	if (obj->fd_stats.)
 	if (obj->fd_stats.st_mode & S_IRUSR)
 		obj->read = TRUE;
 	if (obj->fd_stats.st_mode & S_IWUSR)

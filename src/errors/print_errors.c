@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 14:04:21 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 15:28:23 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/02 14:56:50 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	builtin_error(char *builtin_name, char *args, int errnum, t_mshell *data)
 
 	if (!builtin_name || !args || !data)
 		return (errnum);
-	update_var(data, "$?", gc_itoa(errnum, data->gc, 1));
+	update_var(data, "?", gc_itoa(errnum, data->gc, 1));
 	args = quote_e_args(read_quoting(args, data), FALSE, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", args,
 				strerror(errnum), builtin_name, NULL}) + 1, data->gc, 1);
@@ -66,9 +66,11 @@ int	mshell_error(char *faulty_arg, int errnum, t_mshell *data)
 {
 	char	*error_msg;
 
-	if (!faulty_arg || !data)
+	if (!data)
 		return (errnum);
-	update_var(data, "$?", gc_itoa(errnum, data->gc, 1));
+	update_var(data, "?", gc_itoa(errnum, data->gc, 1));
+	if (!faulty_arg)
+		return (errnum);
 	faulty_arg = quote_e_args(read_quoting(faulty_arg, data), FALSE, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0",
 				faulty_arg, strerror(errnum), NULL}) + 1, data->gc, 1);
@@ -100,4 +102,24 @@ int	custom_b_error(char *builtin_name, char *args,
 	error_msg = gc_strjoin(error_msg, "\n", data->gc, 1);
 	write(2, error_msg, ft_strlen(error_msg));
 	return (-1);
+}
+
+int	custom_shell_error(char *arg, char *custom_msg, int m_errcode, t_mshell *data)
+{
+	char	*error_msg;
+
+	if (!arg || !custom_msg || !data)
+		return (m_errcode);
+	update_var(data, "?", gc_itoa(m_errcode, data->gc, 1));
+	arg = quote_e_args(arg, FALSE, data);
+	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", arg,
+				custom_msg, "\n\0", NULL}) + 4, data->gc, 1);
+	if (!error_msg)
+		return (ENOMEM);
+	error_msg = ft_strcat(error_msg, "minishell: \0");
+	error_msg = ft_strcat(error_msg, arg);
+	error_msg = ft_strcat(error_msg, custom_msg);
+	error_msg = ft_strcat(error_msg, "\n\0");
+	write(2, error_msg, ft_strlen(error_msg));
+	return (m_errcode);
 }
