@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 16:16:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:50:18 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,9 @@
 # define DQ_SEP "\x1D"
 # define CMD_SEP "\x1C"
 # define VAR_SEP "\v"
-# define RED_SEP "\\"
-# define R_S_SEP "."
+# define RED_SEP "\x06"
+# define R_S_SEP "\v"
+# define BUILTINS_STR "cd.pwd.env.echo.exit.unset.export"
 # define UNMANAGED_MCHARS "\\"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
 

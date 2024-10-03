@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 13:43:50 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:43:57 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,10 @@ int	print_cmd_list(t_cmd *start)
 			printf(GREEN "\t\t[HAS ENV]\n" RESET);
 		else
 			printf("\t\t[NO ENV]\n");
+		if (tmp->is_builtin == 0)
+			printf(BLUE "\t\t[IS EXTERN]\n" RESET);
+		else
+			printf(YELLOW "\t\t[IS BUILTIN]\n" RESET);
 		printf(BOLD "\tARGS:\n" RESET);
 		for (int i = 0; tmp->args && tmp->args[i]; i++)
 			printf(MAGENTA "\t\t[%d]:%s\n" RESET, i, tmp->args[i]);

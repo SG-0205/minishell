@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:11:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 17:43:38 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:40:17 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,16 +143,41 @@ char	**dup_cmd_args(char	**tokens, t_mshell *data)
 	return (new);	
 }
 
+t_bool	is_builtin(char **tokens, t_cmd *cmd, t_mshell *data)
+{
+	char	**builtins;
+	int		i;
+
+	if (!tokens || !*tokens || !data)
+		return (ERROR);
+	builtins = gc_split(BUILTINS_STR, '.', data->gc, 1);
+	if (!builtins || !*builtins)
+		return (ERROR);
+	i = -1;
+	while (builtins[++i])
+		if (ft_strcmp(*tokens, builtins[i]) == 0)
+		{
+			cmd->is_builtin = TRUE;
+			return (TRUE);
+		}
+	return (FALSE);
+}
+
 t_cmd	*select_tokens_and_pass_env(t_cmd *cmd, char **tokens, t_mshell *data)
 {
 	if (!cmd || !data)
 		return (NULL);
 	if (tokens)
 	{
-		if (tokens[0])
-			cmd->path_to_cmd = interpolate_path(*tokens, data);
-		if (tokens[0] && !cmd->path_to_cmd)
-			return (NULL);
+		if (is_builtin(tokens, cmd, data) == FALSE)
+		{
+			if (tokens[0])
+				cmd->path_to_cmd = interpolate_path(*tokens, data);
+			if (tokens[0] && !cmd->path_to_cmd)
+				return (NULL);
+		}
+		else if (is_builtin(tokens, cmd, data) == TRUE)
+			cmd->path_to_cmd = gc_strdup(*tokens, data->gc, 1);
 		if (tokens[1])
 			cmd->args = dup_cmd_args(&tokens[1], data);
 	}
@@ -306,41 +331,41 @@ t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
 	return (cmd_list);
 }
 
-static void	init_checks(t_cmd *cmd, t_f_check checks[4])
-{
-	if (!cmd || !checks)
-		return ;
-	if (cmd->input_fd > 2)
-		checks[0] = f_access_check("fd", &cmd->input_fd);
-	if (cmd->output_fd > 2)
-		checks[1] = f_access_check("fd", &cmd->output_fd);
-	checks[2] = f_access_check("fd", &cmd->pipe_fds[0]);
-	checks[3] = f_access_check("fd", &cmd->pipe_fds[1]);
-}
+// static void	init_checks(t_cmd *cmd, t_f_check checks[4])
+// {
+// 	if (!cmd || !checks)
+// 		return ;
+// 	if (cmd->input_fd > 2)
+// 		checks[0] = f_access_check("fd", &cmd->input_fd);
+// 	if (cmd->output_fd > 2)
+// 		checks[1] = f_access_check("fd", &cmd->output_fd);
+// 	checks[2] = f_access_check("fd", &cmd->pipe_fds[0]);
+// 	checks[3] = f_access_check("fd", &cmd->pipe_fds[1]);
+// }
 
-int	close_all_fds(t_cmd **cmds, t_mshell *data)
-{
-	t_cmd		*tmp;
-	t_f_check	fds_check[4];
+// int	close_all_fds(t_cmd **cmds, t_mshell *data)
+// {
+// 	t_cmd		*tmp;
+// 	t_f_check	fds_check[4];
 
-	if (!cmds || !*cmds || !data)
-		return (1);
-	tmp = *cmds;
-	while (tmp)
-	{
-		init_checks(tmp, fds_check);
-		if (fds_check[FD_IN].exists == TRUE)
-			close(tmp->input_fd);
-		if (fds_check[FD_OUT].exists == TRUE)
-			close(tmp->output_fd);
-		if (fds_check[PI_READ].exists == TRUE)
-			close(tmp->pipe_fds[0]);
-		if (fds_check[PI_WRITE].exists == TRUE)
-			close(tmp->pipe_fds[1]);
-		tmp = tmp->next;
-	}
-	return (0);
-}
+// 	if (!cmds || !*cmds || !data)
+// 		return (1);
+// 	tmp = *cmds;
+// 	while (tmp)
+// 	{
+// 		init_checks(tmp, fds_check);
+// 		if (fds_check[FD_IN].exists == TRUE)
+// 			close(tmp->input_fd), printf("\nCLOSED FD[%d]\n", tmp->input_fd);
+// 		if (fds_check[FD_OUT].exists == TRUE)
+// 			close(tmp->output_fd), printf("\nCLOSED FD[%d]\n", tmp->output_fd);
+// 		if (fds_check[PI_READ].exists == TRUE)
+// 			close(tmp->pipe_fds[0]), printf("\nCLOSED FD[%d]\n", tmp->pipe_fds[0]);
+// 		if (fds_check[PI_WRITE].exists == TRUE)
+// 			close(tmp->pipe_fds[1]), printf("\nCLOSED FD[%d]\n", tmp->pipe_fds[1]);
+// 		tmp = tmp->next;
+// 	}
+// 	return (0);
+// }
 
 t_cmd	*build_cmds_list(t_parse *parsing, t_mshell *data)
 {
