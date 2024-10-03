@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 14:19:44 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 21:59:00 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 14:54:19 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	new_prompt(int signal)
 		// 	sig_code = signal;
 		rl_on_new_line();
 		printf("\n");
-		rl_replace_line("", 1);
+		rl_replace_line("\0", 1);
 		rl_redisplay();
 	}
 }

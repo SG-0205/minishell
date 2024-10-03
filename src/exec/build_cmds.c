@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:11:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 12:40:17 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 13:04:27 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,7 @@ t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
 	cmd_list = NULL;
 	while (tokens[++i])
 	{
-		printf(GREEN "CMD TOKEN[%d] |%s|\n", i, tokens[i]);
+		printf(GREEN "CMD TOKEN[%d] |%s|\n" RESET, i, tokens[i]);
 		if (!cmd_list)
 			cmd_list = new_cmd_from_tokens(tokens[i], parsing, data, &i);
 		else

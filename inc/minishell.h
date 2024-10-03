@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 12:50:18 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 14:27:28 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@
 # define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
 # define ARG_SEPARATORS " \t\r"
 # define MANAGED_QUOTES "\'\""
-# define HEREDOC_PATH "heredocMS"
+# define HEREDOC_PATH "/tmp/heredocMS"
 # define ARG_SEP "\x1A"
 # define SQ_SEP "*"
 # define DQ_SEP "\x1D"
 # define CMD_SEP "\x1C"
 # define VAR_SEP "\v"
 # define RED_SEP "\x06"
-# define R_S_SEP "\v"
+# define R_S_SEP "\x1D"
 # define BUILTINS_STR "cd.pwd.env.echo.exit.unset.export"
 # define UNMANAGED_MCHARS "\\"
 # define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
@@ -56,6 +56,7 @@ typedef struct e_path_node		t_pn;
 typedef struct e_path_stack		t_p_stack;
 typedef struct s_redirections	t_redirs;
 typedef struct s_file_check		t_f_check;
+typedef struct s_pid_lists		t_pidlist;
 
 typedef struct s_file_check
 {
@@ -135,6 +136,12 @@ typedef enum e_sighandlers_id
 	CTRL_BS
 }						t_sighdlrid;
 
+typedef struct s_pid_lists
+{
+	pid_t				pid;
+	t_pidlist			*next;
+}						t_pidlist;
+
 typedef struct s_redirections
 {
 	int					fd;
@@ -195,12 +202,13 @@ typedef struct s_mshell
 	int					pipe_fds[1024];
 	t_collector			*gc;
 	t_envar				*env;
-	char				***cmds;
+	t_pidlist			*pids;
 }						t_mshell;
 
 void					clean_exit(t_mshell *data);
 int						print_redirection_list(t_redirs *redirs, t_mshell *data);
 int						print_cmd_list(t_cmd *start);
+int						print_pid_list(t_pidlist *start);
 
 // INIT
 t_bool					signal_handlers_setup(t_mshell *data);
@@ -310,6 +318,10 @@ int						try_insert_value(char *var_start, char *container, t_mshell *data);
 int						ft_lentillptr(char *c, char *str);
 char					*args_separation(char *input);
 char					*revert_unclosed(char *input);
+
+//SIGNALS
+int						save_pid(pid_t process_pid, t_mshell *data);
+int						kill_processes(int signal, t_mshell *data);
 
 
 //BUILTINS

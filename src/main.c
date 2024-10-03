@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 12:38:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:24:46 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ t_bool	init_data(t_mshell *data, char **env)
 {
 	if (!data)
 		return (FALSE);
-	data->gc = gc_init(2);
+	data->gc = gc_init(3);
 	if (!data->gc)
 		return (FALSE);
 	if (build_var_list(env, data) == ENV_ERROR)
@@ -123,6 +123,8 @@ int	parse(char *input, t_mshell *data)
 	if (!parse->input)
 		return (1);
 	parse->redirections = extract_redirections(parse, data);
+	if (!parse->redirections && has_redir(parse->input) == TRUE)
+		return (1);
 	print_redirection_list(parse->redirections, data);
 	printf("INPUT after REDIRS:%s\n", parse->input);
 	// parse->args = initial_split(parse->input, data);
@@ -149,6 +151,8 @@ int	main(int argc, char **argv, char **env)
 	if (!data || init_data(data, env) == FALSE)
 		return (1);
 	printf("PID = %d\n", getpid());
+	save_pid(getpid(), data);
+	print_pid_list(data->pids);
 	while (1)
 	{
 		buffer = readline(GREEN ITALIC "minishell$ " RESET);
@@ -156,13 +160,12 @@ int	main(int argc, char **argv, char **env)
 		if (empty_line(buffer) == FALSE)
 			add_history(buffer);
 		if (!buffer)
-		{
-			printf("EOF\n");
-			break ;
-		}
+			exit_b((char *[]){"\0", NULL}, data);
 		parse(buffer, data);
 		//close_all_fds()
 		gc_flush_layer(data->gc, 1);
+		printf(YELLOW "[LVL 1 DATA CLEARED]\n" RESET);
+		kill_processes(SIGINT, data);
 	}
 	// print_env(data, PUBLIC_VARS);
 	clear_data(data);

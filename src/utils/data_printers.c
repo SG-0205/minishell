@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 12:43:57 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/03 14:25:22 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,30 @@ int	print_cmd_list(t_cmd *start)
 		printf(RED "\tOUTPUT_FD: %d\n" RESET, tmp->output_fd);
 		printf(BOLD "\tPIPES_FD[IN %d / OUT %d]\n" RESET, tmp->pipe_fds[1], tmp->pipe_fds[0]);
 		printf("----------\n\n");
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	print_pid_list(t_pidlist *start)
+{
+	t_pidlist	*tmp;
+	int			count;
+
+	if (!start)
+	{
+		printf(RED "NO PIDS\n" RESET);
+		return (-1);
+	}
+	count = -1;
+	tmp = start;
+	printf(YELLOW "PRINT_PIDS @%p\n----------\n" RESET, start);
+	while (tmp)
+	{
+		count ++;
+		printf(GREEN "[%d]\n" RESET, count);
+		printf(CYAN "\tPID >%d<\n" RESET, tmp->pid);
+		printf("------\n\n");
 		tmp = tmp->next;
 	}
 	return (0);
