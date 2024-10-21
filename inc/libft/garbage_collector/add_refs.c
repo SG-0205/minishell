@@ -6,10 +6,9 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 14:34:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/16 09:31:21 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:02:32 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "garbage_collector.h"
 #include <stdio.h>
@@ -76,7 +75,6 @@ int	gc_add_ref(t_collector *gc, void *ref, size_t layer)
 // int	main(int argc, char **argv)
 // {
 // 	t_collector *gc;
-
 // 	if (argc != 6)
 // 		return (1);
 // 	(void)argv;

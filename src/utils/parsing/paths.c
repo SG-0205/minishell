@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 15:09:06 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 15:32:13 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,18 +59,16 @@ void	add_dir(char *dir, t_pn *list, t_mshell *data)
 {
 	if (!dir || !list || !data)
 		return ;
-	last_dir(list)->next = new_path_node(dir, data);
+	(last_dir(list)->next = new_path_node(dir, data));
 }
 
-void	rm_last_dir(t_pn *start, t_mshell *data)
+void	rm_last_dir(t_pn *start)
 {
 	t_pn	*tmp;
-	
+
 	if (!start)
 		return ;
-	data = data;
 	tmp = start;
-	printf("RM_DIR :\t[0]%s\t[last]%s\n", start->dir, last_dir(start)->dir);
 	if (tmp == last_dir(start))
 	{
 		tmp->dir = ft_strcpy(tmp->dir, "/\0");

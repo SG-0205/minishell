@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/03 13:42:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 14:50:08 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	kill_processes(int signal, t_mshell *data)
 
 int	save_pid(pid_t process_pid, t_mshell *data)
 {
-	t_pidlist *new;
+	t_pidlist	*new;
 
 	if (process_pid < 0 || !data)
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/03 14:25:22 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 {
 	t_redirs	*tmp;
 	int			i;
-	
 	if (redirs)
 		printf(YELLOW "PRINT_REDIRECTIONS @%p\n---------\n" RESET, redirs);
 	else
@@ -59,9 +58,11 @@ int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 	i = 0;
 	while (tmp)
 	{
-		printf(GREEN "[%d]\t" RESET, i);
+		printf(GREEN "[%d][%p]\t" RESET, i, tmp);
 		printf(CYAN "FD = %d\t" RESET, tmp->fd);
 		printf(RED "CMD_ID = %d\t" RESET, tmp->cmd_id);
+		printf(CYAN "ERRNOSAVE = %d\t" RESET, tmp->errcorde);
+		printf(BLUE "F_PATH = %s\t" RESET, tmp->path);
 		if (tmp->type == HEREDOC)
 			printf(MAGENTA "HEREDOC\n" RESET);
 		else if (tmp->type == INPUT)
@@ -70,8 +71,7 @@ int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 			printf(MAGENTA "OUTPUT\n" RESET);
 		else if (tmp->type == APPEND)
 			printf(MAGENTA "APPEND\n" RESET);
-		printf(BOLD "----CONTENT----\n[%s]\n\n" RESET, extract_content(tmp->fd, data));
-		lseek(tmp->fd, 0, SEEK_SET);
+		printf("DATA %p\n", data);
 		tmp = tmp->next;
 		i ++;
 	}
@@ -96,7 +96,12 @@ int	print_cmd_list(t_cmd *start)
 	while (tmp && ++count <= total)
 	{
 		printf(GREEN "[%d/%d]\n" RESET, count, total);
-		printf(BOLD "\tPATH: %s\n" RESET, tmp->path_to_cmd);
+
+		//s()->p.ncmds = total;
+		//tmp->exit = count;
+		//if (tmp->path_to_cmd && *tmp->path_to_cmd)
+			//printf(BOLD "\tPATH: %s\n" RESET, tmp->path_to_cmd);
+		printf(RED "PREV @%p\t NEXT@%p\n" RESET, tmp->prev, tmp->next);
 		if (tmp->env)
 			printf(GREEN "\t\t[HAS ENV]\n" RESET);
 		else

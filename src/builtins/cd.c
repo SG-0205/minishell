@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 13:51:10 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/27 00:44:33 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@ int	cd(char **path, t_mshell *data)
 {
 	t_f_check	dir_checks;
 
-	if (!path || !data || !data->env)
+	if (!data || !data->env)
 		return (-5);
+	if (!*path)
+		return (change_directory(dup_var_value(data, "HOME"), data));
 	if (ft_strcmp(*path, "-") == 0
 		&& ft_strcmp(search_var(&data->env, "OLDPWD")->value, " ") == 0)
 		return (custom_b_error("cd", "\x1C", "OLDPWD not set", data));

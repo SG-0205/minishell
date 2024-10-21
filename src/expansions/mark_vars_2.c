@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 12:42:33 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 14:44:52 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:34:29 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	**fill_var_names(char *to_expand, int var_count,
 	while (to_expand[++i] && var_count > 0)
 	{
 		if (to_expand[i] == '$'
-			&& (first_quoting(&to_expand[i], to_expand) == *DQ_SEP 
+			&& (first_quoting(&to_expand[i], to_expand) == *DQ_SEP
 				|| first_quoting(&to_expand[i], to_expand) == 0)
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
@@ -61,20 +61,14 @@ static void	cpy_and_sep_var(char *vars_marked, char *to_expand, int var_count)
 			&& validate_var(&to_expand[i]) == TRUE)
 		{
 			if (first_quoting(&to_expand[i], to_expand) == *DQ_SEP)
-				printf(BOLD"\nFQ_OK\n"RESET);
 			vars_marked[j++] = *VAR_SEP;
-			// j++;
 			i++;
 			while (ft_isvarname(to_expand[i]) == TRUE)
 				cpy_var_name(&vars_marked[j], &to_expand[i], &i, &j);
 			vars_marked[j++] = *VAR_SEP;
 		}
 		else
-		{
-			vars_marked[j] = to_expand[i];
-			j++;
-			i++;
-		}
+			vars_marked[j++] = to_expand[i++];
 	}
 }
 
@@ -97,7 +91,6 @@ void	place_var_sep(t_expand *exp, t_mshell *data)
 
 //FAIRE UN PUTAIN DE SCHEMA POUR CETTE PUTAIN DE CONCATENATION - 24/08
 //LA PUTAIN DE CONCATENATION EST OK!!! - 25/08
-
 //TODO VERIFIER CONDITIONS DE DELIMITATION DES VARIABLES , SAVOIR QUE FAIRE DE &
 //& SERA CONSIDERE COMME EOV - 24/08
 //	^	TOUT CHAR NON ALNUM + _ = EOV - 25/08

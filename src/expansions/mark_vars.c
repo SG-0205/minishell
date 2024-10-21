@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/20 22:41:42 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/02 19:19:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ char	*get_var_name(char *var_start, t_mshell *data)
 	if (ft_cisar(var_start[i], EXPORT_FORBIDDEN_CHARS) != 0
 		|| ft_cisar(var_start[i], "123456789 \0") != 0)
 		return (NULL);
+	else if (var_start[i] == '0' || var_start[i] == '?')
+		return (search_var(&data->env,
+				gc_strndup(var_start + 1, 1, data->gc, 1))->name);
 	while (var_start[++i])
 	{
 		if (ft_isvarname(var_start[i]) == FALSE)

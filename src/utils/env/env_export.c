@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:42:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:48:50 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 14:27:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,18 @@ t_envar	**split_env_on_visibility(t_envar **env_start, t_mshell *data)
 		return (NULL);
 	splitted_list[SPLIT_END] = NULL;
 	splitted_list[HIDDEN_VARS] = dup_var(get_first_var_on_visibility(env_start,
-		TRUE, data), data);
+				TRUE, data), data);
 	splitted_list[PUBLIC_VARS] = dup_var(get_first_var_on_visibility(env_start,
-		FALSE, data), data);
+				FALSE, data), data);
 	tmp = *env_start;
 	while (tmp)
 	{
 		if (tmp->hidden == TRUE)
-			get_last_var(splitted_list[HIDDEN_VARS])->next = dup_var(tmp, data);
-		else			
-			get_last_var(splitted_list[PUBLIC_VARS])->next = dup_var(tmp, data);
+			(get_last_var(splitted_list[HIDDEN_VARS])->next
+					= dup_var(tmp, data));
+		else
+			(get_last_var(splitted_list[PUBLIC_VARS])->next
+					= dup_var(tmp, data));
 		tmp = tmp->next;
 	}
 	return (splitted_list);
@@ -95,7 +97,7 @@ char	**env_list_to_array(t_mshell *data, t_bool hidden)
 {
 	char	**converted_env;
 	t_envar	**splitted_env;
-	t_envar *tmp;
+	t_envar	*tmp;
 	int		i;
 
 	i = 0;

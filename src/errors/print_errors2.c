@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 10:54:48 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 				l_itoa, "warning: here-document at line  \0",
 				"delimited by end-of-file (wanted )\n\0", NULL}), data->gc, 1);
 	error_msg = ft_strcat(error_msg,
-		"minishell: warning: here-document at line \0");
+			"minishell: warning: here-document at line \0");
 	error_msg = ft_strcat(error_msg, l_itoa);
 	error_msg = ft_strcat(error_msg, " delimited by end-of-file (wanted \0");
 	error_msg = ft_strcat(error_msg, limiter);
@@ -77,12 +77,33 @@ int	syntax_error(char *faulty_token, t_mshell *data)
 	update_var(data, "?", gc_itoa(2, data->gc, 1));
 	faulty_token = simple_quoting(faulty_token, data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: ",
-				"syntax error near unexpected token \n\0", faulty_token, NULL}),
-				data->gc, 1);
+				"syntax error near unexpected token \n\0",
+				faulty_token, NULL}), data->gc, 1);
 	error_msg = ft_strcat(error_msg,
-		"minishell: syntax error near unexpected token \0");
+			"minishell: syntax error near unexpected token \0");
 	error_msg = ft_strcat(error_msg, faulty_token);
 	error_msg = ft_strcat(error_msg, "\n\0");
 	write(2, error_msg, ft_strlen(error_msg));
 	return (2);
+}
+
+int	custom_shell_error(char *arg, char *custom_msg, int m_errcode,
+		t_mshell *data)
+{
+	char	*error_msg;
+
+	if (!arg || !custom_msg || !data)
+		return (m_errcode);
+	update_var(data, "?", gc_itoa(m_errcode, data->gc, 1));
+	arg = quote_e_args(arg, FALSE, data);
+	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", arg,
+				custom_msg, "\n\0", NULL}) + 4, data->gc, 1);
+	if (!error_msg)
+		return (ENOMEM);
+	error_msg = ft_strcat(error_msg, "minishell: \0");
+	error_msg = ft_strcat(error_msg, arg);
+	error_msg = ft_strcat(error_msg, custom_msg);
+	error_msg = ft_strcat(error_msg, "\n\0");
+	write(2, error_msg, ft_strlen(error_msg));
+	return (m_errcode);
 }

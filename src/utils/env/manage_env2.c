@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 15:39:41 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/13 12:33:53 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,11 @@ char	*dup_var_value(t_mshell *data, char *var_name)
 		return (NULL);
 	else
 		return (gc_strdup(search_attempt->value, data->gc, 0));
+}
+
+void	update_return_code(int exit_code, t_mshell *data)
+{
+	if (!data || !data->env)
+		return ;
+	update_var(data, "?", gc_itoa(exit_code, data->gc, 1));
 }

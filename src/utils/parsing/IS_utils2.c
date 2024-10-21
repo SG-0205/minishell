@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 12:24:58 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/16 12:28:53 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	read_dq(char *dq_start, char *arg, char *new_arg, t_mshell *data)
 {
-	int		i;
-	int		values_len;
+	int	i;
+	int	values_len;
 
 	if (!dq_start || !arg || !new_arg || !data)
 		return (0);
@@ -25,9 +25,9 @@ int	read_dq(char *dq_start, char *arg, char *new_arg, t_mshell *data)
 	{
 		if (dq_start[i] == '$' && validate_var(&dq_start[i]) == TRUE
 			&& ((is_quoted_by('\"', &dq_start[i], dq_start) == TRUE
-				&& is_quoted_by('\'', &dq_start[i], dq_start) == FALSE)
-			|| (is_quoted_by('\'', &dq_start[i], arg) == TRUE
-				&& first_quoting(&dq_start[i], arg) == '\"')))
+					&& is_quoted_by('\'', &dq_start[i], dq_start) == FALSE)
+				|| (is_quoted_by('\'', &dq_start[i], arg) == TRUE
+					&& first_quoting(&dq_start[i], arg) == '\"')))
 		{
 			values_len += try_insert_value(&dq_start[i], new_arg, data);
 			i += ft_strlen(get_var_name(&dq_start[i], data));
@@ -61,7 +61,7 @@ t_bool	is_a_closing_quote(char *quote_ptr, char *str)
 	count = 0;
 	while (str[++i] && &str[i] != quote_ptr)
 		if (str[i] == *quote_ptr)
-			count ++;
+			count++;
 	if (count % 2 == 0)
 		return (FALSE);
 	else

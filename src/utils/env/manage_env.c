@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/18 21:49:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/25 15:18:36 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 14:00:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ int	update_var(t_mshell *data, char *name, char *new_value)
 	tmp = search_var(&data->env, name);
 	if (!tmp)
 	{
-		get_last_var(data->env)->next = new_var(name, new_value, data, FALSE);
-		return (MOD_OK);
+		(get_last_var(data->env)->next = new_var(name, new_value, data, FALSE));
+		return (0);
 	}
 	if (!new_value)
 		tmp->value = "\0";
@@ -88,7 +88,8 @@ int	update_var(t_mshell *data, char *name, char *new_value)
 		tmp->value = gc_strdup(new_value, data->gc, 0);
 	if (!tmp->value)
 		return (MOD_KO);
-	return (MOD_OK);
+//
+	return (0);
 }
 
 t_envar	*dup_var(t_envar *var, t_mshell *data)

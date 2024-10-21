@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 13:23:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/02 13:47:04 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,18 @@ t_redirs	*new_redirection(int *fd, int *cmd_id,
 
 	if (!cmd_id || !fd)
 		return (NULL);
+	//printf("N_R fd:%d id:%d\n", *fd, *cmd_id);
 	new = (t_redirs *)gc_malloc(data->gc, sizeof(t_redirs), 1);
 	if (!new)
 		return (NULL);
+	//printf("N_R @%p\n", new);
 	new->cmd_id = *cmd_id;
 	new->fd = *fd;
 	new->type = *type;
 	new->next = NULL;
+	new->path = NULL;
+	new->errcorde = 0;
+	//printf("N_R @%p\n", new);
 	return (new);
 }
 
@@ -38,6 +43,8 @@ t_redirs	*dup_redirection(t_redirs **elem_addr, t_mshell *data)
 		return (NULL);
 	elem = *elem_addr;
 	new = new_redirection(&elem->fd, &elem->cmd_id, &elem->type, data);
+	new->path = gc_strdup(elem->path, data->gc, 1);
+	new->errcorde = elem->errcorde;
 	return (new);
 }
 
@@ -74,7 +81,7 @@ t_redirs	*filter_redirs_by_type(t_redirs **origin, t_redir_type type,
 		if (cpy == 1 && !sub_list)
 			sub_list = dup_redirection(&tmp, data);
 		else if (cpy == 1)
-			get_last_redir(&sub_list)->next = dup_redirection(&tmp, data);
+			(get_last_redir(&sub_list)->next = dup_redirection(&tmp, data));
 		tmp = tmp->next;
 	}
 	return (sub_list);
@@ -94,21 +101,21 @@ t_redirs	*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id)
 	return (tmp);
 }
 
-int	get_cmd_id(char *parsed, char *red_start)
-{
-	int	i;
-	int	pipe_count;
+// int	get_cmd_id(char *parsed, char *red_start)
+// {
+// 	int	i;
+// 	int	pipe_count;
 
-	if (!parsed || !red_start)
-		return (-1);
-	i = -1;
-	pipe_count = 0;
-	while (parsed[++i] && &parsed[i] != red_start)
-	{
-		if (parsed[i] == '|'
-			&& is_quoted_by('\'', &parsed[i], parsed) == FALSE
-			&& is_quoted_by('\"', &parsed[i], parsed) == FALSE)
-			pipe_count ++;
-	}
-	return (pipe_count);
-}
+// 	if (!parsed || !red_start)
+// 		return (-1);
+// 	i = -1;
+// 	pipe_count = 0;
+// 	while (parsed[++i] && &parsed[i] != red_start)
+// 	{
+// 		if (parsed[i] == '|'
+// 			&& is_quoted_by('\'', &parsed[i], parsed) == FALSE
+// 			&& is_quoted_by('\"', &parsed[i], parsed) == FALSE)
+// 			pipe_count ++;
+// 	}
+// 	return (pipe_count);
+// }

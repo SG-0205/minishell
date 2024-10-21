@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:45:45 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/26 15:35:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ char	*build_path_from_list(t_pn *list, char *container)
 		if (ft_strcmp(tmp->dir, "/") != 0)
 			ft_strncat(container, "/", 1);
 		ft_strncat(container, tmp->dir, ft_strlen(tmp->dir));
-		// printf("\n\tCONTAINER WHEN DIR = %s\t%s\n", tmp->dir, container);
 		tmp = tmp->next;
 	}
 	return (container);
@@ -63,7 +62,7 @@ char	*convert_path(char **splitted, t_mshell *data)
 		if (ft_strcmp(splitted[i], ".") == 0)
 			continue ;
 		else if (ft_strcmp(splitted[i], "..") == 0)
-			rm_last_dir(new_p_list, data);
+			rm_last_dir(new_p_list);
 		else
 			add_dir(splitted[i], new_p_list, data);
 	}

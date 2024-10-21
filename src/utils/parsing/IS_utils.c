@@ -6,19 +6,22 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 12:23:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/25 20:03:42 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/minishell.h"
 
-char **expand_all_args(char **args, t_mshell *data)
+char	**expand_all_args(char **args, t_mshell *data)
 {
 	int	i;
 
 	i = -1;
 	while (args[++i])
+	{
 		args[i] = read_quoting(args[i], data);
+		args[i] = revert_unclosed(args[i]);
+	}
 	return (args);
 }
 
@@ -53,11 +56,11 @@ char	*revert_unclosed(char *input)
 		return (NULL);
 	i = -1;
 	while (input[++i])
+	{
 		if (input[i] == *DQ_SEP)
 			input[i] = '\"';
 		else if (input[i] == *SQ_SEP)
 			input[i] = '\'';
+	}
 	return (input);
 }
-
-//IF NON QUOTED && FIND << INSERT HERDEOC

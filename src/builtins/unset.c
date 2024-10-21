@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 21:49:17 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/09/13 12:19:09 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	unset(char **args, t_mshell *data)
 	if (!args)
 		return (custom_b_error("unset", "\x1C", "input not reachable", data));
 	else if (!*args)
-		return (1);
+		return (update_var(data, "?", gc_itoa(0, data->gc, 1)));
 	i = -1;
 	while (args[++i])
 		cut_var_from_env(args[i], data);

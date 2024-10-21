@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec.c                                             :+:      :+:    :+:   */
+/*   s.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: estegana <estegana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/04 18:13:37 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
+/*   Created: 2024/10/04 19:43:37 by estegana          #+#    #+#             */
+/*   Updated: 2024/10/04 19:43:59 by estegana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int	ft_exec(t_cmd *list)
+t_initialestruct	*s(void)
 {
-	int	i;
+	static t_initialestruct	input;
 
-	i = -1;
-	while (++i < cmd_list_size(&list))
-		if (pipe(list->link->fds[i]) < 0)
-			printf("DEAD");
-		// else
-		// 	printf("CREATED:[%d]:\tIN[%d] OUT[%d]\n", i, list->link->fds[i][1], list->link->fds[i][0]);
-	ft_loop(list);
-	return (0);
+	return (&input);
 }
