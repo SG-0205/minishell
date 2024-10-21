@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 16:14:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/19 20:16:26 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,29 +165,6 @@ typedef struct s_parsing
 	int					ncmds;
 }								t_parse;
 
-typedef struct s_pid_lists
-{
-	pid_t				pid;
-	t_pidlist			*next;
-}						t_pidlist;
-
-typedef struct s_redirections
-{
-	int					fd;
-	int					cmd_id;
-	t_redir_type		type;
-	t_redirs			*next;
-}						t_redirs;
-
-typedef struct s_parsing
-{
-	char				*input;
-	char				**args;
-	t_redirs			*redirections;
-	t_cmd				*cmds;
-	
-}						t_parse;
-
 typedef struct e_expcheck
 {
 	int					sq_count;
@@ -204,12 +181,6 @@ typedef struct e_path_node
 	char				*dir;
 	t_pn				*next;
 }								t_pn;
-
-typedef struct e_path_node
-{
-	char				*dir;
-	t_pn				*next;
-}						t_pn;
 
 typedef struct e_cmd
 {

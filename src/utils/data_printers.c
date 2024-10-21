@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 14:26:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/18 16:00:37 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ int	print_redirection_list(t_redirs *redirs, t_mshell *data)
 {
 	t_redirs	*tmp;
 	int			i;
+
 	if (redirs)
 		printf(YELLOW "PRINT_REDIRECTIONS @%p\n---------\n" RESET, redirs);
 	else

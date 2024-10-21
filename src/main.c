@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 16:14:25 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 15:28:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,94 +106,6 @@ void	reset_pipes(t_mshell *data)
 		close(data->fds[i][1]);
 	}
 	return ;
-}
-
-static void	update_return_code(int exit_code, t_mshell *data)
-{
-	if (!data || !data->env)
-		return ;
-	update_var(data, "?", gc_itoa(exit_code, data->gc, 1));
-}
-
-void	builtins_test(char **expanded_input, t_mshell *data)
-{
-	int	exit_code;
-
-	exit_code = 0;
-	if (ft_strcmp(*expanded_input, "export") == 0)
-		exit_code = export(data, &expanded_input[1]);
-	else if (ft_strcmp(*expanded_input, "cd") == 0)
-		exit_code = cd(&expanded_input[1], data);
-	else if (ft_strcmp(*expanded_input, "env") == 0)
-		exit_code = print_env(data, PUBLIC_VARS);
-	else if (ft_strcmp(*expanded_input, "unset") == 0)
-		exit_code = unset(&expanded_input[1], data);
-	else if (ft_strcmp(*expanded_input, "exit") == 0)
-		exit_b(&expanded_input[1], data);
-	else if (ft_strcmp(*expanded_input, "pwd") == 0)
-		exit_code = pwd(&expanded_input[1], data);
-	else if (ft_strcmp(*expanded_input, "echo") == 0)
-		exit_code = echo_b(&expanded_input[1], data);
-	update_return_code(exit_code, data);
-}
-
-static char	first_token(char *input)
-{
-	int	i;
-
-	if (!input)
-		return (0);
-	i = -1;
-	while (input[++i])
-		if (ft_cisar(input[i], ARG_SEPARATORS) == 0
-			&& is_quoted_by('\'', &input[i], input) == FALSE
-			&& is_quoted_by('\"', &input[i], input) == FALSE)
-			return (input[i]);
-	return (0);
-}
-
-static t_bool	check_bad_pipes(char *input, t_mshell *data)
-{
-	if (!input || !data)
-		return (FALSE);
-	if (*input == '|' || first_token(input) == '|')
-	{
-		syntax_error("|", data);
-		return (FALSE);
-	}
-	else if (ft_strlen(input) > 1 && input[ft_strlen(input) - 1] == '|')
-	{
-		syntax_error(NULL, data);
-		return (FALSE);
-	}
-	return (TRUE);
-}
-
-int	parse(char *input, t_mshell *data)
-{
-	t_parse	*parse;
-
-	if (!input || !data)
-		return (1);
-	if (check_bad_pipes(input, data) == FALSE)
-		return (1);
-	parse = (t_parse *)gc_malloc(data->gc, sizeof(t_parse), 1);
-	if (!parse)
-		return (-1);
-	parse->input = gc_strdup(input, data->gc, 1);
-	if (!parse->input)
-		return (1);
-	parse->redirections = extract_redirections(parse, data);
-	if (!parse->redirections && has_redir(parse->input) == TRUE)
-		return (1);
-	print_redirection_list(parse->redirections, data);
-	printf("INPUT after REDIRS:%s\n", parse->input);
-	// parse->args = initial_split(parse->input, data);
-	parse->cmds = build_cmds_list(parse, data);
-	if (!parse->cmds)
-		return (1);
-	print_cmd_list(parse->cmds);
-	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
