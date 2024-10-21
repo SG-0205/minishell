@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
+/*   By: estegana <estegana@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 13:35:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/28 22:57:35 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 18:31:47 by estegana         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 
 	if (!data || !full_var)
 		return (NULL);
-	printf("%s\n", full_var);
 	new = (t_envar *)gc_malloc(data->gc, sizeof(t_envar), 0);
 	if (!new)
 		return (NULL);
@@ -41,11 +40,12 @@ t_envar	*env_cpy(char *full_var, t_mshell *data)
 		return (NULL);
 	new->name = ft_strncpy(new->name, full_var, ft_lentillc(full_var, '='));
 	new->value = gc_strnew(ft_strlen(&full_var[ft_lentillc(full_var, '=') + 1]),
-		data->gc, 0);
+			data->gc, 0);
 	if (!new->value)
 		return (NULL);
 	new->value = ft_strcpy(new->value, &full_var[ft_lentillc(full_var, '=')
-		+ 1]);
+			+ 1]);
+	new->value[ft_strlen(new->value)] = 0;
 	return (new);
 }
 
@@ -63,6 +63,7 @@ static int	default_env(t_mshell *data)
 	data->env->next = new_var("SHLVL", "1", data, FALSE);
 	if (!data->env->next)
 		return (ENV_ERROR);
+	data->env->next->next = new_var("OLDPWD", " ", data, TRUE);
 	return (ENV_FULL);
 }
 
@@ -70,14 +71,14 @@ static int	create_hidden_vars(t_mshell *data)
 {
 	if (!data || !data->env)
 		return (ENV_ERROR);
-	get_last_var(data->env)->next = new_var("$0", "minishell", data, TRUE);
-	get_last_var(data->env)->next = new_var("$?", "\0", data, TRUE);
-	get_last_var(data->env)->next = new_var("\x1A", "\x1F", data, TRUE);
+	(get_last_var(data->env)->next = new_var("0", "minishell", data, TRUE));
+	(get_last_var(data->env)->next = new_var("?", "0", data, TRUE));
+	(get_last_var(data->env)->next = new_var("\x1A", "\x1F", data, TRUE));
 	if (!search_var(&data->env, "HOME"))
-		get_last_var(data->env)->next = new_var("~", NULL, data, TRUE);
+		(get_last_var(data->env)->next = new_var("~", NULL, data, TRUE));
 	else
-		get_last_var(data->env)->next = new_var("~", search_var(&data->env,
-				"HOME")->value, data, TRUE);
+		(get_last_var(data->env)->next = new_var("~", search_var(&data->env,
+						"HOME")->value, data, TRUE));
 	return (ENV_FULL);
 }
 

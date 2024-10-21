@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 18:56:56 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:50:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/11 13:34:58 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,17 @@ t_list	*get_layer(t_collector *gc, void *ref)
 			return (gc->ref_layers[nb_layers]);
 	}
 	return (NULL);
+}
+
+/*Renvoie la derniere couche initalisee dans le collecteur.*/
+size_t	last_layer(t_collector *gc)
+{
+	size_t	layer;
+
+	if (!gc || !*gc->ref_layers)
+		return (0);
+	layer = 0;
+	while (gc->ref_layers[layer])
+		layer ++;
+	return (layer);
 }

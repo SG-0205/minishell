@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:23:55 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/26 16:44:56 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/09/26 14:58:01 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,12 @@ char		*gc_strdup(char *str, t_collector *gc, size_t layer);
 char		*gc_itoa(int n, t_collector *gc, size_t layer);
 char		*gc_strjoinsep(const char *s1, char const *s2,
 				char sep, t_collector *gc);
+char		*gc_strndup(char *str, int n, t_collector *gc, size_t layer);
+
 // DEBUG
 void		gc_print_layers(t_collector *gc);
 void		gc_print(t_collector *gc);
+
+size_t		last_layer(t_collector *gc);
 
 #endif

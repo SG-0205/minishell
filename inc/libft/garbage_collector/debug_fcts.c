@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 10:38:22 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/15 22:53:47 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 15:03:17 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void	gc_print_layers(t_collector *gc)
 {
 	t_list	*tmp;
-	int	nb_layers;
+	int		nb_layers;
 	int		i;
 
 	if (!gc)
@@ -29,11 +29,10 @@ void	gc_print_layers(t_collector *gc)
 		printf(YELLOW "\t[%d]:\n" RESET, i);
 		tmp = gc->ref_layers[i];
 		if (tmp)
-			while(tmp && tmp->content)
-				printf("\t\t- %p\n", tmp->content), tmp = tmp->next;
+			while (tmp && tmp->content)
+				(printf("\t\t- %p\n", tmp->content), tmp = tmp->next);
 	}
 }
-
 
 void	gc_print(t_collector *gc)
 {

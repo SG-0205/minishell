@@ -6,122 +6,91 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/08/29 11:41:07 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/08 13:56:37 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-// t_bool	is_escaped(char *c, char *str)
-// {
-// 	if (!c || !c - 1 || !str)
-// 		return (FALSE);
-// }
-
-char	*args_separation(char *input)
+int	try_insert_value(char *var_start, char *container, t_mshell *data)
 {
-	int	i;
+	t_envar	*search_try;
+	int		value_len;
 
-	if (!input)
-		return (NULL);
-	i = -1;
-	while (input[++i])
+	if (!var_start || !container || !data)
+		return (0);
+	value_len = 0;
+	search_try = search_var(&data->env, get_var_name(var_start, data));
+	if (search_try)
 	{
-		if (ft_cisar(input[i], ARG_SEPARATORS) == 1
-			&& is_quoted_by('\'', &input[i], input) == FALSE
-			&& is_quoted_by('\"', &input[i], input) == FALSE)
-			input[i] = *ARG_SEP;
+		value_len = ft_strlen(search_try->value);
+		ft_strncat(container, search_try->value, value_len);
 	}
-	return (input);
+	return (value_len - ft_strlen(get_var_name(var_start, data)));
 }
 
-int	ft_lentillptr(char *c, char *str)
+int	compute_exp_size(char *arg, t_mshell *data)
 {
-	int	i;
+	int		size;
+	t_envar	*search_try;
+	int		i;
 
-	if (!str)
+	if (!arg || !data)
 		return (0);
 	i = -1;
-	while (str[++i])
-		if (&str[i] == c)
-			return (i);
-	return (ft_lentillc(str, *c));
-}
-
-char	*extract_and_paste_value(char *var_start,
-	char *var_end, t_mshell *data, char *arg)
-{
-	char	*new_arg;
-	char	*arg_value;
-	char	*arg_end;
-	char	*var_name;
-
-	if (!var_start || !data)
-		return (NULL);
-	arg_end = NULL;
-	if (*var_end)
-		arg_end = gc_strdup(var_end, data->gc, 1);
-	var_name = gc_strnew(ft_lentillptr(var_end, var_start + 1), data->gc, 1);
-	var_name = ft_strncpy(var_name, var_start + 1,
-			ft_lentillptr(var_end, var_start + 1));
-	if (!dup_var_value(data, var_name))
-		arg_value = dup_var_value(data, "\x1A");
-	else
-		arg_value = dup_var_value(data, var_name);
-	new_arg = gc_strnew((ft_strlen(arg) - (ft_lentillptr(var_end, var_start +1))
-				+ ft_strlen(arg_value) + ft_strlen(var_end)), data->gc, 1);
-	new_arg = ft_strncpy(new_arg, arg, ft_lentillptr(var_start, arg));
-	new_arg = gc_strjoin(new_arg, arg_value, data->gc, 1);
-	if (arg_end)
-		new_arg = gc_strjoin(new_arg, arg_end, data->gc, 1);
-	return (gc_strdup(new_arg, data->gc, 1));
-}
-
-char	*insert_potential_vars(char *arg, t_mshell *data)
-{
-	int		i;
-	int		j;
-
-	i = 0;
-	if (!arg || !data)
-		return (NULL);
-	while (arg[i])
+	size = 0;
+	while (arg[++i])
 	{
 		if (arg[i] == '$' && validate_var(&arg[i]) == TRUE
-			&& (first_quoting(&arg[i], arg) == '\"'
-				|| first_quoting(&arg[i], arg) == 0))
+			&& is_quoted_by('\"', &arg[i], arg) == TRUE
+			&& is_quoted_by('\'', &arg[i], arg) == FALSE)
 		{
-			printf("\nFQ[%c] = %c\n", arg[i], first_quoting(&arg[i], arg));
-			j = i;
-			j++;
-			while (arg[j] && ft_isvarname(arg[j]) == TRUE)
-				j ++;
-			arg = extract_and_paste_value(&arg[i], &arg[j], data, arg);
-			i = 0;
+			search_try = search_var(&data->env, get_var_name(&arg[i], data));
+			if (!search_try)
+				size ++;
+			else
+				size += ft_strlen(search_try->value);
 		}
-		i ++;
+		else
+			size ++;
 	}
-	return (arg);
+	return (size + i);
 }
-//MARCHE +++++
-//FONCTIONNE AVEC ET SANS QUOTE, S'OCCUPER DES "FAUSSES" VAR && SPLIT LA FCT <- EMPTY VARS OK
-//PROBLEME SI ON FAIT DES TRUCS BIZARRES '"'"$TEST''''
-//		Peut etre qu'en placant des separateurs?
-//		Refaire first_quoting en partant du ptr et en faisant gauche/droite?
-//		CHIANT DE OUF
-//		Lire arg -> si ' ou " : remplacer par separateur -> resplit/substr -> interpreter -> 
 
-char	**expand_all_args(char **args, t_mshell *data)
+int	insert_var(char *var_start, char *arg, t_mshell *data, char *n_arg)
+{
+	if (!var_start || !arg || !data || !n_arg)
+		return (0);
+	try_insert_value(var_start, n_arg, data);
+	return ((int)ft_strlen(get_var_name(var_start, data)));
+}
+
+char	*read_quoting(char *arg, t_mshell *data)
 {
 	int		i;
+	int		expanded_size;
+	char	*new_arg;
 
 	i = -1;
-	while (args[++i])
+	expanded_size = compute_exp_size(arg, data);
+	if (!arg || !data)
+		return (NULL);
+	new_arg = gc_strnew(expanded_size * expanded_size + 1, data->gc, 1);
+	if (!new_arg)
+		return (NULL);
+	while (arg[++i])
 	{
-		// args[i] = treat_consecutive_quoting(args[i], data);
-		args[i] = insert_potential_vars(args[i], data);
+		if (arg[i] == '\"' && is_closed(&arg[i], arg) == TRUE)
+			i += read_dq(&arg[i], arg, new_arg, data);
+		else if (arg[i] == '\'' && is_closed(&arg[i], arg) == TRUE)
+			i += read_sq(&arg[i], arg, new_arg);
+		else if (arg[i] == '$' && validate_var(&arg[i]) == TRUE
+			&& is_quoted(&arg[i], arg, TRUE) == FALSE)
+			i += insert_var(&arg[i], arg, data, new_arg);
+		else
+			ft_strncat(new_arg, &arg[i], 1);
 	}
-	return (args);
+	return (new_arg);
 }
 
 char	**initial_split(char *input, t_mshell *data)
@@ -130,9 +99,14 @@ char	**initial_split(char *input, t_mshell *data)
 
 	if (!input || !data)
 		return (NULL);
-	args_separation(input);
+	input = quote_closure_control(input);
+	input = args_separation(input);
 	args = gc_split(input, *ARG_SEP, data->gc, 0);
-	expand_all_args(args, data);
+	if (!args || !*args)
+		return (NULL);
+	args = expand_all_args(args, data);
+	if (!args)
+		return (NULL);
 	if (!args || !*args)
 		return (NULL);
 	return (args);
