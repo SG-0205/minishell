@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 12:42:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/09 13:36:27 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/21 22:09:38 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,6 @@ int	try_open(char *path, t_redir_type type, t_mshell *data)
 				S_IRUSR | S_IWUSR);
 	else if (type == INPUT)
 		fd = open(complete_path, O_RDONLY, S_IRUSR);
-	// if (type != HEREDOC && fd < 0)
-	// 	mshell_error(path, errno, data);
 	return (fd);
 }
 

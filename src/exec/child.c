@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 18:22:20 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/21 14:56:02 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 20:21:59 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ void	dup_file_redirs(int todup, t_redir_type i_o)
 {
 	if (todup < 0 || (i_o != INPUT && i_o != OUTPUT))
 		return ;
-	if (i_o == INPUT && todup != 0)
+	if (i_o == INPUT)
 		dup2(todup, STDIN_FILENO);
-	else if (i_o == OUTPUT && todup != 1)
+	else if (i_o == OUTPUT)
 		dup2(todup, STDOUT_FILENO);
-	close(todup);
+	if (todup > 1)
+		close(todup);
+		
 }
 
 void	mid_redir(t_cmd *cmd, int *i)
@@ -44,82 +46,138 @@ void	mid_redir(t_cmd *cmd, int *i)
 	{
 		close(cmd->link->fds[*i - 1][1]);
 		dup2(cmd->link->fds[*i - 1][0], STDIN_FILENO);
-		// dprintf(STDOUT_FILENO, "%s dup2(%d, %d)\n", cmd->args[0], cmd->link->fds[*i - 1][0], STDIN_FILENO);
 		close(cmd->link->fds[*i - 1][0]);
 	}
-	else
+	else if (cmd->input_fd > 0)
 		dup_file_redirs(cmd->input_fd, INPUT);
 	if (cmd->output_fd == 1)
 	{
-		// close(cmd->link->fds[*i][0]);
 		dup2(cmd->link->fds[*i][1], STDOUT_FILENO);
-		// dprintf(STDOUT_FILENO, "%s dup2(%d, %d)\n", cmd->args[0], cmd->link->fds[*i][1], STDOUT_FILENO);
 		close(cmd->link->fds[*i][1]);
 	}
-	else
+	else if (cmd->output_fd > 1)
 		dup_file_redirs(cmd->output_fd, OUTPUT);
 }
 
 void	pipe_redirs(t_cmd *cmd, int *i)
 {
-//
 	if (*i == 0)
 	{
-		// printf("%s is start\n", cmd->args[0]);
-		if (cmd->output_fd == 1)
-		{
-			// dprintf(STDOUT_FILENO, "%s dup2(%d, %d)\n", cmd->args[0], cmd->link->fds[*i][1], STDOUT_FILENO);
+		if (cmd->output_fd == 1 && cmd->next)
 			dup2(cmd->link->fds[*i][1], STDOUT_FILENO);
-			// close(cmd->link->fds[*i][1]);
-			// close(cmd->link->fds[*i][0]);
-		}
-		else
+		else if (cmd->output_fd > 1)
 			dup_file_redirs(cmd->output_fd, OUTPUT);
-		if (cmd->input_fd != 0) 
+		if (cmd->input_fd > 0) 
 			dup_file_redirs(cmd->input_fd, INPUT);
 	}
 	else if (cmd->prev && cmd->next)
-	{
-		// printf("%s is middle\n", cmd->args[0]);
 		mid_redir(cmd, i);
-	}
 	else if (!cmd->next)
 	{
-		// printf("%s is end\n", cmd->args[0]);
 		if (cmd->input_fd == 0)
 		{
 			close(cmd->link->fds[*i - 1][1]);
 			dup2(cmd->link->fds[*i - 1][0], STDIN_FILENO);
-			// dprintf(STDOUT_FILENO, "%s dup2(%d, %d)\n", cmd->args[0], cmd->link->fds[*i - 1][0], STDIN_FILENO);
 			close(cmd->link->fds[*i - 1][0]);
 		}
-		else
+		else if (cmd->input_fd > 0)
 			dup_file_redirs(cmd->input_fd, INPUT);
-		if (cmd->output_fd != 1)
+		if (cmd->output_fd > 1)
 			dup_file_redirs(cmd->output_fd, OUTPUT);
-		// close(cmd->link->fds[*i][0]);
-		// close(cmd->link->fds[*i][1]);
 	}
 }
 
-// void	try_redirections(t_cmd *cmd, int *i)
-// {
-// 	t_redirs	*filtered;
-	
-// }
+void	open_heredocs(t_redirs **list, t_mshell *data)
+{
+	t_redirs	*tmp;
 
-t_redirs	*select_redirection(t_cmd *cmd, t_redir_type i_o, int *i)
+	if (!list || !*list || !data)
+		return ;
+	tmp = *list;
+	while (tmp)
+	{
+		if (tmp->type == HEREDOC)
+			tmp->fd = try_open(tmp->path, HEREDOC, data);
+		tmp = tmp->next;
+	}
+}
+
+t_bool	already_checked(t_redirs **list)
+{
+	t_redirs	*tmp;
+
+	if (!list || !*list)
+		return (TRUE);
+	tmp = *list;
+	while (tmp)
+	{
+		if (tmp->fd != -2)
+			return (TRUE);
+		tmp = tmp->next;
+	}
+	return (FALSE);
+}
+
+t_bool	check_bad_redirs(t_redirs **list, t_mshell *data)
+{
+	t_redirs	*tmp;
+
+	if (!list || !*list || !data)
+		return (FALSE);
+	if (already_checked(list) == TRUE)
+		return (ERROR);
+	tmp = *list;
+	open_heredocs(list, data);
+	while (tmp)
+	{
+		if (tmp->fd == -2)
+		{
+			tmp->fd = try_open(tmp->path, tmp->type, data);
+			if (tmp->fd == -1)
+			{
+				tmp->errcorde = errno;
+				mshell_error(tmp->path, errno, data);
+				return (FALSE);
+			}
+			tmp->fd = dup(tmp->fd);
+		}
+		tmp = tmp->next;
+	}
+	return (TRUE);
+}
+
+t_redirs	*get_faulty_redir(t_redirs **list)
+{
+	t_redirs	*tmp;
+
+	if (!list || !*list)
+		return (NULL);
+	tmp = *list;
+	while (tmp)
+	{
+		if (tmp->fd == -1)
+			return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+t_redirs	*select_redirection(t_cmd *cmd, t_redir_type i_o)
 {
 	t_redirs	*filtered_list;
 	t_redirs	*final_item;
 
-	if ((i_o != INPUT && i_o != OUTPUT))
+	if (i_o != INPUT && i_o != OUTPUT)
 		return (NULL);
 	final_item = NULL;
+	filtered_list = NULL;
+	if (check_bad_redirs(&cmd->redirs, cmd->link) == FALSE)
+	{
+		cmd->exit = get_faulty_redir(&cmd->redirs)->errcorde;
+		return (get_faulty_redir(&cmd->redirs));
+	}
 	filtered_list = filter_redirs_by_type(&cmd->redirs, i_o, cmd->link);
-	if (!filtered_list)
-		return (NULL);
-	final_item = get_last_redir_by_cmd_id(&filtered_list, *i);
+	final_item = get_last_redir(&filtered_list);
 	if (!final_item)
 		return (NULL);
 	return (final_item);
@@ -131,7 +189,6 @@ t_bool	validate_redirection(t_redirs *redir, t_mshell *data)
 		return (FALSE);
 	if (redir->fd < 0)
 	{
-		// printf("\nREDIR FAULT[] @%p\t%s\n", redir, redir->path);
 		if (redir->type != HEREDOC)
 			mshell_error(redir->path, redir->errcorde, data);
 		return (FALSE);
@@ -148,31 +205,52 @@ t_bool	try_redirections(t_cmd *cmd, int *i)
 		return (FALSE);
 	if (!cmd->redirs || has_redirs_by_id(i, cmd->redirs) == FALSE)
 		return (TRUE);
-	input = select_redirection(cmd, INPUT, i);
-	output = select_redirection(cmd, OUTPUT, i);
+	cmd->redirs = filter_redirs_by_id(&cmd->redirs, i, cmd->link);
+	input = select_redirection(cmd, INPUT);
+	output = select_redirection(cmd, OUTPUT);
 	if (!input && !output)
 		return (TRUE);
+	if ((input && input->fd < 0) || (output && output->fd < 0))
+		return (FALSE);
 	if (input)
-	{
-		if (validate_redirection(input, cmd->link) == FALSE)
-			return (FALSE);
 		cmd->input_fd = input->fd;
-	}
 	if (output)
-	{
-		if (validate_redirection(output, cmd->link) == FALSE)
-			return (FALSE);
 		cmd->output_fd = output->fd;
-	}
+	// printf("OUT[%d]\t%d -> %d[%s]\n", *i, cmd->output_fd, output->fd, output->path);
+	// printf("IN[%d]\t%d -> %d[%s]\n", *i, cmd->input_fd, input->fd, input->path);
 	return (TRUE);
 }
 
-//Tenter de close les pipes fd correspondants auc redirections si presentes
+void	simple_exec(t_cmd *cmd)
+{
+	int	exit_code;
+
+	if (!cmd)
+		return ;
+	exit_code = 0;
+	if (cmd->input_fd > 0)
+		dup_file_redirs(cmd->input_fd, INPUT);
+	if (cmd->output_fd > 1)
+		dup_file_redirs(cmd->output_fd, OUTPUT);
+	close(cmd->link->fds[0][0]);
+	close(cmd->link->fds[0][1]);
+	if (cmd->is_builtin == TRUE)
+	{
+		exit_code = exec_builtins(cmd->args[0], &cmd->args[1], cmd->link);
+		clear_data(cmd->link);
+		exit(normalize_return(exit_code));
+	}
+	else
+		ft_execute(cmd);
+}
 
 int	ft_child(t_cmd *list, int *i)
 {
 	int	exit_code;
-	if (list->is_builtin)
+
+	if (!list->next && *i == 0)
+		simple_exec(list);
+	else if (list->is_builtin)
 	{
 		exit_code = 0;
 		pipe_redirs(list, i);

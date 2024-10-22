@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:46:13 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/09 12:25:26 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 19:17:09 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,16 @@ t_cmd	*apply_redirections(t_cmd *cmd, t_parse *parsing,
 	return (cmd);
 }
 
+char	*search_exception(char *cmd_name, char *new, t_mshell *data)
+{
+	if (!cmd_name || !new)
+		return (NULL);
+	if (ft_strcmp(cmd_name, new) == 0 && ft_strcmp(get_pwd(data), new) != 0)
+		return (gc_strdup("command not found\0", data->gc, 1));
+	else
+		return (strerror(EISDIR));
+}
+
 char	*interpolate_path(char *cmd_name, t_mshell *data)
 {
 	char		*new;
@@ -60,21 +70,20 @@ char	*interpolate_path(char *cmd_name, t_mshell *data)
 
 	if (!cmd_name || !data || !*cmd_name)
 		return (NULL);
-	//printf("PATH_SEARCH2 %s\n", cmd_name);
 	if (ft_strcmp(cmd_name, "..") == 0 || ft_strcmp(cmd_name, ".") == 0)
 		return (special_filter(cmd_name, data));
 	else if (is_relative_path(cmd_name, data) == TRUE)
 		return (convert_rp(cmd_name, data));
 	flag = 0;
 	new = path_search(cmd_name, data);
-	//printf("PATH_SEARCH2 %s\n", new);
 	if (!new)
 		flag = custom_shell_error(cmd_name, "command not found\0", 127, data);
 	else
 	{
 		checks = f_access_check(new, NULL);
 		if (checks.is_dir == TRUE)
-			flag = custom_shell_error(cmd_name, strerror(EISDIR), 126, data);
+			flag = custom_shell_error(cmd_name,
+				search_exception(cmd_name, new, data), 127, data);
 		else if (checks.exec == FALSE)
 			flag = custom_shell_error(cmd_name, strerror(EACCES), 126, data);
 	}

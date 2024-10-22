@@ -6,14 +6,13 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/19 20:16:26 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 19:21:49 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-# include "libft/garbage_collector/garbage_collector.h"
-# include "libft/libft.h"
+
 # include <curses.h>
 # include <dirent.h>
 # include <fcntl.h>
@@ -32,200 +31,13 @@
 # include <err.h>
 # include <error.h>
 # include <sys/stat.h>
-
-# define SIG_NB 3
-# define EXPORT_FORBIDDEN_CHARS "!@#$%%^&*-+={}[]()|\\/><,.:;\0"
-# define PIPE_NBR 1024
-# define PATH_CHARS "_./~,;:()[]{}+=$!@#&*?|\\^'\"`\n\r\t"
-# define ARG_SEPARATORS " \t\r"
-# define MANAGED_QUOTES "\'\""
-# define HEREDOC_PATH "/mnt/nfs/homes/sgoldenb/sgoinfre/HD"
-# define ARG_SEP "\x1A"
-# define SQ_SEP "*"
-# define DQ_SEP "\x1D"
-# define CMD_SEP "\x1C"
-# define VAR_SEP "\v"
-# define RED_SEP "\x06"
-# define R_S_SEP "\x1D"
-# define BUILTINS_STR "cd.pwd.env.echo.exit.unset.export"
-# define UNMANAGED_MCHARS "\\"
-# define ECHO_ESCAPE_SEQUENCES "\n\t\b\r\a\v\f\\" //\x to include
+# include "libft/garbage_collector/garbage_collector.h"
+# include "libft/libft.h"
+# include "mshell_enums.h"
+# include "mshell_constants.h"
+# include "mshell_types.h"
 
 extern sig_atomic_t				g_sig_trace;
-
-typedef struct s_envar			t_envar;
-typedef struct e_cmd			t_cmd;
-typedef struct e_path_node		t_pn;
-typedef struct e_path_stack		t_p_stack;
-typedef struct s_redirections	t_redirs;
-typedef struct s_file_check		t_f_check;
-typedef struct s_pid_lists		t_pidlist;
-typedef struct s_mshell			t_mshell;
-
-typedef struct s_file_check
-{
-	t_bool						read;
-	t_bool						write;
-	t_bool						exec;
-	t_bool						exists;
-	t_bool						is_dir;
-	t_bool						is_file;
-	struct stat					path_stats;
-	struct stat					fd_stats;
-}								t_f_check;
-
-typedef enum e_fd_end_check
-{
-	FD_IN,
-	FD_OUT,
-	PI_READ,
-	PI_WRITE
-}								t_fdchecks;
-
-typedef enum e_heredoc_limit
-{
-	SQ,
-	NORMAL,
-	UNTAB,
-	UNTAB_SQ,
-}								t_hd_l_type;
-
-typedef enum e_redirection_type
-{
-	OUTPUT,
-	INPUT,
-	APPEND,
-	HEREDOC
-}								t_redir_type;
-
-typedef enum e_envsplit
-{
-	PUBLIC_VARS,
-	HIDDEN_VARS,
-	SPLIT_END
-}								t_envsplit;
-
-typedef enum e_envmod
-{
-	MOD_OK,
-	MOD_KO,
-	NO_VAR
-}								t_envmod;
-
-typedef enum e_varcheck
-{
-	VARS_FOUND,
-	VARS_NONE,
-	VARS_ERROR
-}								t_varcheck;
-
-typedef enum e_export_return
-{
-	EXP_OK,
-	EXP_ERROR,
-	NODATA
-}								t_expret;
-
-typedef enum e_env_return
-{
-	ENV_EMPTY,
-	ENV_FULL,
-	ENV_ERROR
-}								t_envret;
-
-typedef enum e_sighandlers_id
-{
-	CTRL_C,
-	CTRL_BS
-}								t_sighdlrid;
-
-typedef struct s_pid_lists
-{
-	pid_t				pid;
-	t_pidlist			*next;
-}								t_pidlist;
-
-typedef struct s_redirections
-{
-	int					fd;
-	int					cmd_id;
-	int					errcorde;
-	char				*path;	//Ne pas renvoyer l'erreur en expand
-	t_redir_type		type;
-	t_redirs			*next;
-}								t_redirs;
-
-typedef struct s_parsing
-{
-	char				*input;
-	char				**args;
-	t_redirs			*redirections;
-	t_cmd				*cmds;
-	char				**tokens;
-	int					ncmds;
-}								t_parse;
-
-typedef struct e_expcheck
-{
-	int					sq_count;
-	int					dq_count;
-	int					cmd_exp_count;
-	int					var_count;
-	t_envar				**vars_to_insert;
-	char				*to_expand;
-	char				*expanded;
-}								t_expand;
-
-typedef struct e_path_node
-{
-	char				*dir;
-	t_pn				*next;
-}								t_pn;
-
-typedef struct e_cmd
-{
-	char				*cmd_name;
-	int					exit;
-	char				*path_to_cmd;
-	char				**args;
-	int					pipe_fds[2];
-	pid_t				pid;
-	int					input_fd;
-	int					output_fd;
-	char				**env;
-	int					is_builtin;
-	int					skip;
-	t_redirs			*redirs;
-	t_mshell			*link;
-	t_cmd				*next;
-	t_cmd				*prev;
-}								t_cmd;
-
-typedef struct s_envar
-{
-	char				*name;
-	char				*value;
-	t_envar				*next;
-	t_bool				hidden;
-}								t_envar;
-
-typedef struct s_mshell
-{
-	struct sigaction	*sighandlers;
-	int					fds[PIPE_NBR][2];
-	t_collector			*gc;
-	t_envar				*env;
-	t_bool				no_exec;
-	t_pidlist			*pids;
-}								t_mshell;
-
-typedef struct s_initialestruct
-{
-	int			argc;
-	char		**argv;
-	char		**env;
-	t_parse		p;
-}								t_initialestruct;
 
 void					clean_exit(t_mshell *data);
 int						print_redirection_list(t_redirs *redirs,
@@ -294,6 +106,8 @@ t_redirs				*get_last_redir(t_redirs **start);
 t_redirs				*get_last_redir_by_cmd_id(t_redirs **start, int cmd_id);
 t_redirs				*filter_redirs_by_type(t_redirs **origin,
 							t_redir_type type, t_mshell *data);
+t_redirs				*filter_redirs_by_id(t_redirs **origin,
+							int *id, t_mshell *data);
 t_redirs				*dup_redirection(t_redirs **elem_addr, t_mshell *data);
 t_bool					init_data(t_mshell *data, char **env);
 t_bool					has_redirs_by_id(int *cmd_id, t_redirs *redirs);
@@ -428,7 +242,8 @@ int						ft_child(t_cmd *list, int *i);
 t_bool					is_local(t_cmd *cmd, t_cmd *start);
 t_bool					try_redirections(t_cmd *cmd, int *i);
 t_cmd					*get_first_item(t_cmd *end);
-t_initialestruct		*s(void);
+char					*search_exception(char *cmd_name, char *new, t_mshell *data);
+// t_initialestruct		*s(void);
 
 #endif
 //cat

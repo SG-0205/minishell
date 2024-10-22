@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/08 13:56:37 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 19:46:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,38 @@ char	*read_quoting(char *arg, t_mshell *data)
 	return (new_arg);
 }
 
+t_bool	transparent_arg(char *arg)
+{
+	int	i;
+
+	if (!arg)
+		return (FALSE);
+	i = -1;
+	while (arg[++i])
+		if (ft_cisar(arg[i], SEPS) != 0)
+			return (TRUE);
+	return (FALSE);
+}
+
+char	**args_rotation(char **args, t_mshell *data)
+{
+	int		i;
+
+	if (!args || !data)
+		return (NULL);
+	i = -1;
+	if (**args || empty_line(args[0]) == FALSE)
+		return (args);
+	while (args[++i])
+	{
+		// printf("[%d]%s\n", i, args[i]);
+		if (i > 0 && args[i])
+			args[i - 1] = gc_strdup(args[i], data->gc, 1);
+	}
+	args[i - 1] = NULL;
+	return (args);
+}
+
 char	**initial_split(char *input, t_mshell *data)
 {
 	char	**args;
@@ -107,6 +139,8 @@ char	**initial_split(char *input, t_mshell *data)
 	args = expand_all_args(args, data);
 	if (!args)
 		return (NULL);
+	// printf("%p\n", args);
+	args = args_rotation(args, data);
 	if (!args || !*args)
 		return (NULL);
 	return (args);

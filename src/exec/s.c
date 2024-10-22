@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   s.c                                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estegana <estegana@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 19:43:37 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/04 19:43:59 by estegana         ###   ########.fr       */
+/*   Updated: 2024/10/22 14:37:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/minishell.h"
+// #include "../../inc/minishell.h"
 
-t_initialestruct	*s(void)
-{
-	static t_initialestruct	input;
+// t_initialestruct	*s(void)
+// {
+// 	static t_initialestruct	input;
 
-	return (&input);
-}
+// 	return (&input);
+// }

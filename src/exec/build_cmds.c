@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:11:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/16 13:04:29 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 18:54:28 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,14 @@ t_cmd	*convert_tokens_and_add_redirections(t_parse *parsing, char	**tokens,
 	cmd_list = NULL;
 	while (tokens[++i])
 	{
+		// printf("[%d]%s\n", i, tokens[i]);
 		if (!cmd_list)
 			cmd_list = new_cmd_from_tokens(tokens[i], parsing, data);
 		else
 		{
 			new = new_cmd_from_tokens(tokens[i], parsing, data);
 			new->prev = last_cmd(&cmd_list);
+			new->exit = -5;
 			last_cmd(&cmd_list)->next = new;
 		}
 		if (!cmd_list)
@@ -111,9 +113,11 @@ t_cmd	*build_cmds_list(t_parse *parsing, t_mshell *data)
 		return (NULL);
 	if (check_empty_cmd(cmd_tokens, parsing, data) == FALSE)
 		return (NULL);
+	// printf("%s\n", *cmd_tokens);
 	cmd_list = convert_tokens_and_add_redirections(parsing, cmd_tokens, data);
 	if (!cmd_list)
 		return (NULL);
+	// print_cmd_list(cmd_list);
 	// print_redirection_list(cmd_list->redirs, data);
 	return (cmd_list);
 }

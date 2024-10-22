@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 12:45:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/08 12:51:05 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 11:17:05 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	*bad_eof_hd(char *limiter, int l_count, t_mshell *data)
 	if (!data)
 		return (NULL);
 	bad_eof(limiter, l_count, data);
+	data->bad_hd = TRUE;
 	return (NULL);
 }
 

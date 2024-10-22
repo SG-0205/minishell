@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 11:13:29 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/08 14:36:06 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 11:14:45 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ int	bad_eof(char *limiter, int l_count, t_mshell *data)
 	l_itoa = gc_itoa(l_count, data->gc, 1);
 	if (!l_itoa)
 		return (1);
-	update_var(data, "?", gc_itoa(1, data->gc, 1));
 	limiter = simple_quoting(read_quoting(limiter, data), data);
 	error_msg = gc_strnew(error_full_len((char *[]){"minishell: \0", limiter,
 				l_itoa, "warning: here-document at line  \0",

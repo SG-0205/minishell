@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 15:28:47 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 20:51:58 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,9 @@ void	reset_pipes(t_mshell *data)
 		close(data->fds[i][0]);
 		close(data->fds[i][1]);
 	}
+	i = 2;
+	while (++i < PIPE_NBR)
+		close(i);
 	return ;
 }
 

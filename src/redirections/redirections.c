@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/05 10:30:13 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 14:28:52 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:46:51 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,11 @@ t_redirs	*create_r_node(char **r_token, char **tokens,
 	else
 		cmd_id = r_id_by_reference(r_token, tokens);
 	type = read_redirection_type(split[0]);
-	fd = try_open(split[1], type, data);
+	// fd = try_open(split[1], type, data);
+	fd = -2;
 	new = new_redirection(&fd, &cmd_id, &type, data);
 	new->errcorde = errno;
-	new->path = gc_strdup(split[1], data->gc, 1);
+	new->path = gc_strdup(read_quoting(split[1], data), data->gc, 1);
 	if (!new->path)
 		return (NULL);
 	return (new);
@@ -51,10 +52,8 @@ t_redirs	*build_red_list(char **red_tokens, char *reference, t_mshell *data)
 	list = NULL;
 	while (red_tokens[++i])
 	{
-		//printf("REDIR TOKEN %s\n", red_tokens[i]);
 		if (has_redir(red_tokens[i]))
 		{
-			// printf("REDIR TOKEN OK %s\n", red_tokens[i]);
 			if (!list)
 				list = create_r_node(&red_tokens[i], red_tokens, data);
 			else
@@ -62,7 +61,6 @@ t_redirs	*build_red_list(char **red_tokens, char *reference, t_mshell *data)
 					= create_r_node(&red_tokens[i], red_tokens, data);
 			if (!list)
 				return (NULL);
-			// printf("REDIR TOKEN PASSED %s\n", red_tokens[i]);
 		}
 	}
 	return (list);

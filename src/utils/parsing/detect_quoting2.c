@@ -42,4 +42,3 @@ t_bool	is_quoted(char *ptr_in_str, char *str, t_bool check_both)
 	}
 	return (FALSE);
 }
-

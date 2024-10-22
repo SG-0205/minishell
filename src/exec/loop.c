@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 18:19:10 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/21 15:29:57 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 20:01:00 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,32 @@ t_cmd	*get_first_cmd(t_cmd *end)
 	return (tmp);
 }
 
+void	save_exec_error(t_cmd *cmd)
+{
+	t_f_check	exec_check;
+
+	if (!cmd)
+		return ;
+	// if (cmd->exit)
+	if (cmd->exit == ENOENT)
+		return (update_return_code(1, cmd->link));
+	else if (cmd->exit == EACCES)
+		return (update_return_code(1, cmd->link));
+	exec_check = f_access_check(cmd->cmd_name, NULL);
+	if (exec_check.exists == FALSE)
+		return (update_return_code(127, cmd->link));
+	if (exec_check.exec == FALSE)
+		return (update_return_code(1, cmd->link));
+	if (exec_check.is_dir == TRUE)
+	{
+		if (is_relative_path(cmd->cmd_name, cmd->link) == TRUE
+			|| ft_strcmp(cmd->cmd_name, get_pwd(cmd->link)) == 0)
+			return (update_return_code(126, cmd->link));
+		else
+			return (update_return_code(127, cmd->link));
+	}
+}
+
 int	wait_all(t_cmd *start)
 {
 	t_cmd	*tmp;
@@ -66,6 +92,8 @@ int	wait_all(t_cmd *start)
 			waitpid(tmp->pid, &stats, 0);
 			save_exit_code(tmp, &stats);
 		}
+		else
+			save_exec_error(tmp);
 		tmp = tmp->next;
 	}
 	return (0);
@@ -116,6 +144,15 @@ int	single_exec(t_cmd *cmd)
 	return (r_code);
 }
 
+void	fork_mshell(t_cmd *cmd, int *i)
+{
+	cmd->pid = fork();
+	if (cmd->pid == -1)
+		perror("cmd fork failed\n");
+	if (cmd->pid == 0)
+		ft_child(cmd, i);
+}
+
 int	ft_loop(t_cmd *list)
 {
 	t_cmd	*tmp;
@@ -124,22 +161,15 @@ int	ft_loop(t_cmd *list)
 
 	if (!list)
 		return (0);
-	if (!list->next)
-		return (single_exec(list));
 	tmp = list;
 	i = 0;
 	while (tmp)
 	{
 		flag = try_redirections(tmp, &i);
 		if (flag == TRUE && tmp->args && tmp->args[0])
-		{
-			tmp->pid = fork();
-			if (tmp->pid == -1)
-				perror("cmd fork failed\n");
-			if (tmp->pid == 0)
-				ft_child(tmp, &i);
-		}
-		ft_parent(tmp, &i);
+			fork_mshell(tmp, &i);
+		if (!(!tmp->next && i == 0))
+			ft_parent(tmp, &i);
 		if (flag == TRUE)
 			update_var(tmp->link, "_", tmp->args[0]);
 		tmp = tmp->next;

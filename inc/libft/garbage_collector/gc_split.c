@@ -46,7 +46,6 @@ static void	ft_initarray(char **array, const char *s, char c, t_collector *gc)
 		}
 		j ++;
 	}
-	
 }
 
 static void	ft_fillarray(char **array, const char *s, char c)

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:43:44 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/09 03:17:01 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 18:57:54 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*path_search(char *to_search, t_mshell *data)
 		return (NULL);
 	if (ft_strcmp(to_search, "..") == 0 || ft_strcmp(to_search, ".") == 0)
 		return (special_filter(to_search, data));
-	if (access(to_search, X_OK | F_OK) == 0)
+	if (access(to_search, F_OK | X_OK) == 0 || *to_search == '/')
 		return (to_search);
 	path_search_try = search_var(&data->env, "PATH");
 	if (!path_search_try)

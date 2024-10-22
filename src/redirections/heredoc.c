@@ -6,24 +6,19 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/18 15:08:11 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/16 11:00:53 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 14:38:27 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-//static void	rm_nl(char *final)
-//{
-//	int	i;
-
-//	if (!final)
-//		return ;
-//	i = 0;
-//	while (final[i + 1])
-//		i++;
-//	if (final[i] == '\n')
-//		final[i] = 0;
-//}
+// static int	close_errored_hd(int *errored)
+// {
+// 	if (!errored)
+// 		return (-5);
+// 	close(*errored);
+// 	return (-1);
+// }
 
 static char	*build_hd_path(t_mshell *data, int *hd_count)
 {
@@ -101,8 +96,6 @@ int	heredoc_fd(char *raw_limiter, t_mshell *data)
 		return (fd_w);
 	type = get_hd_output_type(raw_limiter);
 	content = heredoc(raw_limiter, type, data);
-	if (!content)
-		return (-3);
 	write(fd_w, content, ft_strlen(content));
 	close(fd_w);
 	g_sig_trace = FALSE;

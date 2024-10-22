@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 13:23:40 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/18 13:37:54 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 10:53:07 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,66 @@ t_redirs	*get_last_redir(t_redirs **start)
 	return (tmp);
 }
 
+int	red_list_size(t_redirs **start)
+{
+	t_redirs	*tmp;
+	int			size;
+
+	if (!start || !*start)
+		return (0);
+	size = 0;
+	tmp = *start;
+	while (tmp)
+	{
+		size ++;
+		tmp = tmp->next;
+	}
+	return (size);
+}
+
+t_redirs	*redir_before(t_redirs *limit, t_redirs **start)
+{
+	t_redirs	*tmp;
+
+	if (!start || !*start)
+		return (NULL);
+	tmp = *start;
+	if (get_last_redir(start) == *start)
+		return (NULL);
+	while (tmp)
+	{
+		if (tmp->next && tmp->next == limit)
+			return (tmp);
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+//TODO: RECONSTRUIRE UNE NOUVELLE SUBLIST ET EXCLURE LAST DE CETTE LISTE
+
+t_redirs	*filter_redirs_by_id(t_redirs **origin, int *id, t_mshell *data)
+{
+	t_redirs	*new;
+	t_redirs	*tmp;
+
+	if (!origin || !*origin || !id || !data)
+		return (NULL);
+	tmp = *origin;
+	new = NULL;
+	while (tmp)
+	{
+		if (tmp->cmd_id == *id)
+		{
+			if (!new)
+				new = dup_redirection(&tmp, data);
+			else
+				get_last_redir(&new)->next = dup_redirection(&tmp, data);
+		}
+		tmp = tmp->next;
+	}
+	return (new);
+}
+
 t_redirs	*filter_redirs_by_type(t_redirs **origin, t_redir_type type,
 	t_mshell *data)
 {
@@ -67,7 +127,7 @@ t_redirs	*filter_redirs_by_type(t_redirs **origin, t_redir_type type,
 	t_redirs	*tmp;
 	int			cpy;
 
-	if (!origin || !*origin || (type != INPUT && type != OUTPUT))
+	if (!origin || !*origin || type == APPEND)
 		return (NULL);
 	sub_list = NULL;
 	tmp = *origin;
