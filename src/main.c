@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 13:43:51 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 20:51:58 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 21:52:02 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ t_cmd	*parse(char *input, t_mshell *data)
 	parse->redirections = extract_redirections(parse, data);
 	if (!parse->redirections && has_redir(parse->input) == TRUE)
 		return (NULL);
+	data->redir_link = parse->redirections;
 	parse->cmds = build_cmds_list(parse, data);
 	if (!parse->cmds)
 		return (NULL);

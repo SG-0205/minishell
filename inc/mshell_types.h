@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 10:55:30 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 11:17:14 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 21:50:44 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct s_mshell
 	int					fds[PIPE_NBR][2];
 	t_collector			*gc;
 	t_envar				*env;
+	t_redirs			*redir_link;
 	t_bool				no_exec;
 	t_bool				bad_hd;
 	t_pidlist			*pids;

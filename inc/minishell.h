@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 19:21:49 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:01:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ t_cmd					*manage_first_input(t_cmd *first_cmd);
 t_cmd					*link_output_pipes(t_cmd **cmds, t_mshell *data);
 t_cmd					*link_input_pipes(t_cmd **cmds, t_mshell *data);
 t_cmd					*new_cmd_from_tokens(char *tokens, t_parse *parsing,
-							t_mshell *data);
+							int *cmd_id, t_mshell *data);
 char					*interpolate_path(char *cmd_name,
 							t_mshell *data);
 int						is_not_operator(char c);
@@ -160,7 +160,7 @@ char					*str_insert(char *str, char *where_to_insert,
 int						ft_lentillptr(char *c, char *str);
 char					first_quoting(char *ptr_in_str, char *str);
 char					ret_quoting(char *ptr_in_str, char *str);
-char					**initial_split(char *input, t_mshell *data);
+char					**initial_split(char *input, int *cmd_id, t_mshell *data);
 t_bool					is_closed(char *quote_ptr, char *str);
 int						read_dq(char *dq_start, char *arg, char *new_arg,
 							t_mshell *data);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/28 15:10:37 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 19:46:45 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:32:16 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,14 +106,15 @@ t_bool	transparent_arg(char *arg)
 	return (FALSE);
 }
 
-char	**args_rotation(char **args, t_mshell *data)
+char	**args_rotation(char **args, int *cmd_id, t_mshell *data)
 {
 	int		i;
 
 	if (!args || !data)
 		return (NULL);
 	i = -1;
-	if (**args || empty_line(args[0]) == FALSE)
+	if (**args || empty_line(args[0]) == FALSE
+		|| has_redirs_by_id(cmd_id, data->redir_link) == TRUE)
 		return (args);
 	while (args[++i])
 	{
@@ -125,7 +126,7 @@ char	**args_rotation(char **args, t_mshell *data)
 	return (args);
 }
 
-char	**initial_split(char *input, t_mshell *data)
+char	**initial_split(char *input, int *cmd_id, t_mshell *data)
 {
 	char	**args;
 
@@ -134,14 +135,13 @@ char	**initial_split(char *input, t_mshell *data)
 	input = quote_closure_control(input);
 	input = args_separation(input);
 	args = gc_split(input, *ARG_SEP, data->gc, 0);
-	if (!args || !*args)
+	if (!args || (!*args && has_redirs_by_id(cmd_id, data->redir_link) == FALSE))
 		return (NULL);
 	args = expand_all_args(args, data);
 	if (!args)
 		return (NULL);
 	// printf("%p\n", args);
-	args = args_rotation(args, data);
-	if (!args || !*args)
-		return (NULL);
+	if (has_redirs_by_id(cmd_id, data->redir_link) == FALSE && empty_line(*args) == TRUE)
+		args = args_rotation(args, cmd_id, data);
 	return (args);
 }

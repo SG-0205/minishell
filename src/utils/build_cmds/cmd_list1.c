@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 17:24:46 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 15:08:48 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:38:47 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ t_cmd	*select_tokens_and_pass_env(t_cmd *cmd, char **tokens, t_mshell *data)
 	return (cmd);
 }
 
-t_cmd	*new_cmd_from_tokens(char *tokens, t_parse *parsing, t_mshell *data)
+t_cmd	*new_cmd_from_tokens(char *tokens, t_parse *parsing, int *cmd_id, t_mshell *data)
 {
 	t_cmd	*new_cmd;
 	char	**splitted_cmds;
@@ -103,10 +103,11 @@ t_cmd	*new_cmd_from_tokens(char *tokens, t_parse *parsing, t_mshell *data)
 	new_cmd = new_empty_cmd(data);
 	if (!new_cmd)
 		return (NULL);
-	splitted_cmds = initial_split(tokens, data);
+	splitted_cmds = initial_split(tokens, cmd_id, data);
 	new_cmd = select_tokens_and_pass_env(new_cmd, splitted_cmds, data);
 	if (!new_cmd)
 		return (NULL);
+	// printf("%p\n", new_cmd);
 	// new_cmd = apply_redirections(new_cmd, parsing, cmd_id, data);
 	new_cmd->redirs = parsing->redirections;
 	if (!new_cmd)

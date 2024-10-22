@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:03:00 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 19:35:37 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 21:50:52 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ t_bool	init_data(t_mshell *data, char **env)
 		return (FALSE);
 	data->gc = gc_init(3);
 	data->no_exec = FALSE;
+	data->redir_link = NULL;
 	init_pipe_tab(data);
 	if (!data->gc)
 		return (FALSE);

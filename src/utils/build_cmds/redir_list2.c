@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 07:51:54 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/18 13:27:59 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:38:30 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ t_bool	has_redirs_by_id(int *cmd_id, t_redirs *redirs)
 	if (!cmd_id || !redirs)
 		return (FALSE);
 	search = get_last_redir_by_cmd_id(&redirs, *cmd_id);
+	// printf("%p\n", search);
 	if (!search)
 		return (FALSE);
 	return (TRUE);

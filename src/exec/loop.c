@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 18:19:10 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/22 20:01:00 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:37:28 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ int	ft_loop(t_cmd *list)
 			fork_mshell(tmp, &i);
 		if (!(!tmp->next && i == 0))
 			ft_parent(tmp, &i);
-		if (flag == TRUE)
+		if (flag == TRUE && tmp->args)
 			update_var(tmp->link, "_", tmp->args[0]);
 		tmp = tmp->next;
 		i++;

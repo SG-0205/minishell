@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 18:22:20 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/22 20:21:59 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 22:36:26 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,8 +201,6 @@ t_bool	try_redirections(t_cmd *cmd, int *i)
 	t_redirs	*input;
 	t_redirs	*output;
 
-	if (!cmd->args || !cmd->args[0])
-		return (FALSE);
 	if (!cmd->redirs || has_redirs_by_id(i, cmd->redirs) == FALSE)
 		return (TRUE);
 	cmd->redirs = filter_redirs_by_id(&cmd->redirs, i, cmd->link);

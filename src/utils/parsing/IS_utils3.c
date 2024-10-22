@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 12:57:43 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 14:00:57 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/22 21:51:19 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int	skip_limiter_name(char *hd_start)
 		else
 			name_start = TRUE;
 	}
-//
 	return (total_len);
 }
 
