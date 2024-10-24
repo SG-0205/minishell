@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 14:49:57 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/21 13:58:52 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/24 09:28:35 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,11 @@ t_bool	is_local(t_cmd *cmd, t_cmd *start)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (FALSE);
-	if (ft_strcmp(cmd->args[0], "unset") == 0
-		|| ft_strcmp(cmd->args[0], "export") == 0
+	if ((ft_strcmp(cmd->args[0], "unset") == 0 && cmd_list_size(&start) == 1)
+		|| (ft_strcmp(cmd->args[0], "export") == 0 && cmd->args[1] && !cmd->next)
 		|| (ft_strcmp(cmd->args[0], "exit") == 0
 			&& cmd_list_size(&start) == 1)
-		|| ft_strcmp(cmd->args[0], "cd") == 0
-		|| ft_strcmp(cmd->args[0], "pwd") == 0)
+		|| (ft_strcmp(cmd->args[0], "cd") == 0 && cmd_list_size(&start) == 1))
 		return (TRUE);
 	return (FALSE);
 }
@@ -47,7 +46,6 @@ void	save_exit_code(t_cmd *tmp, int *process_exit)
 	r_val = 0;
 	if (!tmp || !process_exit)
 		return ;
-	// printf("WIFEXIT %d\nWTERMSIG %d\nWSTOPSIG %d\n", WEXITSTATUS(*process_exit), WTERMSIG(*process_exit), WSTOPSIG(*process_exit));
 	if (WIFSIGNALED(*process_exit))
 		r_val = WTERMSIG(*process_exit) + 128;
 	if (WIFEXITED(*process_exit))
@@ -55,7 +53,6 @@ void	save_exit_code(t_cmd *tmp, int *process_exit)
 	if (WIFSTOPPED(*process_exit))
 		r_val = WSTOPSIG(*process_exit) + 128;
 	r_val = normalize_return(r_val);
-//
 	update_var(tmp->link, "?", gc_itoa(r_val, tmp->link->gc, 1));
 }
 

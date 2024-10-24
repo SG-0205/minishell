@@ -6,11 +6,27 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 15:39:41 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/08 13:02:06 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/24 09:22:55 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../inc/minishell.h"
+
+t_envar	*get_var_source(t_envar *var, t_mshell *data)
+{
+	t_envar	*search;
+
+	if (!var || !data)
+		return (NULL);
+	if (data->export)
+		search = search_var(&data->export, var->name);
+	if (search)
+		return (data->export);
+	search = search_var(&data->env, var->name);
+	if (search)
+		return (data->env);
+	return (NULL);
+}
 
 t_envar	**get_side_vars(t_envar *var, t_mshell *data)
 {
@@ -19,7 +35,7 @@ t_envar	**get_side_vars(t_envar *var, t_mshell *data)
 
 	if (!var || !data || !data->env)
 		return (NULL);
-	tmp = data->env;
+	tmp = get_var_source(var, data);
 	side_vars = (t_envar **)gc_malloc(data->gc, sizeof(t_envar *) * 3, 1);
 	if (!side_vars)
 		return (NULL);

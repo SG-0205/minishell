@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 14:46:48 by sgoldenb          #+#    #+#             */
-/*   Updated: 2024/10/22 22:01:30 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/23 13:37:38 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ t_envar					**split_env_on_visibility(t_envar **env_start,
 char					**env_list_to_array(t_mshell *data, t_bool hidden);
 char					*join_var_name_and_value(t_envar *var, t_mshell *data);
 int						env_size(t_envar **env_start, t_bool count_hidden);
+t_envar					*exp_list_interface(t_mshell *data, char *item);
 
 //PATH MANAGEMENT
 char					*get_pwd(t_mshell *data);
@@ -133,6 +134,7 @@ void					update_return_code(int exit_code, t_mshell *data);
 char					*rm_tabulations(char *final);
 t_bool					check_red_syntax(char **red_tokens,
 							char *ref, t_mshell *data);
+t_envar					*get_var_source(t_envar *var, t_mshell *data);
 
 //STRING EXPANSION
 void					place_separator(t_expand *str, char to_replace);

@@ -6,7 +6,7 @@
 /*   By: sgoldenb <sgoldenb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/04 18:19:10 by estegana          #+#    #+#             */
-/*   Updated: 2024/10/22 22:37:28 by sgoldenb         ###   ########.fr       */
+/*   Updated: 2024/10/23 07:46:04 by sgoldenb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,8 +166,11 @@ int	ft_loop(t_cmd *list)
 	while (tmp)
 	{
 		flag = try_redirections(tmp, &i);
-		if (flag == TRUE && tmp->args && tmp->args[0])
+		if (flag == TRUE && tmp->args && tmp->args[0]
+			&& is_local(tmp, list) == FALSE)
 			fork_mshell(tmp, &i);
+		else if (is_local(tmp, list) == TRUE)
+			local_exec(tmp, list);
 		if (!(!tmp->next && i == 0))
 			ft_parent(tmp, &i);
 		if (flag == TRUE && tmp->args)
